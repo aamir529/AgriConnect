@@ -1,0 +1,250 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}7-Day ML Demand Forecasting & Harvest Advisory | AgriConnect{% endblock %}
+
+{% block extra_css %}
+<style>
+  .forecast-stat-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Header Banner -->
+  <div class="p-4 p-md-5 rounded-4 mb-4 border" style="background: linear-gradient(135deg, #143628, #264653); color: white;">
+    <div class="row align-items-center g-3">
+      <div class="col-lg-8">
+        <span class="badge bg-white rounded-pill shadow-sm" style="color: #143628 !important; background-color: #ffffff !important; font-weight: 700; rounded-pill px-3 py-1 mb-2">
+          <i class="fa-solid fa-brain me-1 text-warning"></i> Predictive Supply Chain Intelligence
+        </span>
+        <h2 class="fw-bold mb-1 text-white" style="color: #ffffff !important;">7-Day Crop Demand Forecasting Engine</h2>
+        <p class="mb-0 text-white" style="color: rgba(255, 255, 255, 0.9) !important;">
+          Evaluates consumption elasticity, price corridors, and weekend buying surges to prevent post-harvest gluts.
+        </p>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        <a href="{% url 'analytics_dashboard' %}" class="btn btn-warning rounded-pill px-4 py-2 fw-bold text-dark shadow-sm">
+          <i class="fa-solid fa-chart-line me-1"></i> Disintermediation KPIs
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="row g-4 mb-4">
+    
+    <!-- Left: Interactive Predictor Controls -->
+    <div class="col-lg-4">
+      <div class="bg-white p-4 rounded-4 border shadow-sm">
+        <h5 class="fw-bold mb-3" style="color: var(--color-primary-dark);">
+          <i class="fa-solid fa-sliders text-success me-2"></i> Forecast Parameters
+        </h5>
+
+        <form method="get" action="{% url 'demand_forecast' %}" id="forecastForm">
+          
+          <!-- Crop Selection -->
+          <div class="mb-3">
+            <label class="form-label small fw-semibold text-secondary">Target Crop / Harvest *</label>
+            <select name="crop" class="form-select" onchange="this.form.submit()">
+              <option value="Tomato" {% if crop == 'Tomato' %}selected{% endif %}>🍅 Fresh Hybrid Tomato</option>
+              <option value="Potato" {% if crop == 'Potato' %}selected{% endif %}>🥔 Kufri Jyoti Potato</option>
+              <option value="Onion" {% if crop == 'Onion' %}selected{% endif %}>🧅 Nashik Red Onion</option>
+              <option value="Chilli" {% if crop == 'Chilli' %}selected{% endif %}>🌶️ Spicy Green Chilli</option>
+              <option value="Cauliflower" {% if crop == 'Cauliflower' %}selected{% endif %}>🥦 Fresh Cauliflower</option>
+            </select>
+          </div>
+
+          <!-- Price Per Kg Input -->
+          <div class="mb-3">
+            <label class="form-label small fw-semibold text-secondary">Intended Listing Price (₹/kg) *</label>
+            <div class="input-group">
+              <span class="input-group-text">₹</span>
+              <input type="number" step="1" min="5" max="200" name="price" value="{{ price }}" class="form-control fw-bold" onchange="this.form.submit()">
+              <span class="input-group-text">/kg</span>
+            </div>
+            <div class="form-text small">Demand dynamically adjusts to consumer price sensitivity.</div>
+          </div>
+
+          <!-- District -->
+          <div class="mb-3">
+            <label class="form-label small fw-semibold text-secondary">Delivery Destination Cluster *</label>
+            <select name="district" class="form-select" onchange="this.form.submit()">
+              <option value="Ranchi" {% if district == 'Ranchi' %}selected{% endif %}>Ranchi Urban Market</option>
+              <option value="Ramgarh" {% if district == 'Ramgarh' %}selected{% endif %}>Ramgarh Semi-Urban Hub</option>
+              <option value="Hazaribagh" {% if district == 'Hazaribagh' %}selected{% endif %}>Hazaribagh Cluster</option>
+            </select>
+          </div>
+
+          <!-- Organic Switch -->
+          <div class="mb-4">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" name="organic" value="1" id="organicCheck" {% if is_organic %}checked{% endif %} onchange="this.form.submit()">
+              <label class="form-check-label small fw-semibold" for="organicCheck">🌿 100% Organic Certified Crop (+18% Demand)</label>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-agri-primary w-100 py-2 rounded-pill">
+            <i class="fa-solid fa-rotate me-1"></i> Update 7-Day Forecast
+          </button>
+        </form>
+
+        <div class="mt-4 p-3 bg-light rounded-3 border small text-muted">
+          <i class="fa-solid fa-microchip text-primary me-1"></i>
+          <strong>API Endpoint Available:</strong> Integrate via <code>/analytics/api/predict-demand/</code> for third-party agricultural advisory bots.
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Forecast Summary & Projection Curve -->
+    <div class="col-lg-8">
+      
+      <!-- Top Metrics -->
+      <div class="row g-3 mb-4">
+        
+        <div class="col-sm-4">
+          <div class="forecast-stat-card">
+            <span class="text-muted small">Projected 7-Day Demand</span>
+            <h2 class="fw-bold text-success my-1">{{ forecast.total_7day_kg }} kg</h2>
+            <span class="badge bg-{{ forecast.status_color }} rounded-pill small">{{ forecast.status }}</span>
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="forecast-stat-card">
+            <span class="text-muted small">Optimal Price Corridor</span>
+            <h4 class="fw-bold text-primary my-1">{{ forecast.optimal_price_range }}</h4>
+            <small class="text-muted">Prevents market glut</small>
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="forecast-stat-card">
+            <span class="text-muted small">Model Confidence Score</span>
+            <h2 class="fw-bold text-dark my-1">{{ forecast.confidence_score }}%</h2>
+            <small class="text-success"><i class="fa-solid fa-circle-check me-1"></i> High Correlation</small>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Advisory Box -->
+      <div class="p-3 bg-white rounded-4 border shadow-sm mb-4">
+        <div class="d-flex align-items-center gap-2 mb-1 text-dark fw-bold small">
+          <i class="fa-solid fa-lightbulb text-warning"></i>
+          <span>Facilitator & Farmer Actionable Advisory:</span>
+        </div>
+        <p class="small text-secondary m-0">
+          {{ forecast.advisory }}
+        </p>
+      </div>
+
+      <!-- Chart: 7-Day Projection Curve -->
+      <div class="bg-white p-4 rounded-4 border shadow-sm">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold m-0" style="color: var(--color-primary-dark);">7-Day Projected Buying Velocity (kg / day)</h5>
+          <span class="badge bg-light text-secondary border">Weekend Surge Highlighted</span>
+        </div>
+        <div style="height: 280px;">
+          <canvas id="demandCurveChart"></canvas>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Day-by-Day Forecast Breakdown Table -->
+  <div class="bg-white p-4 rounded-4 border shadow-sm">
+    <h5 class="fw-bold mb-3" style="color: var(--color-primary-dark);">
+      <i class="fa-solid fa-calendar-week text-success me-2"></i> Daily Dispatch Schedule for {{ crop }} ({{ district }})
+    </h5>
+
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle text-center small m-0">
+        <thead class="table-light">
+          <tr>
+            <th>Timeline</th>
+            <th>Day of Week</th>
+            <th>Projected Demand</th>
+            <th>Surge Status</th>
+            <th>Recommended Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for d in forecast.daily_forecasts %}
+            <tr {% if d.is_weekend %}class="table-success"{% endif %}>
+              <td><strong>Day {{ d.day_index }}</strong> ({{ d.date_str }})</td>
+              <td>{{ d.day_name }}</td>
+              <td><strong class="text-success fs-6">{{ d.projected_kg }} kg</strong></td>
+              <td>
+                {% if d.is_weekend %}
+                  <span class="badge bg-success rounded-pill px-2 py-1">Weekend Peak (+35%)</span>
+                {% else %}
+                  <span class="badge bg-light text-muted border">Regular Volume</span>
+                {% endif %}
+              </td>
+              <td class="text-start">
+                {% if d.is_weekend %}
+                  Batch harvest and load early morning Tata Ace van at Angara Hub.
+                {% else %}
+                  Standard village weighing and quality intake at CSC center.
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const labels = {{ chart_labels_json|safe }};
+    const values = {{ chart_values_json|safe }};
+
+    const ctx = document.getElementById('demandCurveChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Projected Demand (kg)',
+          data: values,
+          backgroundColor: values.map((v, i) => i >= 4 ? '#2D6A4F' : '#52B788'),
+          borderRadius: 8
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.raw} kg expected demand`
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { callback: (v) => v + ' kg' }
+          }
+        }
+      }
+    });
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,178 @@
+﻿{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Apna Review Dijiye | AgriConnect{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="max-width: 700px;">
+
+  <!-- Header -->
+  <div class="text-center mb-5">
+    <span class="badge bg-success bg-opacity-10 text-success fw-bold px-3 py-2 rounded-pill mb-2">
+      <i class="fa-solid fa-star me-1"></i> AUTHENTIC VOICES
+    </span>
+    <h2 class="fw-bold" style="color: var(--color-primary-dark);">Apna Anubhav Sanjhaein</h2>
+    <p class="text-muted">Share Your Experience with AgriConnect</p>
+  </div>
+
+  <!-- Error messages -->
+  {% if errors %}
+    <div class="alert alert-danger rounded-4 mb-4">
+      <i class="fa-solid fa-triangle-exclamation me-2"></i><strong>Kuch galat hua:</strong>
+      <ul class="mb-0 mt-2">
+        {% for err in errors %}
+          <li>{{ err }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endif %}
+
+  <!-- Review Form Card -->
+  <div class="bg-white rounded-4 border shadow-sm p-4 p-md-5">
+    <form method="post" action="{% url 'submit_review' %}" id="reviewForm">
+      {% csrf_token %}
+
+      <!-- Star Rating Picker -->
+      <div class="mb-4 text-center">
+        <label class="form-label fw-bold text-dark d-block mb-2">Aapki Rating Kitni Hai?</label>
+        <div class="star-picker d-flex justify-content-center gap-2" id="starPicker">
+          {% for i in "12345" %}
+            <i class="fa-solid fa-star star-pick" data-value="{{ i }}"
+               style="font-size: 2.2rem; cursor: pointer; color: #ddd; transition: color 0.15s;"></i>
+          {% endfor %}
+        </div>
+        <input type="hidden" name="rating" id="ratingInput" value="{{ form_data.rating|default:'5' }}">
+        <small class="text-muted mt-1 d-block" id="ratingLabel">5 Stars - Bahut Achha!</small>
+      </div>
+
+      <hr>
+
+      <!-- Reviewer Name -->
+      <div class="mb-3">
+        <label class="form-label fw-semibold" for="reviewer_name">
+          <i class="fa-solid fa-user me-1 text-success"></i> Aapka Naam <span class="text-danger">*</span>
+        </label>
+        <input type="text" class="form-control form-control-lg" id="reviewer_name"
+               name="reviewer_name" placeholder="e.g. Ramesh Kumar"
+               value="{{ form_data.reviewer_name|default:'' }}" required maxlength="120">
+      </div>
+
+      <!-- Role -->
+      <div class="mb-3">
+        <label class="form-label fw-semibold" for="reviewer_role">
+          <i class="fa-solid fa-id-badge me-1 text-success"></i> Aap Kaun Hain?
+        </label>
+        <select class="form-select form-select-lg" id="reviewer_role" name="reviewer_role">
+          <option value="CONSUMER" {% if form_data.reviewer_role == "CONSUMER" or not form_data %}selected{% endif %}>
+            🛒 Consumer / Khareedaar
+          </option>
+          <option value="FARMER" {% if form_data.reviewer_role == "FARMER" %}selected{% endif %}>
+            🌾 Kisan / Farmer
+          </option>
+          <option value="FACILITATOR" {% if form_data.reviewer_role == "FACILITATOR" %}selected{% endif %}>
+            🏘️ Village Facilitator (VDF)
+          </option>
+          <option value="SOCIETY" {% if form_data.reviewer_role == "SOCIETY" %}selected{% endif %}>
+            🏢 Housing Society Secretary
+          </option>
+          <option value="OTHER" {% if form_data.reviewer_role == "OTHER" %}selected{% endif %}>
+            👤 Other
+          </option>
+        </select>
+      </div>
+
+      <!-- Location -->
+      <div class="mb-3">
+        <label class="form-label fw-semibold" for="reviewer_location">
+          <i class="fa-solid fa-location-dot me-1 text-success"></i> Aapka Sheher / Gaon <span class="text-danger">*</span>
+        </label>
+        <input type="text" class="form-control form-control-lg" id="reviewer_location"
+               name="reviewer_location" placeholder="e.g. Jonha Gaon, Ranchi, Jharkhand"
+               value="{{ form_data.reviewer_location|default:'' }}" required maxlength="150">
+      </div>
+
+      <!-- Review Text -->
+      <div class="mb-4">
+        <label class="form-label fw-semibold" for="review_text">
+          <i class="fa-solid fa-comment-dots me-1 text-success"></i> Apna Anubhav Batayein <span class="text-danger">*</span>
+        </label>
+        <textarea class="form-control" id="review_text" name="review_text"
+                  rows="5" maxlength="600" required
+                  placeholder="Apna experience share karein – fresh produce, price savings, farmer se seedha connection... (minimum 20 characters)">{{ form_data.review_text|default:'' }}</textarea>
+        <div class="d-flex justify-content-between mt-1">
+          <small class="text-muted">Min 20, Max 600 characters</small>
+          <small class="text-muted"><span id="charCount">0</span> / 600</small>
+        </div>
+      </div>
+
+      <!-- Submit Button -->
+      <div class="d-grid">
+        <button type="submit" class="btn btn-success btn-lg fw-bold rounded-pill py-3 shadow-sm" id="submitBtn">
+          <i class="fa-solid fa-paper-plane me-2"></i> Review Submit Karein
+        </button>
+      </div>
+
+      <p class="text-center text-muted small mt-3 mb-0">
+        <i class="fa-solid fa-shield-check me-1 text-success"></i>
+        Aapka review admin approval ke baad homepage par dikhai dega. Spam reviews delete ho jaayenge.
+      </p>
+    </form>
+  </div>
+
+</div>
+
+<style>
+  .star-pick:hover,
+  .star-pick.active {
+    color: #f5a623 !important;
+  }
+</style>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // --- Star Rating Picker ---
+  const stars = document.querySelectorAll('.star-pick');
+  const ratingInput = document.getElementById('ratingInput');
+  const ratingLabel = document.getElementById('ratingLabel');
+
+  const labels = { 1:'1 Star - Bahut Bura', 2:'2 Stars - Theek Nahi', 3:'3 Stars - Theek Hai', 4:'4 Stars - Achha', 5:'5 Stars - Bahut Achha!' };
+
+  function setRating(val) {
+    stars.forEach((s, i) => {
+      s.style.color = i < val ? '#f5a623' : '#ddd';
+      s.classList.toggle('active', i < val);
+    });
+    ratingInput.value = val;
+    ratingLabel.textContent = labels[val];
+  }
+
+  // Init with default 5
+  setRating(parseInt(ratingInput.value) || 5);
+
+  stars.forEach(star => {
+    star.addEventListener('click', () => setRating(parseInt(star.dataset.value)));
+    star.addEventListener('mouseover', () => {
+      stars.forEach((s, i) => s.style.color = i < parseInt(star.dataset.value) ? '#f5a623' : '#ddd');
+    });
+    star.addEventListener('mouseout', () => setRating(parseInt(ratingInput.value)));
+  });
+
+  // --- Char Counter ---
+  const textarea = document.getElementById('review_text');
+  const counter = document.getElementById('charCount');
+  function updateCount() {
+    counter.textContent = textarea.value.length;
+    counter.style.color = textarea.value.length > 550 ? 'red' : '';
+  }
+  textarea.addEventListener('input', updateCount);
+  updateCount();
+
+  // --- Submit button loading state ---
+  document.getElementById('reviewForm').addEventListener('submit', function() {
+    const btn = document.getElementById('submitBtn');
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submit ho raha hai...';
+    btn.disabled = true;
+  });
+</script>
+{% endblock %}

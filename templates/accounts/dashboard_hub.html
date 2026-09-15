@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard Hub | AgriConnect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Welcome Header Banner -->
+  <div class="p-4 p-md-5 rounded-4 mb-4 border" style="background: linear-gradient(135deg, #143628, #2D6A4F); color: white;">
+    <div class="row align-items-center g-3">
+      <div class="col-lg-8">
+        <span class="badge bg-white rounded-pill shadow-sm" style="color: #143628 !important; background-color: #ffffff !important; font-weight: 700; rounded-pill px-3 py-2 mb-2">
+          <i class="fa-solid fa-circle-check me-1 text-warning"></i> Active Role: {{ user.get_role_display }}
+        </span>
+        <h2 class="fw-bold mb-1 text-white" style="color: #ffffff !important;">Namaste, {{ user.get_full_name|default:user.username }}!</h2>
+        <p class="mb-0 text-white" style="color: rgba(255, 255, 255, 0.9) !important;">
+          <i class="fa-solid fa-location-dot me-1"></i> {{ user.village_or_city }}, {{ user.district }} ({{ user.state }}) &bull; 
+          <i class="fa-solid fa-phone me-1 ms-2"></i> {{ user.phone }} &bull;
+          <i class="fa-solid fa-language me-1 ms-2"></i> {{ user.preferred_language }}
+        </p>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        <a href="{% url 'profile' %}" class="btn btn-light rounded-pill px-3 py-2 fw-semibold">
+          <i class="fa-solid fa-gear me-1"></i> Account Settings
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Role Status & Capabilities Overview -->
+  <div class="row g-4">
+    
+    <!-- Left Column: Role Overview & Current Capabilities -->
+    <div class="col-lg-8">
+      <div class="bg-white p-4 rounded-4 border shadow-sm mb-4">
+        <h5 class="fw-bold mb-3" style="color: var(--color-primary-dark);">
+          <i class="fa-solid fa-id-badge me-2 text-success"></i> Your Role Access: {{ user.get_role_display }}
+        </h5>
+
+        {% if user.role == 'FARMER' %}
+          <div class="p-3 bg-light rounded-3 mb-3 border-start border-success border-4">
+            <h6 class="fw-bold text-success m-0"><i class="fa-solid fa-tractor me-2"></i> Farmer Operational Mode</h6>
+            <p class="text-muted small mt-1 mb-0">
+              As a farmer, your produce availability is aggregated by your local Village Digital Facilitator (VDF Sunil Mahto) or through voice/IVR, guaranteeing fair prices without needing a smartphone.
+            </p>
+          </div>
+          <div class="row g-3 text-center">
+            <div class="col-sm-4">
+              <div class="p-3 border rounded-3 bg-white">
+                <h3 class="fw-bold text-success m-0">₹28 / kg</h3>
+                <small class="text-muted">Avg Realization</small>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="p-3 border rounded-3 bg-white">
+                <h3 class="fw-bold text-primary m-0">+38%</h3>
+                <small class="text-muted">Above Mandi Rate</small>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="p-3 border rounded-3 bg-white">
+                <h3 class="fw-bold text-warning m-0">SMS + UPI</h3>
+                <small class="text-muted">Direct Payouts</small>
+              </div>
+            </div>
+          </div>
+
+        {% elif user.role == 'FACILITATOR' %}
+          <div class="p-3 bg-light rounded-3 mb-3 border-start border-info border-4">
+            <h6 class="fw-bold text-info m-0"><i class="fa-solid fa-handshake-angle me-2"></i> Village Digital Facilitator (VDF Hub)</h6>
+            <p class="text-muted small mt-1 mb-0">
+              You are the rural digital bridge for 50–100 local farmers. In Phase 2, you will register farmers, capture voice listings, print QR tags, and aggregate produce for urban dispatch.
+            </p>
+          </div>
+          <div class="row g-3 text-center">
+            <div class="col-sm-4">
+              <div class="p-3 border rounded-3 bg-white">
+                <h3 class="fw-bold text-info m-0">5%</h3>
+                <small class="text-muted">Facilitator Margin</small>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="p-3 border rounded-3 bg-white">
+                <h3 class="fw-bold text-success m-0">Angara</h3>
+                <small class="text-muted">Assigned Village</small>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="p-3 border rounded-3 bg-white">
+                <h3 class="fw-bold text-primary m-0">Active</h3>
+                <small class="text-muted">Hub Status</small>
+              </div>
+            </div>
+          </div>
+
+        {% elif user.role == 'CONSUMER' %}
+          <div class="p-3 bg-light rounded-3 mb-3 border-start border-warning border-4">
+            <h6 class="fw-bold text-warning m-0"><i class="fa-solid fa-basket-shopping me-2"></i> Consumer / Buyer Portal</h6>
+            <p class="text-muted small mt-1 mb-0">
+              Direct access to village farm clusters. Browse farm-fresh vegetables harvested within 24 hours with complete price transparency (no middleman inflation).
+            </p>
+          </div>
+          <div class="row g-3 text-center">
+            <div class="col-sm-4">
+              <div class="p-3 border rounded-3 bg-white">
+                <h3 class="fw-bold text-success m-0">25%–35%</h3>
+                <small class="text-muted">Consumer Savings</small>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="p-3 border rounded-3 bg-white">
+                <h3 class="fw-bold text-info m-0">&lt; 24h</h3>
+                <small class="text-muted">Farm to Doorstep</small>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="p-3 border rounded-3 bg-white">
+                <h3 class="fw-bold text-primary m-0">100%</h3>
+                <small class="text-muted">Price Transparency</small>
+              </div>
+            </div>
+          </div>
+
+        {% elif user.role == 'DELIVERY' %}
+          <div class="p-3 bg-light rounded-3 mb-3 border-start border-primary border-4">
+            <h6 class="fw-bold text-primary m-0"><i class="fa-solid fa-truck-fast me-2"></i> Logistics & Delivery Fleet</h6>
+            <p class="text-muted small mt-1 mb-0">
+              Bulk aggregate pickups from rural VDF hubs to urban consumer drops, eliminating dry runs and empty transit trips.
+            </p>
+          </div>
+
+        {% else %}
+          <div class="p-3 bg-light rounded-3 mb-3 border-start border-danger border-4">
+            <h6 class="fw-bold text-danger m-0"><i class="fa-solid fa-crown me-2"></i> Administrator & Platform Oversight</h6>
+            <p class="text-muted small mt-1 mb-0">
+              Full control over user roles, grievance management, APMC mandi feeds, and ML demand analytics.
+            </p>
+          </div>
+          {% if user.is_superuser %}
+            <a href="/admin/" target="_blank" class="btn btn-sm btn-dark rounded-pill px-3 py-2">
+              <i class="fa-solid fa-shield-halved me-1 text-warning"></i> Open Django Master Admin
+            </a>
+          {% endif %}
+        {% endif %}
+      </div>
+
+      <!-- Roadmap Progress Widget -->
+      <div class="bg-white p-4 rounded-4 border shadow-sm">
+        <h5 class="fw-bold mb-3" style="color: var(--color-primary-dark);">
+          <i class="fa-solid fa-list-check me-2 text-primary"></i> AgriConnect Phase Roadmap
+        </h5>
+        
+        <div class="list-group list-group-flush">
+          <div class="list-group-item d-flex justify-content-between align-items-center py-3 border-bottom">
+            <div>
+              <h6 class="m-0 fw-bold text-success"><i class="fa-solid fa-circle-check me-2"></i> Phase 1: Environment, Authentication & 5-Role Identity</h6>
+              <small class="text-muted">CustomUser model, RBAC decorators, Dairy Farm design system tokens, demo seeding.</small>
+            </div>
+            <span class="badge bg-success rounded-pill px-3 py-2">COMPLETED</span>
+          </div>
+
+          <div class="list-group-item d-flex justify-content-between align-items-center py-3 border-bottom">
+            <div>
+              <h6 class="m-0 fw-bold text-secondary"><i class="fa-solid fa-circle-notch fa-spin me-2 text-primary"></i> Phase 2: Village Facilitator (VDF) Portal & Voice/IVR Engine</h6>
+              <small class="text-muted">Farmer registration, Web Speech voice listing, simulated telephone IVR keypad for judges.</small>
+            </div>
+            <span class="badge bg-primary rounded-pill px-3 py-2">NEXT UP</span>
+          </div>
+
+          <div class="list-group-item d-flex justify-content-between align-items-center py-3 border-bottom">
+            <div>
+              <h6 class="m-0 fw-bold text-secondary"><i class="fa-regular fa-circle me-2"></i> Phase 3: Consumer Marketplace & Price Transparency Widget</h6>
+              <small class="text-muted">Leaflet radius search, supply chain margin breakdown progress bar, product catalog.</small>
+            </div>
+            <span class="badge bg-light text-secondary rounded-pill px-3 py-2">UPCOMING</span>
+          </div>
+
+          <div class="list-group-item d-flex justify-content-between align-items-center py-3 border-bottom">
+            <div>
+              <h6 class="m-0 fw-bold text-secondary"><i class="fa-regular fa-circle me-2"></i> Phase 4: Cart, Orders & Dispatch Fleet</h6>
+              <small class="text-muted">Multi-farmer cart, checkout, milestone tracking, and mock SMS alerts.</small>
+            </div>
+            <span class="badge bg-light text-secondary rounded-pill px-3 py-2">UPCOMING</span>
+          </div>
+
+          <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+            <div>
+              <h6 class="m-0 fw-bold text-secondary"><i class="fa-regular fa-circle me-2"></i> Phase 5: Scikit-learn Demand Forecast & Admin Analytics</h6>
+              <small class="text-muted">7-day crop demand prediction, Chart.js admin dashboard, margin comparison.</small>
+            </div>
+            <span class="badge bg-light text-secondary rounded-pill px-3 py-2">UPCOMING</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Quick Persona Switcher for Evaluation -->
+    <div class="col-lg-4">
+      <div class="bg-white p-4 rounded-4 border shadow-sm">
+        <h6 class="fw-bold mb-2 text-dark">
+          <i class="fa-solid fa-bolt text-warning me-2"></i> SIH Persona Quick-Switcher
+        </h6>
+        <p class="text-muted small mb-3">
+          Instantly jump between test roles to evaluate how the system tailors access:
+        </p>
+
+        <div class="d-grid gap-2">
+          <a href="{% url 'quick_switch_user' 'admin' %}" class="btn btn-sm {% if user.username == 'admin' %}btn-dark{% else %}btn-outline-dark{% endif %} text-start py-2">
+            <i class="fa-solid fa-crown me-2 text-warning"></i> <strong>Admin</strong> (admin)
+          </a>
+          <a href="{% url 'quick_switch_user' 'vdf_sunil' %}" class="btn btn-sm {% if user.username == 'vdf_sunil' %}btn-success{% else %}btn-outline-success{% endif %} text-start py-2">
+            <i class="fa-solid fa-handshake-angle me-2"></i> <strong>Facilitator (VDF)</strong> (vdf_sunil)
+          </a>
+          <a href="{% url 'quick_switch_user' 'farmer_ramesh' %}" class="btn btn-sm {% if user.username == 'farmer_ramesh' %}btn-success{% else %}btn-outline-success{% endif %} text-start py-2">
+            <i class="fa-solid fa-tractor me-2"></i> <strong>Farmer</strong> (farmer_ramesh)
+          </a>
+          <a href="{% url 'quick_switch_user' 'consumer_priya' %}" class="btn btn-sm {% if user.username == 'consumer_priya' %}btn-warning{% else %}btn-outline-warning{% endif %} text-start py-2 text-dark">
+            <i class="fa-solid fa-basket-shopping me-2"></i> <strong>Consumer</strong> (consumer_priya)
+          </a>
+          <a href="{% url 'quick_switch_user' 'delivery_rajesh' %}" class="btn btn-sm {% if user.username == 'delivery_rajesh' %}btn-primary{% else %}btn-outline-primary{% endif %} text-start py-2">
+            <i class="fa-solid fa-truck me-2"></i> <strong>Delivery</strong> (delivery_rajesh)
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

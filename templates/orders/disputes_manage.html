@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Quality Claims & Dispute Arbitration | AgriConnect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Header -->
+  <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 pb-3 border-bottom">
+    <div>
+      <span class="badge bg-danger bg-opacity-10 text-danger rounded-pill px-3 py-1 mb-1">
+        <i class="fa-solid fa-scale-balanced me-1"></i> Quality & Trust Assurance
+      </span>
+      <h3 class="fw-bold m-0" style="color: var(--color-primary-dark);">Consumer Quality Claims & Arbitration Desk</h3>
+      <p class="text-muted small m-0">Review transit spoilage, weight disputes, and issue fair credits without penalizing growers</p>
+    </div>
+    <div class="d-flex gap-2">
+      <span class="badge bg-warning text-dark p-2">Pending Review: {{ pending_count }}</span>
+      <span class="badge bg-success p-2">Resolved: {{ resolved_count }}</span>
+    </div>
+  </div>
+
+  <!-- Disputes List -->
+  {% if disputes %}
+    <div class="d-flex flex-column gap-3">
+      {% for d in disputes %}
+        <div class="bg-white p-4 rounded-4 border shadow-sm">
+          
+          <div class="d-flex flex-wrap justify-content-between align-items-start mb-3 pb-2 border-bottom">
+            <div>
+              <span class="badge bg-secondary rounded-pill small me-1">Claim #{{ d.id }}</span>
+              <strong class="text-dark">Order #{{ d.order.order_number }}</strong>
+              <small class="text-muted ms-2">&bull; Filed by <strong>{{ d.consumer.get_full_name|default:d.consumer.username }}</strong> on {{ d.created_at|date:"d M Y, h:i A" }}</small>
+            </div>
+            <div>
+              <span class="badge {% if d.status == 'RESOLVED_REFUNDED' %}bg-success{% elif d.status == 'REJECTED' %}bg-danger{% else %}bg-warning text-dark{% endif %} rounded-pill px-3 py-2">
+                {{ d.get_status_display }}
+              </span>
+            </div>
+          </div>
+
+          <div class="row g-3 align-items-center">
+            
+            <div class="col-lg-8">
+              <div class="mb-2">
+                <span class="badge bg-light text-dark border me-1">
+                  <i class="fa-solid fa-triangle-exclamation text-warning me-1"></i> {{ d.get_issue_type_display }}
+                </span>
+                {% if d.order_item %}
+                  <span class="badge bg-light text-success border d-inline-flex align-items-center gap-1">
+                    {% if d.order_item.product.image %}
+                      <img src="{{ d.order_item.product.image.url }}" alt="{{ d.order_item.product.name }}" class="rounded-circle object-fit-cover" style="width: 18px; height: 18px;">
+                    {% else %}
+                      {{ d.order_item.product.emoji_icon }}
+                    {% endif %}
+                    {{ d.order_item.product.name }} ({{ d.order_item.quantity_kg }} kg)
+                  </span>
+                {% endif %}
+                <span class="badge bg-light text-primary border">
+                  Claim Amount: <strong>₹{{ d.refund_amount_requested }}</strong>
+                </span>
+              </div>
+
+              <p class="small text-secondary mb-2 bg-light p-3 rounded-3 border">
+                <strong>Consumer Statement:</strong> "{{ d.description }}"
+              </p>
+
+              {% if d.resolution_notes %}
+                <div class="small text-muted">
+                  <i class="fa-solid fa-clipboard-check text-success me-1"></i>
+                  <strong>Inspector Resolution:</strong> {{ d.resolution_notes }}
+                  <small>({{ d.resolved_at|date:"d M Y, h:i A" }})</small>
+                </div>
+              {% endif %}
+            </div>
+
+            <!-- Arbitration Actions -->
+            <div class="col-lg-4 text-lg-end">
+              {% if d.status == 'PENDING' %}
+                <form method="post" action="{% url 'resolve_dispute' d.id %}" class="d-flex flex-column gap-2">
+                  {% csrf_token %}
+                  <input type="text" name="resolution_notes" class="form-control form-control-sm" placeholder="Inspector notes (optional)">
+                  <div class="d-flex gap-2 justify-content-lg-end">
+                    <button type="submit" name="action" value="approve" class="btn btn-sm btn-success rounded-pill px-3 py-1">
+                      <i class="fa-solid fa-check me-1"></i> Approve Refund (₹{{ d.refund_amount_requested }})
+                    </button>
+                    <button type="submit" name="action" value="reject" class="btn btn-sm btn-outline-danger rounded-pill px-3 py-1">
+                      <i class="fa-solid fa-xmark me-1"></i> Reject
+                    </button>
+                  </div>
+                </form>
+              {% else %}
+                <span class="badge bg-light text-muted border p-2">
+                  <i class="fa-solid fa-lock me-1"></i> Arbitration Closed
+                </span>
+              {% endif %}
+            </div>
+
+          </div>
+
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-5 bg-white rounded-4 border shadow-sm">
+      <div class="fs-1 text-muted mb-3">🛡️</div>
+      <h4 class="fw-bold">No quality disputes on file</h4>
+      <p class="text-muted small">All deliveries have met standard quality checks and customer satisfaction.</p>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

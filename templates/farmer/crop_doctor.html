@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AI Crop Doctor & Organic Biopesticide Advisory | AgriConnect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Header Banner -->
+  <div class="p-4 p-md-5 rounded-4 mb-4 border" style="background: linear-gradient(135deg, #143628, #2E7D32); color: white;">
+    <div class="row align-items-center g-3">
+      <div class="col-lg-8">
+        <span class="badge bg-white rounded-pill shadow-sm" style="color: #143628 !important; background-color: #ffffff !important; font-weight: 700; rounded-pill px-3 py-1 mb-2">
+          <i class="fa-solid fa-plant-wilt me-1 text-warning"></i> AI Plant Health Diagnostics
+        </span>
+        <h2 class="fw-bold mb-1 text-white" style="color: #ffffff !important;">AI Crop Doctor & Organic Bio-Advisory</h2>
+        <p class="mb-0 text-white" style="color: rgba(255, 255, 255, 0.9) !important;">
+          Identify crop blights, viral vectors, and fungal pests with instant low-cost organic prescriptions in Hindi & English.
+        </p>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        <a href="{% url 'farmer_passbook' %}" class="btn btn-warning rounded-pill px-4 py-2 fw-bold text-dark shadow-sm">
+          <i class="fa-solid fa-address-book me-1"></i> Kisan Credit Passbook
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Pills -->
+  <div class="bg-white p-3 rounded-4 border shadow-sm mb-4 d-flex flex-wrap gap-2 align-items-center">
+    <span class="small fw-bold text-secondary me-2">Select Crop:</span>
+    <a href="{% url 'crop_doctor' %}" class="btn btn-sm {% if not selected_crop %}btn-success{% else %}btn-light border{% endif %} rounded-pill px-3">
+      All Crops (सभी फसलें)
+    </a>
+    <a href="?crop=Tomato" class="btn btn-sm {% if selected_crop == 'Tomato' %}btn-success{% else %}btn-light border{% endif %} rounded-pill px-3">
+      🍅 Tomato (टमाटर)
+    </a>
+    <a href="?crop=Potato" class="btn btn-sm {% if selected_crop == 'Potato' %}btn-success{% else %}btn-light border{% endif %} rounded-pill px-3">
+      🥔 Potato (आलू)
+    </a>
+    <a href="?crop=Onion" class="btn btn-sm {% if selected_crop == 'Onion' %}btn-success{% else %}btn-light border{% endif %} rounded-pill px-3">
+      🧅 Onion (प्याज)
+    </a>
+    <a href="?crop=Chilli" class="btn btn-sm {% if selected_crop == 'Chilli' %}btn-success{% else %}btn-light border{% endif %} rounded-pill px-3">
+      🌶️ Chilli (मिर्च)
+    </a>
+  </div>
+
+  <!-- Disease Diagnostic Cards Grid -->
+  <div class="row g-4">
+    {% for item in diseases %}
+      <div class="col-lg-6">
+        <div class="card h-100 border rounded-4 shadow-sm overflow-hidden">
+          
+          <div class="p-3 bg-light border-bottom d-flex justify-content-between align-items-center">
+            <div>
+              <span class="badge bg-white text-dark border rounded-pill px-2 py-1 small me-2">{{ item.crop }}</span>
+              <strong class="text-dark fs-6">{{ item.disease }}</strong>
+            </div>
+            <span class="badge {% if item.organic %}bg-success{% else %}bg-secondary{% endif %} rounded-pill px-3 py-1 small">
+              {% if item.organic %}🌿 100% Bio-Organic{% else %}Conventional{% endif %}
+            </span>
+          </div>
+
+          <div class="card-body p-4 d-flex flex-column">
+            
+            <div class="mb-3">
+              <small class="text-muted d-block fw-semibold" style="font-size: 0.75rem;">Pathogen / Causal Agent:</small>
+              <em class="text-secondary small">{{ item.pathogen }}</em>
+            </div>
+
+            <!-- Symptoms -->
+            <div class="p-3 bg-light rounded-3 border mb-3">
+              <span class="text-dark fw-bold small d-block mb-1">
+                <i class="fa-solid fa-magnifying-glass text-warning me-1"></i> Visual Symptoms (पहचान):
+              </span>
+              <p class="small text-secondary m-0">{{ item.symptoms }}</p>
+            </div>
+
+            <!-- Treatment Protocol -->
+            <div class="p-3 rounded-3 border mb-3" style="background-color: #F0FDF4; border-color: #BBF7D0 !important;">
+              <span class="text-success fw-bold small d-block mb-1">
+                <i class="fa-solid fa-prescription-bottle-medical me-1"></i> Recommended Treatment (उपचार विधि):
+              </span>
+              <p class="small text-dark m-0">{{ item.treatment }}</p>
+            </div>
+
+            <div class="mt-auto d-flex justify-content-between align-items-center pt-2 border-top small text-muted">
+              <span>
+                <i class="fa-solid fa-shield-halved text-success me-1"></i> <strong>Prevention:</strong> {{ item.prevention|truncatechars:45 }}
+              </span>
+              <span class="badge bg-light text-success border fw-bold fs-6">
+                {{ item.estimated_cost }}
+              </span>
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+</div>
+{% endblock %}

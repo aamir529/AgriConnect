@@ -1,0 +1,172 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Logistics Fleet & Delivery Dispatch | AgriConnect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Fleet Header -->
+  <div class="p-4 p-md-5 rounded-4 mb-4 border" style="background: linear-gradient(135deg, #143628, #1B4931); color: white;">
+    <div class="row align-items-center g-3">
+      <div class="col-lg-8">
+        <span class="badge bg-white rounded-pill shadow-sm" style="color: #143628 !important; background-color: #ffffff !important; font-weight: 700; rounded-pill px-3 py-1 mb-2">
+          <i class="fa-solid fa-truck-fast me-1 text-warning"></i> Cold Chain Transit Fleet Portal
+        </span>
+        <h2 class="fw-bold mb-1 text-white" style="color: #ffffff !important;">Delivery Partner Dispatch Hub</h2>
+        <p class="mb-0 text-white" style="color: rgba(255, 255, 255, 0.9) !important;">
+          Driver: <strong>{{ user.get_full_name|default:user.username }}</strong> &bull; Vehicle: <strong>Tata Ace Cold Van (JH-01-EF-4921)</strong> &bull; Assigned Hub: <strong>Angara CSC</strong>
+        </p>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        <a href="{% url 'batch_manifest' %}" class="btn btn-warning rounded-pill px-4 py-2 fw-bold text-dark shadow-sm">
+          <i class="fa-solid fa-file-invoice me-1"></i> Print Batch Manifest
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Metrics Row -->
+  <div class="row g-3 mb-4 text-center">
+    <div class="col-6 col-md-3">
+      <div class="bg-white p-3 rounded-4 border shadow-sm">
+        <span class="text-muted small fw-semibold">Pending Hub Pickups</span>
+        <h3 class="fw-bold text-warning my-1">{{ pending_pickups }}</h3>
+        <small class="text-muted">Waiting at Village CSC Hub</small>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="bg-white p-3 rounded-4 border shadow-sm">
+        <span class="text-muted small fw-semibold">In Active Transit</span>
+        <h3 class="fw-bold text-primary my-1">{{ in_transit_count }}</h3>
+        <small class="text-muted">On the road to city</small>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="bg-white p-3 rounded-4 border shadow-sm">
+        <span class="text-muted small fw-semibold">Total Delivered</span>
+        <h3 class="fw-bold text-success my-1">{{ delivered_count }}</h3>
+        <small class="text-success"><i class="fa-solid fa-circle-check me-1"></i> All Verified</small>
+      </div>
+    </div>
+    <div class="col-6 col-md-3">
+      <div class="bg-white p-3 rounded-4 border shadow-sm">
+        <span class="text-muted small fw-semibold">Driver Earnings</span>
+        <h3 class="fw-bold text-dark my-1">₹{{ driver_earnings }}</h3>
+        <small class="text-muted">₹60 per completed drop</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Dispatches & Route Sheet -->
+  <div class="bg-white p-4 rounded-4 border shadow-sm mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <h5 class="fw-bold m-0" style="color: var(--color-primary-dark);">
+          <i class="fa-solid fa-route text-success me-2"></i> Active Delivery Runs & Drop Locations
+        </h5>
+        <small class="text-muted">Direct aggregation avoids individual farm runs and prevents empty return miles</small>
+      </div>
+      <span class="badge bg-light text-secondary border">Total Payload: {{ total_payload_kg }} kg</span>
+    </div>
+
+    {% if assignments %}
+      <div class="d-flex flex-column gap-3">
+        {% for a in assignments %}
+          <div class="p-3 bg-light rounded-4 border">
+            <div class="row align-items-center g-3">
+              
+              <!-- Order & Items -->
+              <div class="col-lg-3">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                  <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2 py-1 small">
+                    #{{ a.order.order_number }}
+                  </span>
+                  <span class="badge {% if a.order.status == 'DELIVERED' %}bg-success{% elif a.order.status == 'IN_TRANSIT' %}bg-primary{% elif a.order.status == 'OUT_FOR_DELIVERY' %}bg-info{% else %}bg-warning text-dark{% endif %} rounded-pill px-2 py-1 small">
+                    {{ a.order.get_status_display }}
+                  </span>
+                </div>
+                <strong class="d-block text-dark">{{ a.order.consumer.get_full_name|default:a.order.consumer.username }}</strong>
+                <small class="text-muted">
+                  Payload: <strong>{{ a.order.total_weight_kg }} kg</strong> &bull; ₹{{ a.order.total_amount }}
+                </small>
+              </div>
+
+              <!-- Pickup Origin & Customer Dropoff -->
+              <div class="col-lg-5">
+                <div class="small mb-1">
+                  <i class="fa-solid fa-warehouse text-primary me-1"></i>
+                  <strong>Pickup Origin:</strong> {{ a.pickup_hub_name }}
+                </div>
+                <div class="small text-secondary mb-1">
+                  <i class="fa-solid fa-location-dot text-danger me-1"></i>
+                  <strong>Dropoff:</strong> {{ a.order.delivery_address }}
+                </div>
+                <div class="small">
+                  <i class="fa-solid fa-phone text-success me-1"></i>
+                  <a href="tel:{{ a.order.contact_phone }}" class="text-decoration-none fw-semibold text-success">
+                    {{ a.order.contact_phone }}
+                  </a>
+                </div>
+              </div>
+
+              <!-- Items Breakdown -->
+              <div class="col-lg-2">
+                <small class="text-muted d-block mb-1">Produce in Batch:</small>
+                {% for item in a.order.items.all %}
+                  <span class="badge bg-white text-dark border me-1 mb-1 small">
+                    {{ item.product.emoji_icon }} {{ item.quantity_kg }}kg {{ item.product.name }}
+                  </span>
+                {% endfor %}
+              </div>
+
+              <!-- Action Status Buttons -->
+              <div class="col-lg-2 text-lg-end">
+                <form method="post" action="{% url 'update_delivery_status' a.order.id %}">
+                  {% csrf_token %}
+                  
+                  {% if a.order.status == 'PLACED' or a.order.status == 'CONFIRMED' %}
+                    <input type="hidden" name="action" value="mark_picked_up">
+                    <button type="submit" class="btn btn-warning btn-sm rounded-pill w-100 py-2 fw-bold text-dark shadow-sm">
+                      <i class="fa-solid fa-boxes-packing me-1"></i> Pick Up from Hub
+                    </button>
+                  {% elif a.order.status == 'IN_TRANSIT' %}
+                    <input type="hidden" name="action" value="mark_out_for_delivery">
+                    <button type="submit" class="btn btn-info btn-sm rounded-pill w-100 py-2 fw-bold text-white shadow-sm">
+                      <i class="fa-solid fa-motorcycle me-1"></i> Out for Delivery
+                    </button>
+                  {% elif a.order.status == 'OUT_FOR_DELIVERY' %}
+                    <input type="hidden" name="action" value="mark_delivered">
+                    <button type="submit" class="btn btn-success btn-sm rounded-pill w-100 py-2 fw-bold shadow-sm">
+                      <i class="fa-solid fa-circle-check me-1"></i> Confirm Delivered
+                    </button>
+                  {% elif a.order.status == 'DELIVERED' %}
+                    <span class="badge bg-success-subtle text-success border border-success p-2 w-100 d-block">
+                      <i class="fa-solid fa-check-double me-1"></i> Delivered & Settled
+                    </span>
+                  {% endif %}
+                </form>
+
+                <div class="mt-2 text-center">
+                  <a href="{% url 'live_tracking' a.order.order_number %}" target="_blank" class="small text-muted text-decoration-none">
+                    <i class="fa-solid fa-eye me-1"></i> Live Tracker &rarr;
+                  </a>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="text-center py-5">
+        <div class="fs-1 text-muted mb-3">🚚</div>
+        <h5 class="fw-bold">No assigned deliveries right now</h5>
+        <p class="text-muted small">Deliveries automatically appear here when consumers place orders.</p>
+      </div>
+    {% endif %}
+
+  </div>
+
+</div>
+{% endblock %}

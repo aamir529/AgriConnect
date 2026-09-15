@@ -1,0 +1,164 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Order Confirmed | AgriConnect{% endblock %}
+
+{% block extra_css %}
+<style>
+  .stepper-wrapper {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    position: relative;
+  }
+  .stepper-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: var(--border-subtle);
+    z-index: 0;
+  }
+  .stepper-item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    z-index: 1;
+  }
+  .step-counter {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 3px solid var(--border-subtle);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: var(--text-muted);
+  }
+  .stepper-item.completed .step-counter {
+    border-color: var(--color-accent-emerald);
+    background: var(--color-primary);
+    color: white;
+  }
+  .stepper-item.active .step-counter {
+    border-color: var(--color-accent-emerald);
+    background: var(--color-accent-emerald);
+    color: white;
+    box-shadow: 0 0 0 4px rgba(82, 183, 136, 0.25);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      
+      <!-- Success Confirmation Card -->
+      <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm text-center mb-4">
+        
+        <div class="mx-auto mb-3" style="width: 72px; height: 72px; border-radius: 50%; background-color: rgba(82,183,136,0.15); display: flex; align-items: center; justify-content: center; color: var(--color-primary); font-size: 2.2rem;">
+          <i class="fa-solid fa-circle-check"></i>
+        </div>
+
+        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1 mb-2">Order Confirmed</span>
+        <h2 class="fw-bold mb-1" style="color: var(--color-primary-dark);">Thank You for Supporting Village Farmers!</h2>
+        <p class="text-muted small">
+          Order <strong>#{{ order.order_number }}</strong> has been placed and routed to the village aggregation hub.
+        </p>
+
+        <!-- Stepper Visual Tracker -->
+        <div class="my-5 px-3">
+          <div class="stepper-wrapper">
+            <div class="stepper-item completed">
+              <div class="step-counter"><i class="fa-solid fa-check"></i></div>
+              <span class="fw-bold small text-dark">Order Placed</span>
+              <small class="text-muted" style="font-size: 0.68rem;">Verified</small>
+            </div>
+            
+            <div class="stepper-item active">
+              <div class="step-counter"><i class="fa-solid fa-boxes-packing"></i></div>
+              <span class="fw-bold small text-dark">VDF Hub Batching</span>
+              <small class="text-muted" style="font-size: 0.68rem;">In Progress</small>
+            </div>
+            
+            <div class="stepper-item">
+              <div class="step-counter"><i class="fa-solid fa-truck"></i></div>
+              <span class="fw-bold small text-muted">Cold Transit</span>
+              <small class="text-muted" style="font-size: 0.68rem;">Pending</small>
+            </div>
+
+            <div class="stepper-item">
+              <div class="step-counter"><i class="fa-solid fa-house-chimney"></i></div>
+              <span class="fw-bold small text-muted">Doorstep Drop</span>
+              <small class="text-muted" style="font-size: 0.68rem;">Pending</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order Breakdown Table -->
+        <div class="p-3 bg-light rounded-4 border text-start mb-4">
+          <h6 class="fw-bold mb-3 text-dark">
+            <i class="fa-solid fa-receipt text-success me-2"></i> Order Summary:
+          </h6>
+
+          <div class="list-group list-group-flush mb-3">
+            {% for item in order.items.all %}
+              <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center px-0 py-2">
+                <div class="d-flex align-items-center gap-2">
+                  {% if item.product.image %}
+                    <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="rounded-2 object-fit-cover shadow-sm border" style="width: 42px; height: 42px; flex-shrink: 0;">
+                  {% else %}
+                    <span class="fs-4">{{ item.product.emoji_icon }}</span>
+                  {% endif %}
+                  <div>
+                    <strong>{{ item.product.name }}</strong>
+                    <br><small class="text-muted">{{ item.quantity_kg }} kg &bull; Farmer: {{ item.product.farmer.user.get_full_name }}</small>
+                  </div>
+                </div>
+                <span class="fw-bold text-success">₹{{ item.subtotal }}</span>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="d-flex justify-content-between small text-muted mb-1">
+            <span>Direct Farmer Payout:</span>
+            <span class="text-success fw-bold">₹{{ order.farmer_payout_amount }} (75%)</span>
+          </div>
+
+          <div class="d-flex justify-content-between small text-muted mb-1">
+            <span>Direct Farm Transit:</span>
+            <span>{% if order.delivery_fee == 0 %}FREE{% else %}₹{{ order.delivery_fee }}{% endif %}</span>
+          </div>
+
+          <div class="d-flex justify-content-between fw-bold pt-2 border-top text-dark">
+            <span>Total Paid ({{ order.payment_method }}):</span>
+            <span class="text-success fs-5">₹{{ order.total_amount }}</span>
+          </div>
+        </div>
+
+        <div class="d-flex flex-wrap justify-content-center gap-3">
+          <a href="{% url 'live_tracking' order.order_number %}" class="btn btn-warning text-dark fw-bold rounded-pill px-4 shadow-sm">
+            <i class="fa-solid fa-satellite-dish me-1"></i> Track Live Delivery & Milestones
+          </a>
+          <a href="{% url 'order_history' %}" class="btn btn-outline-success rounded-pill px-4">
+            <i class="fa-solid fa-clock-rotate-left me-1"></i> Order History
+          </a>
+          <a href="{% url 'marketplace_catalog' %}" class="btn btn-agri-primary rounded-pill px-4">
+            <i class="fa-solid fa-store me-1"></i> Continue Shopping
+          </a>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

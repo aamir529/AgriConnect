@@ -1,0 +1,305 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Real-Time Mandi Benchmark Rates & Market Intelligence | AgriConnect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Header Banner -->
+  <div class="p-4 p-md-5 rounded-4 mb-4 border shadow-sm" style="background: linear-gradient(135deg, #143628 0%, #1e5a43 60%, #2A9D8F 100%); color: white;">
+    <div class="row align-items-center g-3">
+      <div class="col-lg-7">
+        <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+          <span class="badge bg-white rounded-pill shadow-sm" style="color: #143628 !important; background-color: #ffffff !important; font-weight: 700; rounded-pill px-3 py-1">
+            <i class="fa-solid fa-scale-balanced me-1 text-warning"></i> APMC Market Intelligence
+          </span>
+          <span class="badge bg-warning text-dark rounded-pill px-3 py-1 fw-bold">
+            <i class="fa-solid fa-satellite-dish me-1"></i> data.gov.in Live Feed
+          </span>
+        </div>
+        <h2 class="fw-bold mb-1 text-white" style="color: #ffffff !important;">Daily Mandi Benchmark Rates & Real-Time Intelligence</h2>
+        <p class="mb-0 text-white" style="color: rgba(255, 255, 255, 0.9) !important;">
+          Daily wholesale benchmarks from official APMC Mandis (Agmarknet) vs. AgriConnect direct farmer realization and consumer savings.
+        </p>
+      </div>
+
+      <div class="col-lg-5 text-lg-end">
+        <div class="d-flex flex-wrap justify-content-lg-end gap-2">
+          <button type="button" id="syncLiveMandiBtn" class="btn btn-light rounded-pill px-3 py-2 fw-bold text-success shadow-sm">
+            <i class="fa-solid fa-rotate me-1" id="syncIcon"></i>
+            <span id="syncBtnText">Sync Live Mandi Data</span>
+          </button>
+          <a href="{% url 'marketplace_catalog' %}" class="btn btn-warning rounded-pill px-3 py-2 fw-bold text-dark shadow-sm">
+            <i class="fa-solid fa-store me-1"></i> Buy at Direct Rates
+          </a>
+        </div>
+        {% if latest_date %}
+          <div class="small text-white-50 mt-2">
+            <i class="fa-solid fa-clock-rotate-left me-1"></i> Latest Market Date: <strong>{{ latest_date|date:"d M Y" }}</strong>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic Live Sync Notification Box -->
+  <div id="syncAlertContainer"></div>
+
+  {% if not is_custom_key %}
+    <div class="alert alert-light border border-warning-subtle shadow-sm rounded-4 mb-4 d-flex align-items-start gap-3 p-3">
+      <div class="fs-4 text-warning">
+        <i class="fa-solid fa-circle-info"></i>
+      </div>
+      <div class="small flex-grow-1">
+        <strong>Government Data Feed Connected:</strong> Mandi prices are synchronized via Open Government Data (<strong>data.gov.in</strong> Agmarknet API). 
+        To avoid shared rate limits in production, register at <a href="https://data.gov.in" target="_blank" class="fw-bold text-success">data.gov.in</a> and set <code>DATA_GOV_IN_API_KEY=your_key</code> in your <code>.env</code> file.
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Highlights Strip -->
+  <div class="row g-3 mb-4 text-center">
+    <div class="col-md-4">
+      <div class="bg-white p-3 rounded-4 border shadow-sm h-100">
+        <span class="text-muted small fw-semibold">APMC Coverage</span>
+        <h4 class="fw-bold text-dark my-1">{{ total_benchmarks }} Active Commodities</h4>
+        <small class="text-success"><i class="fa-solid fa-shield-check me-1"></i> Verified Wholesale Benchmarks</small>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="bg-white p-3 rounded-4 border shadow-sm h-100">
+        <span class="text-muted small fw-semibold">Avg. Farmer Benefit</span>
+        <h3 class="fw-bold text-success my-1">+22% to +35%</h3>
+        <small class="text-muted">Direct payout vs traditional APMC brokers</small>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="bg-white p-3 rounded-4 border shadow-sm h-100">
+        <span class="text-muted small fw-semibold">Avg. Consumer Savings</span>
+        <h3 class="fw-bold text-primary my-1">20% to 30%</h3>
+        <small class="text-muted">Cheaper than supermarket retail chains</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Search & Filter Controls -->
+  <div class="bg-white p-3 p-md-4 rounded-4 border shadow-sm mb-4">
+    <form method="get" action="{% url 'mandi_prices' %}" class="row g-2 align-items-center">
+      <div class="col-md-4">
+        <div class="input-group">
+          <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+          <input type="text" name="q" value="{{ search_query }}" class="form-control border-start-0" placeholder="Search crop (e.g. Tomato, Onion)...">
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <select name="state" class="form-select">
+          <option value="">-- All States --</option>
+          {% for st in states %}
+            <option value="{{ st }}" {% if selected_state == st %}selected{% endif %}>{{ st }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-3">
+        <select name="district" class="form-select">
+          <option value="">-- All Districts --</option>
+          {% for dt in districts %}
+            <option value="{{ dt }}" {% if selected_district == dt %}selected{% endif %}>{{ dt }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="col-md-2 d-flex gap-1">
+        <button type="submit" class="btn btn-success flex-grow-1">Filter</button>
+        {% if selected_state or selected_district or search_query %}
+          <a href="{% url 'mandi_prices' %}" class="btn btn-outline-secondary" title="Clear Filters"><i class="fa-solid fa-xmark"></i></a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+
+  <!-- Live Mandi Comparison Table -->
+  <div class="bg-white p-4 rounded-4 border shadow-sm mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+      <h5 class="fw-bold m-0" style="color: var(--color-primary-dark);">
+        <i class="fa-solid fa-table-list text-success me-2"></i> Price Disintermediation Comparison Table
+      </h5>
+      <span class="badge bg-light text-secondary border">
+        <i class="fa-solid fa-database text-success me-1"></i> Agmarknet APMC Feed
+      </span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light small text-center">
+          <tr>
+            <th class="text-start">Crop & Mandi</th>
+            <th>Location</th>
+            <th>Mandi Wholesale Modal Rate</th>
+            <th class="table-success">AgriConnect Farmer Payout</th>
+            <th>Farmer Gain</th>
+            <th>Traditional Supermarket Price</th>
+            <th class="table-primary">AgriConnect Consumer Price</th>
+            <th>Consumer Savings</th>
+          </tr>
+        </thead>
+        <tbody class="text-center">
+          {% if comparison_data %}
+            {% for row in comparison_data %}
+              <tr>
+                <td class="text-start">
+                  <div class="fw-bold text-dark">{{ row.item.crop_name }}</div>
+                  <small class="text-muted"><i class="fa-solid fa-building-wheat me-1"></i>{{ row.item.mandi_name }}</small>
+                </td>
+                <td>
+                  <span class="badge bg-light text-dark border">{{ row.item.district }}, {{ row.item.state }}</span>
+                  <br><small class="text-muted" style="font-size: 0.75rem;">{{ row.item.recorded_date|date:"d M Y" }}</small>
+                </td>
+                <td>
+                  <span class="fw-bold fs-6">₹{{ row.mandi_modal }}</span> / kg
+                  <br><small class="text-muted" style="font-size: 0.75rem;">Min: ₹{{ row.item.min_price_per_kg }} | Max: ₹{{ row.item.max_price_per_kg }}</small>
+                </td>
+                <td class="table-success">
+                  <strong class="text-success fs-6">₹{{ row.agri_farmer_payout }}</strong> / kg
+                </td>
+                <td>
+                  <span class="badge bg-success rounded-pill px-2 py-1">
+                    +{{ row.farmer_gain_pct }}%
+                  </span>
+                </td>
+                <td>
+                  <span class="text-decoration-line-through text-muted">₹{{ row.retail_price }}</span> / kg
+                </td>
+                <td class="table-primary">
+                  <strong class="text-primary fs-6">₹{{ row.agri_consumer_price }}</strong> / kg
+                </td>
+                <td>
+                  <span class="badge bg-primary rounded-pill px-2 py-1">
+                    -{{ row.consumer_saving_pct }}%
+                  </span>
+                </td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="8" class="text-muted py-4">
+                No matching benchmark prices found. Click <strong>"Sync Live Mandi Data"</strong> above to fetch data.
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Interactive Fair Price Recommendation Calculator Widget -->
+  <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm">
+    <div class="row align-items-center g-4">
+      <div class="col-lg-6">
+        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1 mb-2">
+          <i class="fa-solid fa-calculator me-1"></i> Data-Driven Price Guidance
+        </span>
+        <h4 class="fw-bold mb-2" style="color: var(--color-primary-dark);">Fair Price Recommendation Engine</h4>
+        <p class="text-muted small mb-3">
+          Prevents distress sales during market gluts. Type any crop name below to query historical APMC mandi averages and receive an optimal price recommendation:
+        </p>
+
+        <div class="input-group mb-2">
+          <input type="text" id="calcCropName" class="form-control form-control-lg" placeholder="e.g. Tomato, Potato, Onion, Cauliflower">
+          <button type="button" id="calcPriceBtn" class="btn btn-success px-4 fw-bold">
+            <i class="fa-solid fa-magnifying-glass me-1"></i> Calculate
+          </button>
+        </div>
+      </div>
+
+      <div class="col-lg-6">
+        <div id="recommendationResultBox" class="p-4 bg-light rounded-4 border">
+          <div class="d-flex align-items-center gap-2 mb-2 text-success fw-bold">
+            <i class="fa-solid fa-circle-check"></i>
+            <span>Recommended Fair Selling Range:</span>
+          </div>
+          <h2 id="recommendedRangeText" class="fw-bold text-success mb-1">₹25.00 – ₹32.00 / kg</h2>
+          <p id="recommendedDescText" class="small text-muted mb-0">
+            Based on current APMC Mandi wholesale average of ₹22.00/kg and local supermarket retail markup of ₹42.00/kg.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  // Calculator action
+  document.getElementById('calcPriceBtn')?.addEventListener('click', () => {
+    const crop = document.getElementById('calcCropName').value.trim();
+    if (!crop) return;
+
+    fetch(`/mandi/api/recommend-price/?crop=${encodeURIComponent(crop)}`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('recommendedRangeText').innerText = `₹${data.recommended_farmer_min} – ₹${data.recommended_farmer_max} / kg`;
+        document.getElementById('recommendedDescText').innerText = `Based on current ${data.crop} Mandi rate of ₹${data.mandi_modal_price}/kg and retail benchmark of ₹${data.retail_benchmark_price}/kg.`;
+      })
+      .catch(err => console.error("Error fetching recommendation:", err));
+  });
+
+  // Live Sync trigger action
+  document.getElementById('syncLiveMandiBtn')?.addEventListener('click', function() {
+    const btn = this;
+    const icon = document.getElementById('syncIcon');
+    const text = document.getElementById('syncBtnText');
+    const alertBox = document.getElementById('syncAlertContainer');
+
+    btn.disabled = true;
+    icon.classList.add('fa-spin');
+    text.innerText = 'Connecting to data.gov.in...';
+
+    fetch('/mandi/api/sync-live/', {
+      method: 'POST',
+      headers: {
+        'X-Requested-With': 'XMLHttpRequest'
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      icon.classList.remove('fa-spin');
+      btn.disabled = false;
+      text.innerText = 'Sync Live Mandi Data';
+
+      if (data.status === 'success') {
+        alertBox.innerHTML = `
+          <div class="alert alert-success alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+            <i class="fa-solid fa-circle-check me-2"></i><strong>Live Mandi Feed Synced:</strong> ${data.message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        `;
+        setTimeout(() => window.location.reload(), 1200);
+      } else {
+        alertBox.innerHTML = `
+          <div class="alert alert-info alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+            <i class="fa-solid fa-circle-info me-2"></i><strong>Market Rates Refreshed:</strong> ${data.message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        `;
+        setTimeout(() => window.location.reload(), 1500);
+      }
+    })
+    .catch(err => {
+      icon.classList.remove('fa-spin');
+      btn.disabled = false;
+      text.innerText = 'Sync Live Mandi Data';
+      alertBox.innerHTML = `
+        <div class="alert alert-danger alert-dismissible fade show rounded-4 shadow-sm" role="alert">
+          <i class="fa-solid fa-triangle-exclamation me-2"></i>Failed to reach server: ${err}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      `;
+    });
+  });
+</script>
+{% endblock %}

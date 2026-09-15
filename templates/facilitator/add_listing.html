@@ -1,0 +1,290 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Create Produce Listing | {{ profile.village_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  .voice-card-header {
+    background: linear-gradient(135deg, #1E4D38, #143628);
+    color: white;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    padding: 1.5rem 2rem;
+  }
+  .mic-button {
+    background: linear-gradient(135deg, #52B788, #2D6A4F);
+    color: white;
+    border: none;
+    border-radius: var(--radius-pill);
+    padding: 0.85rem 1.75rem;
+    font-size: 1.05rem;
+    font-weight: 700;
+    box-shadow: 0 6px 20px rgba(45, 106, 79, 0.35);
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+  .mic-button:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 25px rgba(45, 106, 79, 0.45);
+  }
+  .recording-pulse {
+    background: #E63946 !important;
+    animation: pulse-ring 1.5s infinite;
+  }
+  @keyframes pulse-ring {
+    0% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0.7); }
+    70% { box-shadow: 0 0 0 16px rgba(230, 57, 70, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(230, 57, 70, 0); }
+  }
+  .breakdown-card {
+    background-color: #F8F9FA;
+    border: 1.5px dashed var(--color-accent-emerald);
+    border-radius: var(--radius-md);
+    padding: 1.25rem;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-9">
+
+      <!-- Back Link -->
+      <div class="mb-3">
+        <a href="{% url 'facilitator_dashboard' %}" class="btn btn-sm btn-outline-secondary rounded-pill">
+          <i class="fa-solid fa-arrow-left me-1"></i> Back to Facilitator Hub
+        </a>
+      </div>
+
+      <!-- ================= 1. Web Speech Voice-to-Listing Panel ================= -->
+      <div class="card border-0 shadow-sm rounded-4 mb-4 overflow-hidden">
+        <div class="voice-card-header d-flex flex-wrap justify-content-between align-items-center gap-3">
+          <div>
+            <span class="badge bg-white rounded-pill shadow-sm" style="color: #143628 !important; background-color: #ffffff !important; font-weight: 700; rounded-pill px-3 py-1 mb-1">
+              <i class="fa-solid fa-wand-magic-sparkles text-warning me-1"></i> Vernacular Voice Recognition
+            </span>
+            <h4 class="fw-bold mb-0">Assisted Voice Listing (बोलकर फसल दर्ज करें)</h4>
+            <small class="text-white-50">Speak crop name, quantity, and price in Hindi or English</small>
+          </div>
+          <div>
+            <select id="voiceLangToggle" class="form-select form-select-sm bg-dark text-white border-secondary rounded-pill">
+              <option value="hi-IN" selected>🇮🇳 हिंदी (Hindi Voice)</option>
+              <option value="en-IN">🌐 English (Indian)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="card-body p-4 bg-white">
+          <div class="row align-items-center g-3">
+            <div class="col-md-auto text-center">
+              <button id="voiceMicBtn" type="button" class="mic-button">
+                <i class="fa-solid fa-microphone me-1"></i> Click to Speak (बोलें)
+              </button>
+            </div>
+            <div class="col-md">
+              <div class="p-3 bg-light rounded-3 border">
+                <div id="voiceTranscript" class="fw-semibold text-dark mb-1" style="min-height: 24px; font-style: italic;">
+                  "Click the microphone and speak (e.g. '500 kilo hybrid tamatar 25 rupaye')..."
+                </div>
+                <div id="voiceStatusText" class="small text-muted">
+                  The natural language engine will parse crop, quantity, and price directly into the form.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 2. Main Listing Form ================= -->
+      <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm">
+        <h4 class="fw-bold mb-4" style="color: var(--color-primary-dark);">
+          <i class="fa-solid fa-clipboard-list text-success me-2"></i> Produce Batch Details
+        </h4>
+
+        <form method="post" enctype="multipart/form-data">
+          {% csrf_token %}
+
+          {% if form.errors %}
+            <div class="alert alert-danger py-2 small mb-3">
+              Please fix the errors indicated below.
+            </div>
+          {% endif %}
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-dark">Select Farmer (किसान चुनें) *</label>
+              {{ form.farmer }}
+              {% if form.farmer.errors %}<div class="text-danger small">{{ form.farmer.errors }}</div>{% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-bold text-dark">Category (श्रेणी) *</label>
+              {{ form.category }}
+              {% if form.category.errors %}<div class="text-danger small">{{ form.category.errors }}</div>{% endif %}
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-5">
+              <label class="form-label fw-semibold small text-secondary">Crop Name (फसल का नाम) *</label>
+              {{ form.name }}
+              {% if form.name.errors %}<div class="text-danger small">{{ form.name.errors }}</div>{% endif %}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold small text-secondary">Variety / Hybrid (किस्म)</label>
+              {{ form.variety }}
+            </div>
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small text-secondary">Quality Grade *</label>
+              {{ form.grade }}
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-4">
+              <label class="form-label fw-semibold small text-secondary">Total Quantity (kg) *</label>
+              {{ form.available_quantity_kg }}
+              {% if form.available_quantity_kg.errors %}<div class="text-danger small">{{ form.available_quantity_kg.errors }}</div>{% endif %}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold small text-secondary">Farmer Base Payout (₹ / kg) *</label>
+              {{ form.farmer_base_price_per_kg }}
+              <div class="form-text small">Guaranteed amount directly paid to farmer.</div>
+              {% if form.farmer_base_price_per_kg.errors %}<div class="text-danger small">{{ form.farmer_base_price_per_kg.errors }}</div>{% endif %}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold small text-secondary">Traditional Retail Price (₹ / kg)</label>
+              {{ form.traditional_market_price_per_kg }}
+              <div class="form-text small">Local supermarket benchmark for comparison.</div>
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-3">
+              <label class="form-label fw-semibold small text-secondary">Harvest Date *</label>
+              {{ form.harvest_date }}
+            </div>
+            <div class="col-md-4">
+              <label class="form-label fw-semibold small text-secondary"><i class="fa-solid fa-camera text-success me-1"></i> Real Produce Photo</label>
+              {{ form.image }}
+              <small class="text-muted" style="font-size: 0.72rem;">Upload crisp farm harvest photo</small>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label fw-semibold small text-secondary">Fallback Emoji</label>
+              {{ form.emoji_icon }}
+            </div>
+            <div class="col-md-3 d-flex align-items-center pt-3">
+              <div class="form-check form-switch">
+                {{ form.is_organic }}
+                <label class="form-check-label fw-semibold ms-2" for="id_is_organic">🌿 100% Organic Certified</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-semibold small text-secondary">Batch Notes & Freshness Description</label>
+            {{ form.description }}
+          </div>
+
+          <!-- ================= 3. Live Price Transparency Decomposition Preview ================= -->
+          <div class="breakdown-card mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <h6 class="fw-bold m-0 text-success">
+                <i class="fa-solid fa-chart-pie me-1"></i> Live Supply Chain Price Decomposition Preview
+              </h6>
+              <span id="previewSavingsBadge" class="badge bg-success rounded-pill px-3 py-1">You Save: —</span>
+            </div>
+
+            <p class="small text-muted mb-3">
+              Calculated automatically based on your base farmer price. This transparent breakdown is displayed to urban consumers:
+            </p>
+
+            <div class="row g-2 text-center small mb-3">
+              <div class="col-3">
+                <div class="p-2 bg-white rounded border">
+                  <span class="text-muted d-block" style="font-size: 0.75rem;">Farmer Realization (75%)</span>
+                  <strong id="previewFarmerCut" class="text-success fs-6">₹0.00</strong>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="p-2 bg-white rounded border">
+                  <span class="text-muted d-block" style="font-size: 0.75rem;">VDF Hub Cut (5%)</span>
+                  <strong id="previewVdfCut" class="text-primary fs-6">₹0.00</strong>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="p-2 bg-white rounded border">
+                  <span class="text-muted d-block" style="font-size: 0.75rem;">Cold Logistics (10%)</span>
+                  <strong id="previewLogisticsCut" class="text-info fs-6">₹0.00</strong>
+                </div>
+              </div>
+              <div class="col-3">
+                <div class="p-2 bg-white rounded border">
+                  <span class="text-muted d-block" style="font-size: 0.75rem;">Platform (10%)</span>
+                  <strong id="previewPlatformCut" class="text-secondary fs-6">₹0.00</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center p-2 bg-white rounded border">
+              <div>
+                <span class="fw-bold">Consumer Marketplace Price:</span>
+                <span id="previewConsumerPrice" class="fs-5 fw-bold text-success ms-2">₹0.00 / kg</span>
+              </div>
+              <div class="small text-muted">
+                Traditional Retail: <span id="previewRetailPrice" class="text-decoration-line-through">₹40.00</span>
+              </div>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-agri-primary w-100 justify-content-center py-2 fs-6">
+            <i class="fa-solid fa-cloud-arrow-up me-1"></i> Publish Listing & Dispatch Farmer SMS
+          </button>
+        </form>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Voice Recognition Engine -->
+<script src="{% static 'js/voice_recorder.js' %}"></script>
+
+<script>
+  // Dynamic Live Price Decomposition Calculator
+  function calculateBreakdownPreview() {
+    const farmerPriceInput = document.getElementById('id_farmer_price');
+    const retailPriceInput = document.getElementById('id_market_price');
+    
+    const base = parseFloat(farmerPriceInput.value) || 0;
+    const retail = parseFloat(retailPriceInput.value) || 40.0;
+
+    const vdf = Math.round((base * 0.05) * 100) / 100;
+    const logistics = Math.round((base * 0.10) * 100) / 100;
+    const platform = Math.round((base * 0.10) * 100) / 100;
+    const consumer = Math.round((base + vdf + logistics + platform) * 100) / 100;
+
+    const savings = Math.max(0, Math.round((retail - consumer) * 100) / 100);
+    const savingsPercent = retail > 0 ? Math.round((savings / retail) * 100) : 0;
+
+    document.getElementById('previewFarmerCut').innerText = `₹${base.toFixed(2)}`;
+    document.getElementById('previewVdfCut').innerText = `₹${vdf.toFixed(2)}`;
+    document.getElementById('previewLogisticsCut').innerText = `₹${logistics.toFixed(2)}`;
+    document.getElementById('previewPlatformCut').innerText = `₹${platform.toFixed(2)}`;
+    document.getElementById('previewConsumerPrice').innerText = `₹${consumer.toFixed(2)} / kg`;
+    document.getElementById('previewRetailPrice').innerText = `₹${retail.toFixed(2)}`;
+    document.getElementById('previewSavingsBadge').innerText = `Consumer Saves ${savingsPercent}% (₹${savings.toFixed(2)}/kg)`;
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const farmerPrice = document.getElementById('id_farmer_price');
+    const retailPrice = document.getElementById('id_market_price');
+    if (farmerPrice) farmerPrice.addEventListener('input', calculateBreakdownPreview);
+    if (retailPrice) retailPrice.addEventListener('input', calculateBreakdownPreview);
+    calculateBreakdownPreview();
+  });
+</script>
+{% endblock %}

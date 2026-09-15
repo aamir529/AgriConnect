@@ -1,0 +1,180 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Provenance Passport & Freshness Certificate | AgriConnect{% endblock %}
+
+{% block extra_css %}
+<style>
+  .passport-container {
+    background: #FFFFFF;
+    border: 2px solid var(--color-accent-emerald);
+    border-radius: var(--radius-xl);
+    box-shadow: 0 10px 30px rgba(45,106,79,0.08);
+    position: relative;
+    overflow: hidden;
+  }
+  .passport-header {
+    background: linear-gradient(135deg, #143628, #2D6A4F);
+    color: white;
+    padding: 2.5rem 2rem;
+  }
+  .step-node {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #E8F5E9;
+    color: #2D6A4F;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    font-weight: bold;
+    flex-shrink: 0;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <div class="passport-container max-w-4xl mx-auto my-3" style="max-width: 860px;">
+    
+    <!-- Top Header Bar -->
+    <div class="passport-header">
+      <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+        <div class="d-flex align-items-center gap-3">
+          <img src="{% static 'images/fresh_tomatoes.jpg' %}" alt="{{ passport.crop_name }}" class="rounded-circle border border-2 border-white shadow" style="width: 76px; height: 76px; object-fit: cover; flex-shrink: 0;">
+          <div>
+            <span class="badge bg-white bg-opacity-20 rounded-pill px-3 py-1 mb-2">
+              <i class="fa-solid fa-certificate text-warning me-1"></i> Verifiable Farm-to-Fork Passport
+            </span>
+            <h2 class="fw-bold mb-1">{{ passport.crop_name }}</h2>
+            <p class="text-white-50 small mb-0">Variety: {{ passport.variety }} &bull; Batch: <strong>{{ passport.batch_code }}</strong></p>
+          </div>
+        </div>
+        <div class="text-end">
+          <span class="badge bg-warning rounded-pill px-3 py-2 fw-bold text-dark fs-6 shadow">
+            <i class="fa-solid fa-shield-check me-1"></i> 100% Traceable
+          </span>
+          <small class="text-white-50 d-block mt-1" style="font-size: 0.72rem;">Cryptographically Logged</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-4 p-md-5">
+      
+      <!-- Key Transparency Highlights Strip -->
+      <div class="row g-3 text-center mb-4">
+        <div class="col-6 col-md-3">
+          <div class="p-3 bg-light rounded-4 border">
+            <small class="text-muted d-block fw-semibold">Quality Grade</small>
+            <strong class="text-success fs-6">{{ passport.quality_grade }}</strong>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="p-3 bg-light rounded-4 border">
+            <small class="text-muted d-block fw-semibold">Harvest Moment</small>
+            <strong class="text-dark fs-6">{{ passport.harvest_time }}</strong>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="p-3 bg-light rounded-4 border">
+            <small class="text-muted d-block fw-semibold">Direct Grower Share</small>
+            <strong class="text-success fs-6">{{ passport.farmer_payout_rate }}</strong>
+          </div>
+        </div>
+        <div class="col-6 col-md-3">
+          <div class="p-3 bg-light rounded-4 border">
+            <small class="text-muted d-block fw-semibold">Cold Transit Temp</small>
+            <strong class="text-primary fs-6">{{ passport.transit_temp }}</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Provenance Journey (4 Milestones) -->
+      <h5 class="fw-bold mb-4" style="color: var(--color-primary-dark);">
+        <i class="fa-solid fa-route text-success me-2"></i> Verified Produce Journey (सत्यापित यात्रा)
+      </h5>
+
+      <div class="d-flex flex-column gap-4 mb-4">
+        
+        <!-- Step 1: Origin Farm -->
+        <div class="d-flex gap-3 align-items-start">
+          <div class="step-node">🌱</div>
+          <div>
+            <h6 class="fw-bold m-0 text-dark">1. Farm Origin & Soil Profile</h6>
+            <p class="small text-secondary m-0">
+              Cultivated by <strong>{{ passport.farmer_name }}</strong> at <strong>{{ passport.farm_location }}</strong> ({{ passport.farm_coordinates }}).
+              Soil: {{ passport.land_holding }}.
+            </p>
+            <span class="badge bg-success-subtle text-success border border-success px-2 py-1 small mt-1">
+              <i class="fa-solid fa-leaf me-1"></i> {{ passport.organic_certification }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Step 2: Harvest & Sorting -->
+        <div class="d-flex gap-3 align-items-start">
+          <div class="step-node">🌅</div>
+          <div>
+            <h6 class="fw-bold m-0 text-dark">2. Morning Harvest & Sorting</h6>
+            <p class="small text-secondary m-0">
+              Hand-picked at peak brix sugar level at <strong>{{ passport.harvest_time }}</strong> to maximize freshness and nutrient retention.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 3: VDF Aggregation & Quality Inspection -->
+        <div class="d-flex gap-3 align-items-start">
+          <div class="step-node">🔬</div>
+          <div>
+            <h6 class="fw-bold m-0 text-dark">3. Rural Hub Intake & Quality Inspection</h6>
+            <p class="small text-secondary m-0">
+              Inspected and graded at <strong>{{ passport.inspection_hub }}</strong> by <strong>{{ passport.inspector_name }}</strong>.
+              Crates weighed with digital certified scales; pesticide residue test passed.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 4: Cold Transit Dispatch -->
+        <div class="d-flex gap-3 align-items-start">
+          <div class="step-node">❄️</div>
+          <div>
+            <h6 class="fw-bold m-0 text-dark">4. Active Cold Chain Dispatch</h6>
+            <p class="small text-secondary m-0">
+              Loaded onto <strong>{{ passport.cold_transit_van }}</strong> driven by <strong>{{ passport.driver_name }}</strong>.
+              IoT sensor telemetry maintains a chilled <strong>{{ passport.transit_temp }}</strong>, ensuring less than 0.2% spoilage.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom Verification Seal Card -->
+      <div class="p-4 bg-light rounded-4 border">
+        <div class="row align-items-center g-3">
+          <div class="col-md-9">
+            <h6 class="fw-bold text-dark mb-1">
+              <i class="fa-solid fa-stamp text-success me-2"></i> Guaranteed Disintermediation Seal:
+            </h6>
+            <p class="small text-secondary mb-0">
+              This provenance certificate proves that this produce bypassed all 4 commission agent layers. 
+              <strong>75.0% of your payment has been remitted directly to {{ passport.farmer_name }}'s bank account</strong>, 
+              delivering fair rural livelihoods while giving you harvest-fresh nutrition at 20% lower cost.
+            </p>
+          </div>
+          <div class="col-md-3 text-center">
+            <div class="p-2 bg-white rounded-3 border d-inline-block shadow-sm">
+              <i class="fa-solid fa-qrcode fs-1 text-dark"></i>
+              <small class="d-block text-muted" style="font-size: 0.65rem;">Batch: {{ passport.batch_code }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

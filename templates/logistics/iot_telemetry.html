@@ -1,0 +1,304 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}IoT Cold-Chain Freshness Telemetry | AgriConnect{% endblock %}
+
+{% block extra_css %}
+<style>
+  .telemetry-dial-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .telemetry-dial-card.safe::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: #2D6A4F;
+  }
+  .pulse-dot {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #52B788;
+    box-shadow: 0 0 0 0 rgba(82, 183, 136, 0.7);
+    animation: pulse 1.6s infinite;
+  }
+  @keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(82, 183, 136, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(82, 183, 136, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(82, 183, 136, 0); }
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Header Banner -->
+  <div class="p-4 p-md-5 rounded-4 mb-4 border" style="background: linear-gradient(135deg, #143628, #1B4931); color: white;">
+    <div class="row align-items-center g-3">
+      <div class="col-lg-8">
+        <span class="badge bg-white rounded-pill shadow-sm" style="color: #143628 !important; background-color: #ffffff !important; font-weight: 700; rounded-pill px-3 py-1 mb-2">
+          <span class="pulse-dot me-1"></span> Live ESP32 / DHT22 Sensor Stream
+        </span>
+        <h2 class="fw-bold mb-1 text-white" style="color: #ffffff !important;">IoT Cold-Chain Freshness Telemetry</h2>
+        <p class="mb-0 text-white" style="color: rgba(255, 255, 255, 0.9) !important;">
+          Real-time thermal, humidity, and transit vibration telemetry inside active insulated delivery vans. Eliminates post-harvest spoilage.
+        </p>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        <a href="{% url 'dispatch_dashboard' %}" class="btn btn-warning rounded-pill px-4 py-2 fw-bold text-dark shadow-sm">
+          <i class="fa-solid fa-truck-ramp-box me-1"></i> Fleet Dispatch
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Vehicle & Route Overview Bar -->
+  <div class="bg-white p-3 p-md-4 rounded-4 border shadow-sm mb-4">
+    <div class="row align-items-center g-3">
+      <div class="col-md-3">
+        <small class="text-muted d-block" style="font-size: 0.75rem;">ACTIVE COLD VAN:</small>
+        <h5 class="fw-bold m-0 text-dark">
+          <i class="fa-solid fa-van-shuttle text-success me-1"></i> {{ telemetry.vehicle_number }}
+        </h5>
+        <small class="text-secondary">{{ telemetry.vehicle_type }}</small>
+      </div>
+
+      <div class="col-md-3">
+        <small class="text-muted d-block" style="font-size: 0.75rem;">ASSIGNED DRIVER:</small>
+        <strong class="text-dark">{{ telemetry.driver_name }}</strong>
+        <small class="text-muted d-block">{{ telemetry.driver_phone }}</small>
+      </div>
+
+      <div class="col-md-3">
+        <small class="text-muted d-block" style="font-size: 0.75rem;">TRANSIT RUNWAY:</small>
+        <strong class="text-dark">{{ telemetry.origin_hub }}</strong>
+        <small class="text-muted d-block">&rarr; {{ telemetry.destination }} ({{ telemetry.active_payload_kg }} kg cargo)</small>
+      </div>
+
+      <div class="col-md-3 text-md-end">
+        <span class="badge bg-success-subtle text-success border border-success px-3 py-2 rounded-pill small">
+          <i class="fa-solid fa-satellite-dish me-1"></i> GPS Linked &bull; {{ telemetry.battery_level_pct }}% Battery
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4 Telemetry Gauges -->
+  <div class="row g-4 mb-4">
+    
+    <!-- 1. Temperature Sensor -->
+    <div class="col-sm-6 col-lg-3">
+      <div class="telemetry-dial-card safe" id="tempCard">
+        <small class="text-muted fw-bold">CHAMBER TEMPERATURE</small>
+        <h1 class="fw-bold my-2" id="tempValue" style="color: var(--color-primary-dark);">{{ telemetry.current_temp_c }}°C</h1>
+        <span class="badge bg-success rounded-pill small px-3 py-1" id="tempBadge">
+          <i class="fa-solid fa-snowflake me-1"></i> Optimal (10°C – 14°C)
+        </span>
+        <small class="text-muted d-block mt-2" style="font-size: 0.72rem;">Thermo-sensor: DHT22 Unit A</small>
+      </div>
+    </div>
+
+    <!-- 2. Relative Humidity Sensor -->
+    <div class="col-sm-6 col-lg-3">
+      <div class="telemetry-dial-card safe">
+        <small class="text-muted fw-bold">RELATIVE HUMIDITY</small>
+        <h1 class="fw-bold my-2 text-primary" id="humidityValue">{{ telemetry.relative_humidity_pct }}%</h1>
+        <span class="badge bg-primary rounded-pill small px-3 py-1">
+          <i class="fa-solid fa-droplet me-1"></i> High Freshness Zone
+        </span>
+        <small class="text-muted d-block mt-2" style="font-size: 0.72rem;">Prevents crate leaf wilting</small>
+      </div>
+    </div>
+
+    <!-- 3. Transit Speed (GPS) -->
+    <div class="col-sm-6 col-lg-3">
+      <div class="telemetry-dial-card safe">
+        <small class="text-muted fw-bold">TRANSIT SPEED</small>
+        <h1 class="fw-bold my-2 text-dark" id="speedValue">{{ telemetry.transit_speed_kmh }} km/h</h1>
+        <span class="badge bg-light text-dark border rounded-pill small px-3 py-1">
+          <i class="fa-solid fa-route me-1 text-success"></i> Ranchi Ring Road
+        </span>
+        <small class="text-muted d-block mt-2" style="font-size: 0.72rem;">ETA to Morabadi: 24 mins</small>
+      </div>
+    </div>
+
+    <!-- 4. Road Vibration Index -->
+    <div class="col-sm-6 col-lg-3">
+      <div class="telemetry-dial-card safe">
+        <small class="text-muted fw-bold">VIBRATION (ACCELEROMETER)</small>
+        <h1 class="fw-bold my-2 text-success" id="vibeValue">{{ telemetry.vibration_g }} G</h1>
+        <span class="badge bg-success rounded-pill small px-3 py-1">
+          <i class="fa-solid fa-shield-halved me-1"></i> Zero Bruising Risk
+        </span>
+        <small class="text-muted d-block mt-2" style="font-size: 0.72rem;">3-Axis MEMS Sensor</small>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Real-time Packet Stream & Interactive Thermal Breaker Simulator -->
+  <div class="row g-4">
+    
+    <!-- Sensor Packets Log -->
+    <div class="col-lg-8">
+      <div class="bg-white p-4 rounded-4 border shadow-sm h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold m-0" style="color: var(--color-primary-dark);">
+            <i class="fa-solid fa-terminal text-success me-2"></i> Live Telemetry Packet Stream
+          </h5>
+          <span class="badge bg-light text-secondary border">Auto-polling 3s</span>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-sm table-bordered align-middle text-center small m-0" id="telemetryTable">
+            <thead class="table-light">
+              <tr>
+                <th>Timestamp</th>
+                <th>Temp (°C)</th>
+                <th>Humidity (%)</th>
+                <th>Vibration (G)</th>
+                <th>Speed (km/h)</th>
+                <th>Thermal Integrity</th>
+              </tr>
+            </thead>
+            <tbody id="telemetryStreamBody">
+              <tr>
+                <td>Just Now</td>
+                <td><strong class="text-success">12.4°C</strong></td>
+                <td>85.5%</td>
+                <td>0.18 G</td>
+                <td>42 km/h</td>
+                <td><span class="badge bg-success rounded-pill">100% Secure</span></td>
+              </tr>
+              <tr>
+                <td>3s ago</td>
+                <td><strong class="text-success">12.3°C</strong></td>
+                <td>85.4%</td>
+                <td>0.21 G</td>
+                <td>41 km/h</td>
+                <td><span class="badge bg-success rounded-pill">100% Secure</span></td>
+              </tr>
+              <tr>
+                <td>6s ago</td>
+                <td><strong class="text-success">12.5°C</strong></td>
+                <td>85.6%</td>
+                <td>0.19 G</td>
+                <td>43 km/h</td>
+                <td><span class="badge bg-success rounded-pill">100% Secure</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Thermal Breach Alert Simulator -->
+    <div class="col-lg-4">
+      <div class="bg-white p-4 rounded-4 border shadow-sm h-100 d-flex flex-column">
+        <h5 class="fw-bold mb-3" style="color: var(--color-primary-dark);">
+          <i class="fa-solid fa-triangle-exclamation text-warning me-2"></i> Thermal Alarm Simulator
+        </h5>
+        <p class="text-muted small mb-4">
+          Demonstrate how AgriConnect automatically alerts drivers and facilitators if cargo compartment temperatures breach the freshness safety ceiling (> 18°C).
+        </p>
+
+        <div class="d-grid gap-2 mb-3">
+          <button id="triggerSpikeBtn" class="btn btn-outline-danger btn-sm rounded-pill py-2 fw-semibold">
+            <i class="fa-solid fa-fire-flame-curved me-1"></i> Simulate Heat Spike (+19.8°C)
+          </button>
+          <button id="restoreCoolBtn" class="btn btn-outline-success btn-sm rounded-pill py-2 fw-semibold">
+            <i class="fa-solid fa-snowflake me-1"></i> Restore Cold Compressor (12.0°C)
+          </button>
+        </div>
+
+        <div class="mt-auto p-3 bg-light rounded-3 border small text-muted">
+          <i class="fa-solid fa-satellite text-primary me-1"></i>
+          <strong>Hardware Specification:</strong> Compatible with ESP32 microcontrollers, DHT22 sensors, and SIM800L cellular modems transmitting JSON telemetry over MQTT.
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const tempVal = document.getElementById('tempValue');
+    const tempBadge = document.getElementById('tempBadge');
+    const tempCard = document.getElementById('tempCard');
+    const speedVal = document.getElementById('speedValue');
+    const vibeVal = document.getElementById('vibeValue');
+    const streamBody = document.getElementById('telemetryStreamBody');
+
+    let currentTemp = 12.4;
+    let isSpike = false;
+
+    // Simulate pulse variation
+    setInterval(() => {
+      if (!isSpike) {
+        currentTemp = +(12.2 + Math.random() * 0.5).toFixed(1);
+      }
+      const speed = Math.floor(38 + Math.random() * 8);
+      const vibe = +(0.15 + Math.random() * 0.08).toFixed(2);
+
+      tempVal.innerText = `${currentTemp}°C`;
+      speedVal.innerText = `${speed} km/h`;
+      vibeVal.innerText = `${vibe} G`;
+
+      // Prepend row
+      const now = new Date().toLocaleTimeString();
+      const statusBadge = isSpike 
+        ? `<span class="badge bg-danger rounded-pill">HEAT ALARM</span>`
+        : `<span class="badge bg-success rounded-pill">100% Secure</span>`;
+
+      const newRow = `
+        <tr>
+          <td>${now}</td>
+          <td><strong class="${isSpike ? 'text-danger' : 'text-success'}">${currentTemp}°C</strong></td>
+          <td>85.${Math.floor(Math.random() * 9)}%</td>
+          <td>${vibe} G</td>
+          <td>${speed} km/h</td>
+          <td>${statusBadge}</td>
+        </tr>
+      `;
+      streamBody.insertAdjacentHTML('afterbegin', newRow);
+      if (streamBody.children.length > 6) {
+        streamBody.removeChild(streamBody.lastChild);
+      }
+    }, 3500);
+
+    // Simulator triggers
+    document.getElementById('triggerSpikeBtn').addEventListener('click', () => {
+      isSpike = true;
+      currentTemp = 19.8;
+      tempVal.innerText = `19.8°C`;
+      tempVal.style.color = '#DC2626';
+      tempBadge.className = 'badge bg-danger rounded-pill small px-3 py-1';
+      tempBadge.innerHTML = `<i class="fa-solid fa-triangle-exclamation me-1"></i> THERMAL BREACH (>18°C)`;
+      alert("⚠️ IoT ALERT: Temperature inside Van JH-01-EF-4921 has breached 18°C! Automated SMS alert dispatched to driver Rajesh Verma to check compressor.");
+    });
+
+    document.getElementById('restoreCoolBtn').addEventListener('click', () => {
+      isSpike = false;
+      currentTemp = 12.0;
+      tempVal.innerText = `12.0°C`;
+      tempVal.style.color = 'var(--color-primary-dark)';
+      tempBadge.className = 'badge bg-success rounded-pill small px-3 py-1';
+      tempBadge.innerHTML = `<i class="fa-solid fa-snowflake me-1"></i> Optimal (10°C – 14°C)`;
+    });
+  });
+</script>
+{% endblock %}

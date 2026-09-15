@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Village Facilitator Hub | {{ profile.village_name }}{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- VDF Hub Header Banner -->
+  <div class="p-4 rounded-4 mb-4 border" style="background: linear-gradient(135deg, #004D40, #00796B); color: white;">
+    <div class="row align-items-center g-3">
+      <div class="col-lg-7">
+        <span class="badge bg-white rounded-pill shadow-sm" style="color: #143628 !important; background-color: #ffffff !important; font-weight: 700; rounded-pill px-3 py-2 mb-2">
+          <i class="fa-solid fa-handshake-angle me-1 text-warning"></i> Village Digital Facilitator (VDF Hub)
+        </span>
+        <h2 class="fw-bold mb-1">{{ profile.center_name }}</h2>
+        <p class="text-white-50 mb-0">
+          <i class="fa-solid fa-location-dot me-1"></i> {{ profile.village_name }}, {{ profile.assigned_district }} &bull;
+          <i class="fa-solid fa-user me-1 ms-2"></i> Facilitator: {{ profile.user.get_full_name|default:profile.user.username }} &bull;
+          <i class="fa-solid fa-percent me-1 ms-2"></i> Quality & Aggregation Cut: {{ profile.commission_percentage }}%
+        </p>
+      </div>
+      <div class="col-lg-5 text-lg-end">
+        <div class="d-flex flex-wrap justify-content-lg-end gap-2">
+          <a href="{% url 'facilitator_register_farmer' %}" class="btn btn-light rounded-pill px-3 py-2 fw-semibold">
+            <i class="fa-solid fa-user-plus me-1 text-success"></i> Register Farmer
+          </a>
+          <a href="{% url 'facilitator_add_listing' %}" class="btn btn-warning rounded-pill px-3 py-2 fw-semibold text-dark">
+            <i class="fa-solid fa-microphone me-1"></i> Voice Listing
+          </a>
+          <a href="{% url 'ivr_simulator' %}" class="btn btn-outline-light rounded-pill px-3 py-2 fw-semibold">
+            <i class="fa-solid fa-phone-volume me-1"></i> IVR Simulator
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metric KPI Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-sm-6 col-lg-3">
+      <div class="bg-white p-3 rounded-4 border shadow-sm h-100">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="text-muted small fw-semibold">Registered Farmers</span>
+          <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-2 py-1"><i class="fa-solid fa-users"></i></span>
+        </div>
+        <h3 class="fw-bold m-0" style="color: var(--color-primary-dark);">{{ farmers.count }}</h3>
+        <small class="text-muted">In {{ profile.village_name }} cluster</small>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+      <div class="bg-white p-3 rounded-4 border shadow-sm h-100">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="text-muted small fw-semibold">Active Listings</span>
+          <span class="badge bg-info bg-opacity-10 text-info rounded-pill px-2 py-1"><i class="fa-solid fa-boxes-stacked"></i></span>
+        </div>
+        <h3 class="fw-bold m-0" style="color: var(--color-primary-dark);">{{ listings.count }}</h3>
+        <small class="text-muted">Ready for urban pickup</small>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+      <div class="bg-white p-3 rounded-4 border shadow-sm h-100">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="text-muted small fw-semibold">Total Stock (kg)</span>
+          <span class="badge bg-warning bg-opacity-10 text-warning rounded-pill px-2 py-1"><i class="fa-solid fa-scale-balanced"></i></span>
+        </div>
+        <h3 class="fw-bold m-0" style="color: var(--color-primary-dark);">{{ total_volume_kg }} kg</h3>
+        <small class="text-muted">Weighed & graded at hub</small>
+      </div>
+    </div>
+
+    <div class="col-sm-6 col-lg-3">
+      <div class="bg-white p-3 rounded-4 border shadow-sm h-100">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span class="text-muted small fw-semibold">Est. Hub Earnings</span>
+          <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-2 py-1"><i class="fa-solid fa-coins"></i></span>
+        </div>
+        <h3 class="fw-bold text-success m-0">₹{{ hub_commission_estimate }}</h3>
+        <small class="text-muted">At 5% aggregation cut</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Content Grid: Listings & Village Farmers -->
+  <div class="row g-4">
+    
+    <!-- Left: Active Produce Batches -->
+    <div class="col-lg-7">
+      <div class="bg-white p-4 rounded-4 border shadow-sm h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold m-0" style="color: var(--color-primary-dark);">
+            <i class="fa-solid fa-basket-shopping me-2 text-success"></i> Active Village Produce Batches
+          </h5>
+          <a href="{% url 'facilitator_add_listing' %}" class="btn btn-sm btn-agri-primary">
+            <i class="fa-solid fa-plus me-1"></i> Add Batch
+          </a>
+        </div>
+
+        {% if listings %}
+          <div class="table-responsive">
+            <table class="table table-hover align-middle">
+              <thead class="table-light small">
+                <tr>
+                  <th>Produce</th>
+                  <th>Farmer</th>
+                  <th>Quantity</th>
+                  <th>Farmer Payout</th>
+                  <th>Retail Price</th>
+                  <th>Grade</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in listings %}
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-2">
+                        {% if item.image %}
+                          <img src="{{ item.image.url }}" alt="{{ item.name }}" class="rounded-2 object-fit-cover shadow-sm border" style="width: 42px; height: 42px; flex-shrink: 0;">
+                        {% else %}
+                          <span class="fs-5">{{ item.emoji_icon }}</span>
+                        {% endif %}
+                        <div>
+                          <strong>{{ item.name }}</strong>
+                          <br><small class="text-muted">{{ item.variety|default:'Standard' }}</small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      {{ item.farmer.user.get_full_name|default:item.farmer.user.username }}
+                      <br><small class="text-muted"><i class="fa-solid fa-phone me-1"></i> {{ item.farmer.user.phone }}</small>
+                    </td>
+                    <td>
+                      <span class="badge bg-light text-dark border">{{ item.available_quantity_kg }} kg</span>
+                    </td>
+                    <td>
+                      <strong class="text-success">₹{{ item.farmer_base_price_per_kg }}/kg</strong>
+                    </td>
+                    <td>
+                      <strong class="text-primary">₹{{ item.consumer_price_per_kg }}/kg</strong>
+                    </td>
+                    <td>
+                      <span class="badge {% if item.grade == 'A' %}bg-success{% elif item.grade == 'B' %}bg-primary{% else %}bg-secondary{% endif %} rounded-pill">
+                        Grade {{ item.grade }}
+                      </span>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-5">
+            <div class="fs-1 text-muted mb-2">🧺</div>
+            <h6 class="fw-bold">No produce listed yet</h6>
+            <p class="text-muted small">Use the voice input button or the form to create the first listing for a village farmer.</p>
+            <a href="{% url 'facilitator_add_listing' %}" class="btn btn-agri-primary">
+              <i class="fa-solid fa-microphone me-1"></i> Start Voice Listing
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Right: Registered Village Farmers Directory -->
+    <div class="col-lg-5">
+      <div class="bg-white p-4 rounded-4 border shadow-sm h-100">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="fw-bold m-0" style="color: var(--color-primary-dark);">
+            <i class="fa-solid fa-users me-2 text-primary"></i> Registered Farmers ({{ farmers.count }})
+          </h5>
+          <a href="{% url 'facilitator_register_farmer' %}" class="btn btn-sm btn-outline-success">
+            <i class="fa-solid fa-user-plus me-1"></i> Onboard
+          </a>
+        </div>
+
+        {% if farmers %}
+          <div class="list-group list-group-flush">
+            {% for farmer in farmers %}
+              <div class="list-group-item d-flex justify-content-between align-items-center px-0 py-3">
+                <div>
+                  <h6 class="m-0 fw-bold">{{ farmer.user.get_full_name|default:farmer.user.username }}</h6>
+                  <small class="text-muted">
+                    <i class="fa-solid fa-phone me-1"></i> {{ farmer.user.phone }} &bull;
+                    <i class="fa-solid fa-seedling me-1 ms-1"></i> {{ farmer.land_area_acres }} acres
+                  </small>
+                  <br>
+                  <small class="text-secondary">Crops: {{ farmer.primary_crops }}</small>
+                </div>
+                <div>
+                  <a href="{% url 'facilitator_add_listing' %}?farmer_id={{ farmer.id }}" class="btn btn-sm btn-outline-primary rounded-pill px-2 py-1" title="Add produce for this farmer">
+                    <i class="fa-solid fa-plus"></i> List Produce
+                  </a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-center py-4">
+            <p class="text-muted small">No farmers registered under this hub yet.</p>
+            <a href="{% url 'facilitator_register_farmer' %}" class="btn btn-sm btn-agri-primary">
+              <i class="fa-solid fa-user-plus me-1"></i> Onboard First Farmer
+            </a>
+          </div>
+        {% endif %}
+
+        <!-- Assisted Services Notice -->
+        <div class="mt-4 p-3 bg-light rounded-3 border">
+          <div class="d-flex align-items-center gap-2 mb-1">
+            <i class="fa-solid fa-shield-halved text-success"></i>
+            <span class="fw-bold small text-dark">VDF Digital Mandate:</span>
+          </div>
+          <p class="small text-muted mb-0">
+            You represent the digital bridge. Farmers with basic feature phones receive automated SMS notifications whenever you register their harvest or when a buyer places an order.
+          </p>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

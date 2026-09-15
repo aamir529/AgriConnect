@@ -1,0 +1,155 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Shopping Basket | AgriConnect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+    <div>
+      <h3 class="fw-bold m-0" style="color: var(--color-primary-dark);">
+        <i class="fa-solid fa-basket-shopping text-success me-2"></i> Your Farm Fresh Basket
+      </h3>
+      <p class="text-muted small m-0">Direct from village hubs with complete supply-chain transparency</p>
+    </div>
+    <a href="{% url 'marketplace_catalog' %}" class="btn btn-outline-success rounded-pill btn-sm">
+      <i class="fa-solid fa-plus me-1"></i> Add More Produce
+    </a>
+  </div>
+
+  {% if cart.total_items_count > 0 %}
+    <div class="row g-4">
+      
+      <!-- Items List -->
+      <div class="col-lg-8">
+        <div class="bg-white p-4 rounded-4 border shadow-sm">
+          
+          <div class="table-responsive">
+            <table class="table align-middle">
+              <thead class="table-light small">
+                <tr>
+                  <th>Produce</th>
+                  <th>Unit Price</th>
+                  <th style="width: 170px;">Quantity (kg)</th>
+                  <th>Subtotal</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in cart %}
+                  <tr>
+                    <td>
+                      <div class="d-flex align-items-center gap-3">
+                        {% if item.product.image %}
+                          <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="rounded-3 object-fit-cover shadow-sm border" style="width: 52px; height: 52px; flex-shrink: 0;">
+                        {% else %}
+                          <span class="fs-2">{{ item.product.emoji_icon }}</span>
+                        {% endif %}
+                        <div>
+                          <h6 class="fw-bold m-0">{{ item.product.name }}</h6>
+                          <small class="text-muted">
+                            <i class="fa-solid fa-tractor me-1 text-success"></i> {{ item.product.farmer.user.get_full_name|default:item.product.farmer.user.username }}
+                            ({{ item.product.farmer.user.village_or_city }})
+                          </small>
+                        </div>
+                      </div>
+                    </td>
+                    <td>
+                      <strong>₹{{ item.price }}</strong> / kg
+                    </td>
+                    <td>
+                      <form method="post" action="{% url 'update_cart_quantity' item.product.id %}" class="d-flex align-items-center gap-1">
+                        {% csrf_token %}
+                        <input type="number" name="quantity_kg" value="{{ item.quantity }}" min="1" max="{{ item.product.available_quantity_kg }}" step="0.5" class="form-control form-control-sm text-center fw-bold" style="width: 75px;">
+                        <span class="small text-muted me-1">kg</span>
+                        <button type="submit" class="btn btn-sm btn-light border" title="Update Quantity">
+                          <i class="fa-solid fa-rotate text-muted"></i>
+                        </button>
+                      </form>
+                    </td>
+                    <td>
+                      <strong class="text-success fs-6">₹{{ item.total_price }}</strong>
+                    </td>
+                    <td class="text-end">
+                      <a href="{% url 'remove_from_cart' item.product.id %}" class="btn btn-sm btn-light text-danger rounded-circle" title="Remove Item">
+                        <i class="fa-solid fa-trash-can"></i>
+                      </a>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+
+          <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top small text-muted">
+            <span><i class="fa-solid fa-truck-fast me-1 text-success"></i> Free delivery on orders above ₹400</span>
+            <span>Total Weight: <strong>{{ cart.total_weight_kg }} kg</strong></span>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Order Summary Card -->
+      <div class="col-lg-4">
+        <div class="bg-white p-4 rounded-4 border shadow-sm">
+          <h5 class="fw-bold mb-3" style="color: var(--color-primary-dark);">Order Summary</h5>
+
+          <div class="d-flex justify-content-between mb-2">
+            <span class="text-muted">Produce Subtotal:</span>
+            <span class="fw-bold">₹{{ cart.get_subtotal }}</span>
+          </div>
+
+          <div class="d-flex justify-content-between mb-3">
+            <span class="text-muted">Direct Farm Transit:</span>
+            {% if cart.get_delivery_fee == 0 %}
+              <span class="text-success fw-bold">FREE</span>
+            {% else %}
+              <span class="fw-bold">₹{{ cart.get_delivery_fee }}</span>
+            {% endif %}
+          </div>
+
+          <hr class="my-3">
+
+          <div class="d-flex justify-content-between mb-4">
+            <h5 class="fw-bold m-0" style="color: var(--color-primary-dark);">Total Amount:</h5>
+            <h4 class="fw-bold text-success m-0">₹{{ cart.get_total }}</h4>
+          </div>
+
+          <!-- Direct Impact Highlight Box -->
+          <div class="p-3 bg-light rounded-3 border mb-4">
+            <div class="d-flex align-items-center gap-2 text-success fw-bold small mb-1">
+              <i class="fa-solid fa-hand-holding-dollar"></i> Direct Impact Accounting:
+            </div>
+            <div class="d-flex justify-content-between small text-secondary">
+              <span>Direct Farmer Take-Home:</span>
+              <strong class="text-success">₹{{ cart.get_farmer_total }} (75%)</strong>
+            </div>
+            <div class="d-flex justify-content-between small text-secondary mt-1">
+              <span>Your Savings vs. Supermarket:</span>
+              <strong class="text-primary">₹{{ cart.get_total_savings }}</strong>
+            </div>
+          </div>
+
+          <a href="{% url 'checkout' %}" class="btn btn-agri-primary w-100 py-3 justify-content-center fs-6 shadow">
+            <i class="fa-solid fa-shield-check me-2"></i> Proceed to Checkout
+          </a>
+
+        </div>
+      </div>
+
+    </div>
+  {% else %}
+    <div class="text-center py-5 bg-white rounded-4 border shadow-sm">
+      <div class="fs-1 text-muted mb-3">🧺</div>
+      <h4 class="fw-bold">Your basket is currently empty</h4>
+      <p class="text-muted">Explore fresh harvests listed directly by village farm clusters.</p>
+      <a href="{% url 'marketplace_catalog' %}" class="btn btn-agri-primary">
+        <i class="fa-solid fa-store me-1"></i> Browse Farm Marketplace
+      </a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

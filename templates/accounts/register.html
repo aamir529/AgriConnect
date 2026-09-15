@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block title %}Register | AgriConnect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
+      <div class="auth-card">
+
+        <div class="text-center mb-4">
+          <span class="logo-sprout mx-auto mb-2" style="width: 48px; height: 48px; font-size: 1.4rem;">
+            <i class="fa-solid fa-wheat-awn"></i>
+          </span>
+          <h3 class="fw-bold" style="color: var(--color-primary-dark);">Join the AgriConnect Network</h3>
+          <p class="text-muted small">Select your operational role and connect to the transparent supply chain</p>
+        </div>
+
+        <form method="post">
+          {% csrf_token %}
+
+          {% if form.errors %}
+            <div class="alert alert-danger py-2 small mb-3">
+              Please fix the errors below to complete registration.
+            </div>
+          {% endif %}
+
+          <!-- Role Selection Dropdown -->
+          <div class="mb-3 p-3 bg-light rounded-3 border">
+            <label class="form-label fw-bold text-dark mb-1">Select Your Platform Role *</label>
+            <p class="text-muted small mb-2">Each role unlocks specialized tools (e.g. VDF Assisted Hub, Farmer Payouts, Consumer Marketplace).</p>
+            {{ form.role }}
+            {% if form.role.errors %}<div class="text-danger small mt-1">{{ form.role.errors }}</div>{% endif %}
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small text-secondary">Username *</label>
+              {{ form.username }}
+              {% if form.username.errors %}<div class="text-danger small">{{ form.username.errors }}</div>{% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small text-secondary">Phone Number *</label>
+              {{ form.phone }}
+              {% if form.phone.errors %}<div class="text-danger small">{{ form.phone.errors }}</div>{% endif %}
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small text-secondary">First Name</label>
+              {{ form.first_name }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small text-secondary">Last Name</label>
+              {{ form.last_name }}
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small text-secondary">Email Address</label>
+              {{ form.email }}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small text-secondary">Preferred Language</label>
+              {{ form.preferred_language }}
+            </div>
+          </div>
+
+          <div class="row g-3 mb-3">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small text-secondary">Village or City *</label>
+              {{ form.village_or_city }}
+              {% if form.village_or_city.errors %}<div class="text-danger small">{{ form.village_or_city.errors }}</div>{% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small text-secondary">District *</label>
+              {{ form.district }}
+              {% if form.district.errors %}<div class="text-danger small">{{ form.district.errors }}</div>{% endif %}
+            </div>
+          </div>
+
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small text-secondary">Password *</label>
+              {{ form.password1 }}
+              {% if form.password1.errors %}<div class="text-danger small">{{ form.password1.errors }}</div>{% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label fw-semibold small text-secondary">Confirm Password *</label>
+              {{ form.password2 }}
+              {% if form.password2.errors %}<div class="text-danger small">{{ form.password2.errors }}</div>{% endif %}
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-agri-primary w-100 justify-content-center py-2 mb-3">
+            <i class="fa-solid fa-user-check"></i> Complete Registration
+          </button>
+        </form>
+
+        <div class="text-center small text-muted">
+          Already registered? <a href="{% url 'login' %}" class="fw-bold text-success text-decoration-none">Log in here</a>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

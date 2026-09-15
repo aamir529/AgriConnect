@@ -1,0 +1,42 @@
+﻿{% extends "base.html" %}
+{% block title %}Review Submit Ho Gaya! | AgriConnect{% endblock %}
+
+{% block content %}
+<div class="container py-5 text-center" style="max-width: 560px;">
+  <div class="bg-white rounded-4 border shadow-sm p-5">
+
+    <!-- Success Animation -->
+    <div class="mb-4" style="font-size: 5rem;">🙏</div>
+
+    <span class="badge bg-success bg-opacity-10 text-success fw-bold px-3 py-2 rounded-pill mb-3 d-inline-block">
+      <i class="fa-solid fa-circle-check me-1"></i> Submitted Successfully
+    </span>
+
+    <h2 class="fw-bold mb-2" style="color: var(--color-primary-dark);">Shukriya Aapka!</h2>
+    <p class="text-muted mb-4">
+      Aapka review successfully hamare paas pahunch gaya hai.<br>
+      Admin approval ke baad ye <strong>homepage</strong> par dikhai dega. 🌱
+    </p>
+
+    <div class="alert alert-success rounded-4 text-start small mb-4">
+      <i class="fa-solid fa-info-circle me-2"></i>
+      <strong>Aage kya hoga?</strong><br>
+      Hamare admin team aapke review ko review (check) karenge aur 24-48 ghanton me approve ya reject karenge.
+      Approved review "Trusted by Kisans" section me show hoga.
+    </div>
+
+    <div class="d-flex gap-3 justify-content-center flex-wrap">
+      <a href="{% url 'home' %}" class="btn btn-success rounded-pill px-4 fw-bold">
+        <i class="fa-solid fa-house me-2"></i> Home Pe Jaao
+      </a>
+      <a href="{% url 'marketplace_catalog' %}" class="btn btn-outline-success rounded-pill px-4">
+        <i class="fa-solid fa-store me-2"></i> Shopping Karein
+      </a>
+      <a href="{% url 'submit_review' %}" class="btn btn-light rounded-pill px-4 border">
+        <i class="fa-solid fa-plus me-2"></i> Ek Aur Review
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,236 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}AgriConnect | Transparent Farmer-to-Consumer Supply Chain{% endblock %}</title>
+
+  <!-- Bootstrap 5 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- FontAwesome 6 Icons -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+  <!-- Custom Design System CSS (Based on Dairy Farm Showcase) -->
+  <link rel="stylesheet" href="{% static 'css/design_system.css' %}">
+  <link rel="manifest" href="{% static 'manifest.json' %}">
+  <meta name="theme-color" content="#143628">
+  
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+  <!-- ================= Top Utility Bar ================= -->
+  <div class="agri-topbar py-1 px-3 d-none d-lg-block">
+    <div class="container-fluid px-3 px-xl-4 d-flex justify-content-between align-items-center">
+      <div class="d-flex align-items-center gap-3">
+        <span class="text-nowrap">
+          <i class="fa-solid fa-location-dot text-danger me-1"></i> Delivering to: <strong>Ranchi, Morabadi (झारखंड)</strong>
+        </span>
+        <span class="opacity-50">&bull;</span>
+        <span class="text-nowrap">
+          <i class="fa-solid fa-bolt text-warning me-1"></i> Next Farm Dispatch: <strong>Today 5:00 PM</strong>
+        </span>
+        <span class="opacity-50">&bull;</span>
+        <span class="text-nowrap" style="color: #A7F3D0;">
+          <i class="fa-solid fa-leaf text-success me-1"></i> 100% Direct Farm-to-Kitchen
+        </span>
+      </div>
+      <div class="d-flex align-items-center gap-3">
+        <a href="tel:18008897388" class="text-decoration-none text-nowrap">
+          <i class="fa-solid fa-phone text-warning me-1"></i> Kisan Helpline: <strong>1800-889-SETU</strong>
+        </a>
+        <span class="opacity-50">&bull;</span>
+        <a href="{% url 'sih_presentation' %}" class="badge bg-warning text-dark text-decoration-none px-2 py-0.5 text-nowrap fw-bold" style="font-size: 0.68rem;">
+          <i class="fa-solid fa-award me-1"></i> SIH Pitch
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= Main Navigation Bar ================= -->
+  <nav class="navbar navbar-expand-lg agri-navbar">
+    <div class="container-fluid px-3 px-xl-4">
+      <a class="navbar-brand-custom me-2 me-xl-3" href="{% url 'home' %}">
+        <span class="logo-sprout"><i class="fa-solid fa-leaf"></i></span>
+        <div class="lh-1" style="white-space: nowrap;">
+          <span class="fw-bold d-block text-nowrap" style="font-size: 1.25rem; color: var(--color-primary-dark); letter-spacing: -0.02em;">AgriConnect</span>
+          <small class="text-success fw-semibold text-nowrap d-block" style="font-size: 0.64rem; letter-spacing: 0.3px; opacity: 0.95;">कृषि सेतु &bull; Direct Farm</small>
+        </div>
+      </a>
+
+      <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-1 gap-1 flex-nowrap align-items-lg-center">
+          <li class="nav-item">
+            <a class="nav-link-custom text-nowrap {% if request.resolver_match.url_name == 'home' %}active{% endif %}" href="{% url 'home' %}">
+              <i class="fa-solid fa-house me-1"></i> <span data-i18n="navHome">Home</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link-custom text-nowrap {% if 'marketplace' in request.path and 'farm-map' not in request.path and 'group-buying' not in request.path %}active{% endif %}" href="{% url 'marketplace_catalog' %}">
+              <i class="fa-solid fa-store me-1"></i> <span data-i18n="navMarketplace">Marketplace</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link-custom text-nowrap d-inline-flex align-items-center gap-1 {% if 'group-buying' in request.path %}active{% endif %}" href="{% url 'group_buying_list' %}">
+              <i class="fa-solid fa-users text-success me-1"></i> <span data-i18n="navGroupBuy">Group Buying</span>
+              <span class="badge bg-success bg-opacity-25 text-success rounded-pill px-1.5 py-0.5" style="font-size: 0.62rem; font-weight: 700;">15% Off</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link-custom text-nowrap {% if 'mandi' in request.path %}active{% endif %}" href="{% url 'mandi_prices' %}">
+              <i class="fa-solid fa-scale-balanced me-1"></i> <span data-i18n="navMandiRates">Mandi Rates</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link-custom text-nowrap {% if 'farm-map' in request.path %}active{% endif %}" href="{% url 'marketplace_farm_map' %}">
+              <i class="fa-solid fa-map-location-dot me-1"></i> <span data-i18n="navFarmMap">Farm Map</span>
+            </a>
+          </li>
+          
+          <!-- Consolidated Tools Dropdown -->
+          <li class="nav-item dropdown">
+            <a class="nav-link-custom text-nowrap dropdown-toggle {% if 'analytics' in request.path or 'sih' in request.path or 'ivr' in request.path %}active{% endif %}" href="#" data-bs-toggle="dropdown">
+              <i class="fa-solid fa-sliders me-1"></i> Tools & Demo
+            </a>
+            <ul class="dropdown-menu shadow-sm border-0 mt-2" style="border-radius: var(--radius-md);">
+              <li>
+                <a class="dropdown-item py-2 text-nowrap" href="{% url 'analytics_dashboard' %}">
+                  <i class="fa-solid fa-chart-line text-success me-2"></i> <span data-i18n="navAnalytics">Impact Analytics</span>
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item py-2 text-nowrap" href="{% url 'sih_presentation' %}">
+                  <i class="fa-solid fa-award text-warning me-2"></i> SIH Evaluator Pitch
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item py-2 text-nowrap" href="{% url 'ivr_simulator' %}">
+                  <i class="fa-solid fa-phone-volume text-primary me-2"></i> <span data-i18n="navIVR">Toll-Free IVR Demo</span>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        <!-- Right User Actions, Cart & Language Toggle -->
+        <div class="d-flex align-items-center gap-1 gap-xl-2 flex-nowrap ms-lg-auto">
+          
+          <!-- Instant Language Toggle Button -->
+          <button type="button" id="langToggleBtn" onclick="toggleAgriLanguage()" class="btn btn-sm btn-light border rounded-pill px-2.5 py-1 fw-semibold text-nowrap" style="font-size: 0.78rem;" title="Switch Language">
+            🇮🇳 <strong>हिंदी</strong>
+          </button>
+
+          <!-- Shopping Basket Button -->
+          <a href="{% url 'cart_detail' %}" class="btn btn-sm btn-light border rounded-pill px-2.5 py-1 d-flex align-items-center gap-1.5 text-nowrap" style="font-size: 0.78rem;" title="View Shopping Basket">
+            <i class="fa-solid fa-basket-shopping text-success" style="font-size: 0.82rem;"></i>
+            <span class="fw-bold d-none d-xxl-inline" data-i18n="navBasket">Basket</span>
+            <span class="badge bg-success rounded-pill px-1.5 py-0.5" style="font-size: 0.68rem;">{{ cart.total_items_count|default:"0" }}</span>
+          </a>
+
+          {% if user.is_authenticated %}
+            <!-- User Dropdown with Compact Role Pill inside -->
+            <div class="dropdown">
+              <button class="btn btn-sm btn-outline-success dropdown-toggle d-flex align-items-center gap-2 rounded-pill px-2.5 py-1 text-nowrap" style="font-size: 0.8rem;" type="button" data-bs-toggle="dropdown">
+                <i class="fa-solid fa-circle-user text-success"></i>
+                <span class="fw-bold">{{ user.first_name|default:user.username }}</span>
+                <span class="role-pill-compact {{ user.get_role_badge_class }}">
+                  {{ user.get_role_display|slice:":18" }}
+                </span>
+              </button>
+              <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="border-radius: var(--radius-md);">
+                <li><h6 class="dropdown-header">Signed in as <strong>{{ user.username }}</strong></h6></li>
+                <li><a class="dropdown-item" href="{% url 'dashboard_router' %}"><i class="fa-solid fa-gauge me-2"></i> Role Dashboard</a></li>
+                {% if user.is_consumer %}
+                  <li><a class="dropdown-item" href="{% url 'order_history' %}"><i class="fa-solid fa-clock-rotate-left me-2 text-primary"></i> My Orders</a></li>
+                {% endif %}
+                {% if user.is_facilitator or user.is_superuser %}
+                  <li><a class="dropdown-item" href="{% url 'disputes_manage' %}"><i class="fa-solid fa-shield-halved me-2 text-danger"></i> Quality Claims</a></li>
+                {% endif %}
+                <li><a class="dropdown-item" href="{% url 'profile' %}"><i class="fa-solid fa-id-card me-2"></i> My Profile</a></li>
+                {% if user.is_superuser %}
+                  <li><a class="dropdown-item" href="/admin/" target="_blank"><i class="fa-solid fa-crown me-2 text-warning"></i> Django Admin</a></li>
+                {% endif %}
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item text-danger" href="{% url 'logout' %}"><i class="fa-solid fa-right-from-bracket me-2"></i> Logout</a></li>
+              </ul>
+            </div>
+          {% else %}
+            <a href="{% url 'login' %}" class="btn-agri-outline text-nowrap">
+              <i class="fa-solid fa-arrow-right-to-bracket me-1"></i> Log In
+            </a>
+            <a href="{% url 'register' %}" class="btn-agri-primary text-nowrap">
+              <i class="fa-solid fa-user-plus me-1"></i> Join Network
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ================= System Flash Alerts ================= -->
+  {% if messages %}
+    <div class="container mt-3">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show shadow-sm border-0" role="alert" style="border-radius: var(--radius-md);">
+          {% if message.tags == 'success' %}
+            <i class="fa-solid fa-circle-check me-2 text-success"></i>
+          {% elif message.tags == 'error' or message.tags == 'danger' %}
+            <i class="fa-solid fa-triangle-exclamation me-2 text-danger"></i>
+          {% else %}
+            <i class="fa-solid fa-circle-info me-2 text-primary"></i>
+          {% endif %}
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <!-- ================= Main Page Content Block ================= -->
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ================= Footer ================= -->
+  <footer class="mt-5 py-5 border-top" style="background-color: var(--bg-surface); border-color: var(--border-subtle) !important;">
+    <div class="container">
+      <div class="row g-4 align-items-center">
+        <div class="col-lg-6">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <span class="logo-sprout" style="width: 32px; height: 32px; font-size: 0.9rem;"><i class="fa-solid fa-wheat-awn"></i></span>
+            <h5 class="m-0 fw-bold" style="color: var(--color-primary-dark);">AgriConnect (कृषि सेतु)</h5>
+          </div>
+          <p class="text-secondary small mb-0" style="max-width: 520px;">
+            Disintermediating the agricultural supply chain through assisted-digital rural facilitators, price decomposition, and direct farm-to-consumer trade.
+          </p>
+        </div>
+        <div class="col-lg-6 text-lg-end">
+          <div class="mb-2">
+            <span class="badge bg-light text-dark border"><i class="fa-solid fa-globe me-1 text-success"></i> Language: Hindi / English</span>
+          </div>
+          <p class="text-muted small mb-0">
+            &copy; 2026 AgriConnect Platform. Engineered for zero digital literacy barrier.
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Bootstrap 5 JS Bundle -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Instant Dual-Language Toggle -->
+  <script src="{% static 'js/language_toggle.js' %}"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('{% static "sw.js" %}').catch(() => {});
+      });
+    }
+  </script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

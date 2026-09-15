@@ -1,0 +1,344 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}IVR Phone Simulator | AgriConnect{% endblock %}
+
+{% block extra_css %}
+<style>
+  /* Phone Frame Simulation */
+  .phone-casing {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+    background: #1F2421;
+    border-radius: 40px;
+    padding: 20px 16px 28px;
+    box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.5), 0 0 0 4px #333;
+    color: white;
+    position: relative;
+  }
+  .phone-screen {
+    background: #0D1B14;
+    border-radius: 24px;
+    padding: 16px;
+    min-height: 200px;
+    border: 1px solid #2D6A4F;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.8);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+  .screen-display-text {
+    font-family: 'Courier New', monospace;
+    font-size: 0.88rem;
+    color: #52B788;
+    line-height: 1.4;
+    white-space: pre-line;
+    max-height: 125px;
+    overflow-y: auto;
+  }
+  
+  /* Audio Wave Animation */
+  .audio-wave-container {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    height: 16px;
+  }
+  .audio-wave-bar {
+    width: 3px;
+    height: 100%;
+    background-color: #52B788;
+    border-radius: 2px;
+    animation: waveAnim 1s ease-in-out infinite;
+  }
+  .audio-wave-bar:nth-child(1) { animation-delay: 0.0s; height: 35%; }
+  .audio-wave-bar:nth-child(2) { animation-delay: 0.2s; height: 75%; }
+  .audio-wave-bar:nth-child(3) { animation-delay: 0.4s; height: 100%; }
+  .audio-wave-bar:nth-child(4) { animation-delay: 0.1s; height: 60%; }
+  .audio-wave-bar:nth-child(5) { animation-delay: 0.3s; height: 40%; }
+
+  @keyframes waveAnim {
+    0%, 100% { transform: scaleY(0.3); }
+    50% { transform: scaleY(1.0); }
+  }
+
+  .phone-keypad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 18px;
+    padding: 0 10px;
+  }
+  .dtmf-btn {
+    background: #2D3142;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 68px;
+    height: 68px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    font-weight: 700;
+    transition: all 0.1s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  }
+  .dtmf-btn:hover {
+    background: #3F445B;
+  }
+  .dtmf-btn:active, .dtmf-btn.active-press {
+    transform: scale(0.92);
+    background: #52B788;
+    color: #143628;
+  }
+  .dtmf-btn sub {
+    font-size: 0.58rem;
+    color: #9E9E9E;
+    font-weight: 400;
+    margin-top: -3px;
+  }
+  .call-action-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 18px;
+  }
+  .btn-call-circle {
+    width: 66px;
+    height: 66px;
+    border-radius: 50%;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+  }
+  .btn-call-circle:hover {
+    transform: scale(1.05);
+  }
+  .btn-call-circle:active {
+    transform: scale(0.95);
+  }
+  .transcript-box {
+    height: 520px;
+    overflow-y: auto;
+    background: #FFFFFF;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-subtle);
+    padding: 1.25rem;
+  }
+  
+  /* Quick Voice Input Modal/Tray */
+  .voice-intake-tray {
+    background: #14281E;
+    border-top: 1px solid #2D6A4F;
+    border-radius: 0 0 22px 22px;
+    padding: 10px;
+    margin: -10px -16px -16px;
+  }
+  .quick-phrase-btn {
+    background: #1F4532;
+    color: #A3E635;
+    border: 1px solid #2D6A4F;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .quick-phrase-btn:hover {
+    background: #2D6A4F;
+    color: #FFFFFF;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Header -->
+  <div class="text-center mb-4">
+    <span class="badge bg-success bg-opacity-10 text-success fw-bold px-3 py-2 rounded-pill">
+      <i class="fa-solid fa-phone-volume me-1"></i> SIH JURY INTERACTIVE SHOWCASE
+    </span>
+    <h2 class="mt-2 fw-bold" style="color: var(--color-primary-dark);">Toll-Free IVR & Feature Phone Simulator</h2>
+    <p class="text-muted" style="max-width: 650px; margin: 0 auto;">
+      Experience how smallholder farmers with basic keypad phones dial <strong>1800-890-KISAN</strong> to check local mandi rates, register harvests by voice, and confirm bank payments.
+    </p>
+
+    <!-- Language & Audio Mode Controls -->
+    <div class="d-inline-flex align-items-center gap-2 mt-3 p-2 bg-white rounded-4 border shadow-sm flex-wrap justify-content-center">
+      <span class="small fw-bold text-secondary ms-2 me-1"><i class="fa-solid fa-volume-high text-success me-1"></i> Audio Mode:</span>
+      <button type="button" class="btn btn-sm btn-success rounded-pill px-3 py-1" id="ivrLangHiBtn" onclick="window.ivrPhoneSimulator && window.ivrPhoneSimulator.setLanguage('hi')">
+        🇮🇳 हिंदी (Hindi)
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1" id="ivrLangHinglishBtn" onclick="window.ivrPhoneSimulator && window.ivrPhoneSimulator.setLanguage('hinglish')">
+        🗣️ हिंग्लिश (Phonetic)
+      </button>
+      <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1" id="ivrLangEnBtn" onclick="window.ivrPhoneSimulator && window.ivrPhoneSimulator.setLanguage('en')">
+        🌐 English
+      </button>
+
+      <div class="d-flex align-items-center gap-1 ms-1">
+        <label for="ivrVoiceSelect" class="small fw-semibold text-secondary mb-0 text-nowrap"><i class="fa-solid fa-headset text-primary me-1"></i>Voice:</label>
+        <select id="ivrVoiceSelect" class="form-select form-select-sm rounded-pill py-1 pe-4 text-truncate" style="max-width: 250px; font-size: 0.78rem;" onchange="window.ivrPhoneSimulator && window.ivrPhoneSimulator.changeVoice(this.value)">
+          <option value="auto">⚡ Auto-Select (Smart Fallback)</option>
+        </select>
+      </div>
+
+      <button type="button" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 ms-1 fw-semibold" id="ivrTestVoiceBtn" onclick="window.ivrPhoneSimulator && window.ivrPhoneSimulator.testAudio()">
+        <i class="fa-solid fa-play me-1"></i> Test Voice
+      </button>
+    </div>
+  </div>
+
+  <div class="row g-4 align-items-start justify-content-center">
+    
+    <!-- Left Column: Interactive Phone Mockup -->
+    <div class="col-lg-5 text-center">
+      <div class="phone-casing">
+        
+        <!-- Top Speaker Notch -->
+        <div style="width: 50px; height: 5px; background: #444; border-radius: 3px; margin: 0 auto 14px;"></div>
+
+        <!-- Phone Screen -->
+        <div class="phone-screen text-start">
+          <div class="d-flex justify-content-between align-items-center mb-2 pb-1 border-bottom border-secondary">
+            <span id="ivrCallStatus" class="badge bg-secondary py-1 px-2" style="font-size: 0.72rem;">
+              <i class="fa-solid fa-signal me-1"></i> READY TO CALL
+            </span>
+            <span class="small text-white-50" style="font-size: 0.75rem;">1800-890-KISAN</span>
+          </div>
+
+          <div id="ivrScreenText" class="screen-display-text">
+Click the GREEN call button below to dial AgriConnect Kisan Sahayata (1800-890-KISAN)...
+          </div>
+
+          <!-- Bottom Screen Bar with Audio Waveform -->
+          <div class="d-flex justify-content-between align-items-center mt-1 pt-1 border-top border-secondary border-opacity-50">
+            <div id="ivrAudioWave" class="audio-wave-container d-none">
+              <div class="audio-wave-bar"></div>
+              <div class="audio-wave-bar"></div>
+              <div class="audio-wave-bar"></div>
+              <div class="audio-wave-bar"></div>
+              <div class="audio-wave-bar"></div>
+              <span class="ms-1 text-success small" style="font-size: 0.65rem; font-weight: bold;">SPEAKING...</span>
+            </div>
+            <div id="ivrAudioIdle" class="small text-white-50" style="font-size: 0.68rem;">
+              Audio: Ready <i class="fa-solid fa-volume-high ms-1"></i>
+            </div>
+            <span id="ivrVoiceLabel" class="small text-white-50 text-end" style="font-size: 0.65rem;">Auto-Voice</span>
+          </div>
+
+          <!-- Interactive Voice Produce Intake Drawer (Shown for Option 2) -->
+          <div id="ivrVoiceDrawer" class="voice-intake-tray d-none mt-2">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+              <span class="small text-warning fw-bold" style="font-size: 0.72rem;">
+                <i class="fa-solid fa-microphone me-1"></i> बोलें या विकल्प चुनें:
+              </span>
+              <button type="button" class="btn btn-sm btn-outline-light py-0 px-1" style="font-size: 0.65rem;" onclick="window.ivrPhoneSimulator && window.ivrPhoneSimulator.toggleMicRecognition()">
+                <i class="fa-solid fa-microphone-lines me-1"></i> Use Mic
+              </button>
+            </div>
+            <div class="d-flex gap-1 flex-wrap">
+              <button type="button" class="quick-phrase-btn" onclick="window.ivrPhoneSimulator && window.ivrPhoneSimulator.submitVoiceHarvest('टमाटर (Tomato)', 500)">
+                500 kg टमाटर
+              </button>
+              <button type="button" class="quick-phrase-btn" onclick="window.ivrPhoneSimulator && window.ivrPhoneSimulator.submitVoiceHarvest('आलू (Potato)', 300)">
+                300 kg आलू
+              </button>
+              <button type="button" class="quick-phrase-btn" onclick="window.ivrPhoneSimulator && window.ivrPhoneSimulator.submitVoiceHarvest('प्याज (Onion)', 200)">
+                200 kg प्याज
+              </button>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Keypad -->
+        <div class="phone-keypad">
+          <button type="button" class="dtmf-btn" data-key="1">1<sub>Mandi</sub></button>
+          <button type="button" class="dtmf-btn" data-key="2">2<sub>Sell</sub></button>
+          <button type="button" class="dtmf-btn" data-key="3">3<sub>Payout</sub></button>
+
+          <button type="button" class="dtmf-btn" data-key="4">4<sub>VDF Hub</sub></button>
+          <button type="button" class="dtmf-btn" data-key="5">5<sub>JKL</sub></button>
+          <button type="button" class="dtmf-btn" data-key="6">6<sub>MNO</sub></button>
+
+          <button type="button" class="dtmf-btn" data-key="7">7<sub>PQRS</sub></button>
+          <button type="button" class="dtmf-btn" data-key="8">8<sub>TUV</sub></button>
+          <button type="button" class="dtmf-btn" data-key="9">9<sub>WXYZ</sub></button>
+
+          <button type="button" class="dtmf-btn" data-key="*">*<sub>Back</sub></button>
+          <button type="button" class="dtmf-btn" data-key="0">0<sub>Demand</sub></button>
+          <button type="button" class="dtmf-btn" data-key="#">#<sub>Help</sub></button>
+        </div>
+
+        <!-- Call Controls -->
+        <div class="call-action-row">
+          <button id="ivrCallBtn" type="button" class="btn-call-circle bg-success text-white" title="Call 1800-890-KISAN">
+            <i class="fa-solid fa-phone"></i>
+          </button>
+          <button id="ivrEndCallBtn" type="button" class="btn-call-circle bg-danger text-white d-none" title="End Call">
+            <i class="fa-solid fa-phone-slash"></i>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Right Column: Live Call Audio Log & Evaluator Guide -->
+    <div class="col-lg-6">
+      
+      <!-- Evaluator Testing Guide -->
+      <div class="p-3 bg-white rounded-4 border shadow-sm mb-3">
+        <h6 class="fw-bold mb-2 text-success">
+          <i class="fa-solid fa-lightbulb me-1 text-warning"></i> Evaluation Testing Sequence:
+        </h6>
+        <ol class="small text-secondary mb-0 ps-3">
+          <li class="mb-1">Click the <strong>Green Call Button</strong>: Phone rings, connects to 1800-890-KISAN, and speaks the welcome menu.</li>
+          <li class="mb-1">Press <strong>[ 1 ]</strong>: Speaks today's mandi prices vs. AgriConnect premium rates.</li>
+          <li class="mb-1">Press <strong>[ 2 ]</strong>: Beeps for voice harvest intake. Speak with microphone or tap a quick harvest chip. A simulated confirmation SMS is instantly sent to the farmer!</li>
+          <li class="mb-1">Press <strong>[ 3 ]</strong>: Checks last ₹11,200 bank transfer & payment status for farmer Ramesh Kumar.</li>
+          <li class="mb-1">Press <strong>[ 4 ]</strong>: Routes call directly to Village Facilitator Sunil Mahto.</li>
+          <li class="mb-1">Press <strong>[ 0 ]</strong>: Checks live urban demand orders (500 kg Tomato / 200 kg Capsicum).</li>
+          <li>Press <strong>[ * ]</strong>: Returns to Main Menu.</li>
+        </ol>
+      </div>
+
+      <!-- Real-time Transcript Stream -->
+      <div class="transcript-box shadow-sm">
+        <div class="d-flex justify-content-between align-items-center mb-3 pb-2 border-bottom">
+          <h6 class="fw-bold m-0" style="color: var(--color-primary-dark);">
+            <i class="fa-solid fa-receipt me-2 text-primary"></i> Live Voice & Call Transcript
+          </h6>
+          <span class="badge bg-light text-secondary border" id="ivrEngineBadge">Speech Synthesis Active</span>
+        </div>
+
+        <div id="ivrTranscriptLog">
+          <div class="p-3 mb-2 rounded-3 small bg-light text-muted text-center italic">
+            <i class="fa-solid fa-phone-flip me-2 text-success"></i> Waiting for call connection. Click the green dial button on the phone casing.
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Interactive IVR Phone Simulator Script -->
+<script src="{% static 'js/ivr_simulator.js' %}"></script>
+{% endblock %}

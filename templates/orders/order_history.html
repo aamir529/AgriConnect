@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}My Orders | AgriConnect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+    <div>
+      <h3 class="fw-bold m-0" style="color: var(--color-primary-dark);">
+        <i class="fa-solid fa-clock-rotate-left text-success me-2"></i> Your Order History
+      </h3>
+      <p class="text-muted small m-0">Track farm harvest delivery milestones and historical purchases</p>
+    </div>
+    <a href="{% url 'marketplace_catalog' %}" class="btn btn-outline-success rounded-pill btn-sm">
+      <i class="fa-solid fa-store me-1"></i> Farm Marketplace
+    </a>
+  </div>
+
+  {% if orders %}
+    <div class="d-flex flex-column gap-3">
+      {% for order in orders %}
+        <div class="bg-white p-4 rounded-4 border shadow-sm">
+          
+          <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 pb-2 border-bottom">
+            <div>
+              <h5 class="fw-bold m-0" style="color: var(--color-primary-dark);">Order #{{ order.order_number }}</h5>
+              <small class="text-muted">Placed on {{ order.created_at|date:"d M Y, h:i A" }}</small>
+            </div>
+            <div class="text-end">
+              <span class="badge {% if order.status == 'DELIVERED' %}bg-success{% elif order.status == 'PLACED' %}bg-warning text-dark{% else %}bg-info{% endif %} rounded-pill px-3 py-2">
+                {{ order.get_status_display }}
+              </span>
+              <div class="fw-bold text-success fs-5 mt-1">₹{{ order.total_amount }}</div>
+            </div>
+          </div>
+
+          <div class="row g-3 align-items-center">
+            <div class="col-md-8">
+              <div class="d-flex flex-wrap gap-2 mb-2">
+                {% for item in order.items.all %}
+                  <span class="badge bg-light text-dark border p-2 d-inline-flex align-items-center gap-2">
+                    {% if item.product.image %}
+                      <img src="{{ item.product.image.url }}" alt="{{ item.product.name }}" class="rounded-circle object-fit-cover" style="width: 22px; height: 22px;">
+                    {% else %}
+                      {{ item.product.emoji_icon }}
+                    {% endif %}
+                    <strong>{{ item.product.name }}</strong> ({{ item.quantity_kg }} kg &bull; ₹{{ item.subtotal }})
+                  </span>
+                {% endfor %}
+              </div>
+              <small class="text-muted d-block">
+                <i class="fa-solid fa-location-dot me-1 text-danger"></i> Delivered to: {{ order.delivery_address }}
+              </small>
+            </div>
+
+            <div class="col-md-4 text-md-end d-flex flex-column gap-2 align-items-md-end">
+              <a href="{% url 'live_tracking' order.order_number %}" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1">
+                <i class="fa-solid fa-satellite-dish me-1"></i> Live Tracker & Milestones
+              </a>
+              <a href="{% url 'file_dispute' order.id %}" class="btn btn-sm btn-light border text-danger rounded-pill px-3 py-1">
+                <i class="fa-solid fa-triangle-exclamation me-1"></i> Report Quality Issue
+              </a>
+            </div>
+          </div>
+
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="text-center py-5 bg-white rounded-4 border shadow-sm">
+      <div class="fs-1 text-muted mb-3">📦</div>
+      <h4 class="fw-bold">No orders placed yet</h4>
+      <p class="text-muted">Start shopping fresh produce direct from village growers.</p>
+      <a href="{% url 'marketplace_catalog' %}" class="btn btn-agri-primary">
+        <i class="fa-solid fa-store me-1"></i> Browse Marketplace
+      </a>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,285 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ product.name }} | Price Transparency Breakdown{% endblock %}
+
+{% block extra_css %}
+<style>
+  .transparency-hero-card {
+    background: linear-gradient(145deg, #FAF8F5, #FFFFFF);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+  }
+  .progress-segment {
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .progress-segment:hover {
+    filter: brightness(1.1);
+    transform: scaleY(1.2);
+  }
+  .allocation-pill {
+    background: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    transition: all var(--transition-fast);
+  }
+  .allocation-pill:hover {
+    border-color: var(--color-accent-emerald);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-sm);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb small">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-decoration-none text-success">Home</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'marketplace_catalog' %}" class="text-decoration-none text-success">Marketplace</a></li>
+      <li class="breadcrumb-item"><a href="{% url 'marketplace_catalog' %}?category={{ product.category.id }}" class="text-decoration-none text-success">{{ product.category.name }}</a></li>
+      <li class="breadcrumb-item active" aria-current="page">{{ product.name }}</li>
+    </ol>
+  </nav>
+
+  <div class="row g-4 mb-5">
+    
+    <!-- Left Column: Produce Visual Anchor & Farmer Origin Story -->
+    <div class="col-lg-5">
+      
+      <!-- Visual Well -->
+      <div class="rounded-4 border mb-4 position-relative shadow-sm overflow-hidden" style="background: #FAF8F5;">
+        <div class="position-absolute top-0 start-0 m-3" style="z-index: 2;">
+          {% if product.is_organic %}
+            <span class="badge bg-success rounded-pill px-3 py-2 shadow-sm"><i class="fa-solid fa-leaf me-1"></i> 100% Organic Certified</span>
+          {% endif %}
+        </div>
+        <div class="position-absolute top-0 end-0 m-3" style="z-index: 2;">
+          <span class="badge bg-white text-dark border rounded-pill px-3 py-2 shadow-sm">
+            <i class="fa-solid fa-medal text-warning me-1"></i> Quality Grade {{ product.grade }}
+          </span>
+        </div>
+
+        {% if product.image %}
+          <div style="height: 360px; overflow: hidden;">
+            <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-100 h-100 object-fit-cover">
+          </div>
+        {% else %}
+          <div class="py-5 text-center" style="background: linear-gradient(145deg, #FAF8F5, #EBF5EE);">
+            <span style="font-size: 8rem; filter: drop-shadow(0 15px 25px rgba(20,54,40,0.18));">{{ product.emoji_icon }}</span>
+          </div>
+        {% endif %}
+
+        <div class="p-3 bg-white border-top text-center text-muted small">
+          <i class="fa-solid fa-calendar-day me-1 text-success"></i> Harvested: <strong>{{ product.harvest_date|date:"d M Y" }}</strong> (&lt; 24h fresh from farm)
+        </div>
+      </div>
+
+      <!-- Farm Origin & Village Hub Attribution -->
+      <div class="bg-white p-4 rounded-4 border shadow-sm">
+        <h6 class="fw-bold mb-3 text-dark">
+          <i class="fa-solid fa-seedling text-success me-2"></i> Farm Origin & Producer
+        </h6>
+        
+        <div class="d-flex align-items-center gap-3 mb-3">
+          <div class="role-avatar" style="background-color: #E8F5E9; color: #2E7D32;">
+            <i class="fa-solid fa-tractor"></i>
+          </div>
+          <div>
+            <h5 class="fw-bold m-0">{{ product.farmer.user.get_full_name|default:product.farmer.user.username }}</h5>
+            <small class="text-muted">
+              <i class="fa-solid fa-location-dot me-1 text-danger"></i> {{ product.farmer.user.village_or_city }}, {{ product.farmer.user.district }}
+            </small>
+          </div>
+        </div>
+
+        <div class="row g-2 text-center small mb-3">
+          <div class="col-6">
+            <div class="p-2 bg-light rounded-3 border">
+              <span class="text-muted d-block" style="font-size: 0.72rem;">Cultivable Land</span>
+              <strong>{{ product.farmer.land_area_acres }} Acres</strong>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="p-2 bg-light rounded-3 border">
+              <span class="text-muted d-block" style="font-size: 0.72rem;">VDF Hub</span>
+              <strong>{{ product.farmer.facilitator.center_name|default:'Village Hub' }}</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 bg-light rounded-3 border">
+          <small class="text-secondary d-block">
+            <i class="fa-solid fa-shield-check text-success me-1"></i>
+            <strong>Assisted Quality Check:</strong> Batch weighed, quality-graded, and digitally logged by Village Facilitator Sunil Mahto.
+          </small>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Right Column: Product Overview, Purchase Card & The Signature Transparency Card -->
+    <div class="col-lg-7">
+      
+      <!-- Title & Price Header -->
+      <div class="bg-white p-4 rounded-4 border shadow-sm mb-4">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <div>
+            <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1 mb-1">
+              {{ product.category.name }}
+            </span>
+            <h2 class="fw-bold m-0" style="color: var(--color-primary-dark);">{{ product.name }}</h2>
+            <p class="text-muted mb-0">Variety: {{ product.variety|default:'Standard Commercial Grade' }}</p>
+          </div>
+          <div class="text-end">
+            <h2 class="fw-bold text-success m-0">₹{{ product.consumer_price_per_kg }}</h2>
+            <span class="text-muted small">per kg (All fees included)</span>
+          </div>
+        </div>
+
+        <hr class="my-3">
+
+        <!-- Purchase & Add to Basket Row -->
+        <form method="post" action="{% url 'add_to_cart' product.id %}" class="row g-3 align-items-center">
+          {% csrf_token %}
+          <div class="col-sm-4">
+            <label class="form-label small fw-bold text-secondary mb-1">Quantity (kg):</label>
+            <div class="input-group">
+              <input type="number" name="quantity_kg" value="{{ product.minimum_order_kg }}" min="{{ product.minimum_order_kg }}" max="{{ product.available_quantity_kg }}" step="0.5" class="form-control form-control-lg text-center fw-bold">
+              <span class="input-group-text">kg</span>
+            </div>
+            <small class="text-muted" style="font-size: 0.72rem;">Min order: {{ product.minimum_order_kg }} kg</small>
+          </div>
+
+          <div class="col-sm-8 pt-sm-4">
+            <button type="submit" class="btn btn-agri-primary w-100 py-3 justify-content-center fs-6 shadow">
+              <i class="fa-solid fa-cart-shopping me-2"></i> Add to Basket & Support Farmer
+            </button>
+          </div>
+        </form>
+      </div>
+
+      <!-- ================= THE SIGNATURE PRICE TRANSPARENCY DECOMPOSITION CARD ================= -->
+      <div class="transparency-hero-card p-4 p-md-5 mb-4">
+        
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <span class="badge bg-success text-white rounded-pill px-3 py-1 mb-1">
+              <i class="fa-solid fa-eye me-1"></i> Core Innovation
+            </span>
+            <h4 class="fw-bold m-0" style="color: var(--color-primary-dark);">Where Does Your Rupee Go?</h4>
+            <small class="text-muted">100% transparent cost decomposition through the direct supply chain</small>
+          </div>
+
+          <div class="text-end">
+            <span class="badge bg-success rounded-pill px-3 py-2 fw-bold fs-6">
+              You Save {{ breakdown.consumer_savings_percent }}%
+            </span>
+          </div>
+        </div>
+
+        <!-- Multi-Segment Cost Allocation Progress Bar -->
+        <div class="progress mb-3 shadow-sm" style="height: 24px; border-radius: 12px; overflow: hidden;">
+          <div class="progress-bar progress-segment bg-success" style="width: 75%;" title="Farmer Direct: 75%">
+            <span class="fw-bold small">75% Farmer</span>
+          </div>
+          <div class="progress-bar progress-segment bg-warning" style="width: 5%;" title="VDF Facilitator: 5%">
+            <span class="fw-bold small">5%</span>
+          </div>
+          <div class="progress-bar progress-segment bg-info" style="width: 10%;" title="Transit Logistics: 10%">
+            <span class="fw-bold small">10%</span>
+          </div>
+          <div class="progress-bar progress-segment bg-secondary" style="width: 10%;" title="Platform Ops: 10%">
+            <span class="fw-bold small">10%</span>
+          </div>
+        </div>
+
+        <!-- Itemized Rupee Allocation Cards -->
+        <div class="row g-2 mb-4 text-center">
+          <div class="col-sm-3">
+            <div class="allocation-pill">
+              <span class="text-muted d-block small" style="font-size: 0.72rem;">Farmer Payout</span>
+              <h5 class="fw-bold text-success m-0">₹{{ breakdown.farmer_take_home }}</h5>
+              <small class="text-success fw-semibold" style="font-size: 0.7rem;">Direct to Bank/UPI</small>
+            </div>
+          </div>
+
+          <div class="col-sm-3">
+            <div class="allocation-pill">
+              <span class="text-muted d-block small" style="font-size: 0.72rem;">VDF Facilitator</span>
+              <h5 class="fw-bold text-primary m-0">₹{{ breakdown.facilitator_fee }}</h5>
+              <small class="text-muted" style="font-size: 0.7rem;">Weighing & QC Hub</small>
+            </div>
+          </div>
+
+          <div class="col-sm-3">
+            <div class="allocation-pill">
+              <span class="text-muted d-block small" style="font-size: 0.72rem;">Shared Transit</span>
+              <h5 class="fw-bold text-info m-0">₹{{ breakdown.logistics_fee }}</h5>
+              <small class="text-muted" style="font-size: 0.7rem;">Farm-to-Doorstep</small>
+            </div>
+          </div>
+
+          <div class="col-sm-3">
+            <div class="allocation-pill">
+              <span class="text-muted d-block small" style="font-size: 0.72rem;">Platform Ops</span>
+              <h5 class="fw-bold text-secondary m-0">₹{{ breakdown.platform_fee }}</h5>
+              <small class="text-muted" style="font-size: 0.7rem;">App & Safety</small>
+            </div>
+          </div>
+        </div>
+
+        <!-- Direct Comparison against Traditional Multi-Middleman Chain -->
+        <div class="p-3 bg-white rounded-4 border">
+          <h6 class="fw-bold mb-2 text-dark">
+            <i class="fa-solid fa-code-compare text-danger me-1"></i> Traditional Retail vs. AgriConnect Direct:
+          </h6>
+          <div class="table-responsive">
+            <table class="table table-sm table-bordered m-0 align-middle small text-center">
+              <thead class="table-light">
+                <tr>
+                  <th>Supply Model</th>
+                  <th>Farmer Gets</th>
+                  <th>Middlemen Cuts</th>
+                  <th>Final Price You Pay</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="text-start">Traditional Supermarket Chain</td>
+                  <td class="text-danger fw-bold">~₹14.00 / kg (33%)</td>
+                  <td class="text-danger">~₹28.00 / kg (Brokers/Agents)</td>
+                  <td class="text-danger fw-bold">₹{{ breakdown.traditional_retail_price }} / kg</td>
+                </tr>
+                <tr class="table-success">
+                  <td class="text-start fw-bold">AgriConnect Direct Platform</td>
+                  <td class="text-success fw-bold">₹{{ breakdown.farmer_take_home }} / kg (75%)</td>
+                  <td class="text-success">₹0.00 (Zero Brokers)</td>
+                  <td class="text-success fw-bold">₹{{ breakdown.consumer_price }} / kg</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="d-flex justify-content-between align-items-center mt-2" style="font-size: 0.78rem;">
+            <span class="text-success fw-bold">
+              <i class="fa-solid fa-circle-check me-1"></i> Farmer earns +78% higher realization
+            </span>
+            <span class="text-success fw-bold">
+              <i class="fa-solid fa-piggy-bank me-1"></i> You save ₹{{ breakdown.consumer_savings_rupees }}/kg
+            </span>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

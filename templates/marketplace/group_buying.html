@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Community Group Buying (सामूहिक खरीद) | AgriConnect{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Header Banner -->
+  <div class="p-4 p-md-5 rounded-4 mb-4 border" style="background: linear-gradient(135deg, #143628, #1F523B); color: white;">
+    <div class="row align-items-center g-3">
+      <div class="col-lg-8">
+        <span class="badge bg-white rounded-pill shadow-sm" style="color: #143628 !important; background-color: #ffffff !important; font-weight: 700; rounded-pill px-3 py-1 mb-2">
+          <i class="fa-solid fa-users-viewfinder me-1 text-warning"></i> Neighborhood Bulk Pooling
+        </span>
+        <h2 class="fw-bold mb-1 text-white" style="color: #ffffff !important;">Community Group Buying (सामूहिक खरीद)</h2>
+        <p class="mb-0 text-white" style="color: rgba(255, 255, 255, 0.9) !important;">
+          Pool orders with your apartment neighbors for full 50kg farm crates. Unlock an extra 15% discount and zero delivery fees.
+        </p>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        <span class="badge bg-warning rounded-pill px-3 py-2 fw-bold text-dark fs-6 shadow">
+          <i class="fa-solid fa-truck-fast me-1"></i> Free Consolidated Drop
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3 Value Pillars Strip -->
+  <div class="row g-3 mb-4 text-center">
+    <div class="col-md-4">
+      <div class="bg-white p-3 rounded-4 border shadow-sm">
+        <i class="fa-solid fa-tags text-success fs-3 mb-2"></i>
+        <h6 class="fw-bold text-dark m-0">15% Bulk Discount</h6>
+        <small class="text-muted">Direct wholesale farm crate rate for societies</small>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="bg-white p-3 rounded-4 border shadow-sm">
+        <i class="fa-solid fa-leaf text-success fs-3 mb-2"></i>
+        <h6 class="fw-bold text-dark m-0">Zero Carbon Drops</h6>
+        <small class="text-muted">One combined vehicle delivery per apartment</small>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="bg-white p-3 rounded-4 border shadow-sm">
+        <i class="fa-solid fa-hand-holding-dollar text-success fs-3 mb-2"></i>
+        <h6 class="fw-bold text-dark m-0">Full Harvest Clear</h6>
+        <small class="text-muted">Farmer sells entire crate in a single transaction</small>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Pools Grid -->
+  <div class="row g-4 mb-4">
+    {% if pools %}
+      {% for pool in pools %}
+        <div class="col-lg-6">
+          <div class="card h-100 border rounded-4 shadow-sm overflow-hidden">
+            
+            <div class="p-3 bg-light border-bottom d-flex justify-content-between align-items-center">
+              <div>
+                <span class="badge bg-success rounded-pill small me-2">{{ pool.product.name }}</span>
+                <span class="badge {% if pool.status == 'OPEN' %}bg-primary{% elif pool.status == 'LOCKED_FULL' %}bg-success{% else %}bg-secondary{% endif %} rounded-pill small">
+                  {{ pool.get_status_display }}
+                </span>
+              </div>
+              <small class="text-muted">
+                <i class="fa-solid fa-clock me-1"></i> Dispatches: Today 6 PM
+              </small>
+            </div>
+
+            <div class="card-body p-4 d-flex flex-column">
+              
+              <div class="d-flex align-items-center gap-3 mb-3">
+                {% if pool.product.image %}
+                  <img src="{{ pool.product.image.url }}" alt="{{ pool.product.name }}" class="rounded-3 object-fit-cover shadow-sm" style="width: 72px; height: 72px; flex-shrink: 0;">
+                {% else %}
+                  <span style="font-size: 3.5rem;">{{ pool.product.emoji_icon }}</span>
+                {% endif %}
+                <div>
+                  <h5 class="fw-bold m-0" style="color: var(--color-primary-dark);">{{ pool.title }}</h5>
+                  <small class="text-muted d-block">
+                    <i class="fa-solid fa-building me-1 text-danger"></i> {{ pool.apartment_cluster }}
+                  </small>
+                  <small class="text-muted">
+                    <i class="fa-solid fa-tractor me-1 text-success"></i> Grower: {{ pool.product.farmer.user.get_full_name }}
+                  </small>
+                </div>
+              </div>
+
+              <!-- Price Box -->
+              <div class="d-flex justify-content-between align-items-center p-3 bg-light rounded-3 border mb-3">
+                <div>
+                  <span class="text-muted small d-block">Bulk Pool Rate:</span>
+                  <strong class="text-success fs-5">₹{{ pool.bulk_price_per_kg }}</strong> / kg
+                </div>
+                <div class="text-end">
+                  <span class="text-muted small d-block">Single Retail Price:</span>
+                  <del class="text-muted">₹{{ pool.product.consumer_price_per_kg }} / kg</del>
+                </div>
+              </div>
+
+              <!-- Progress Bar -->
+              <div class="mb-3">
+                <div class="d-flex justify-content-between small fw-bold mb-1">
+                  <span>Pledged: {{ pool.current_kg }} kg / {{ pool.target_kg }} kg</span>
+                  <span class="text-success">{{ pool.progress_percent }}% Filled</span>
+                </div>
+                <div class="progress" style="height: 14px; border-radius: 7px;">
+                  <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: {{ pool.progress_percent }}%;"></div>
+                </div>
+                <small class="text-muted mt-1 d-block text-end" style="font-size: 0.72rem;">
+                  {% if pool.remaining_kg > 0 %}
+                    Only <strong>{{ pool.remaining_kg }} kg</strong> remaining to lock pool!
+                  {% else %}
+                    🎉 Target fulfilled! Preparing crate for batch loading.
+                  {% endif %}
+                </small>
+              </div>
+
+              <!-- Action Pledge Form -->
+              <div class="mt-auto pt-3 border-top">
+                {% if pool.status == 'OPEN' %}
+                  <form method="post" action="{% url 'join_group_pool' pool.id %}" class="row g-2 align-items-center">
+                    {% csrf_token %}
+                    <div class="col-7">
+                      <select name="pledged_kg" class="form-select form-select-sm">
+                        <option value="2.5">Pledge 2.5 kg (₹{% widthratio pool.bulk_price_per_kg 1 2.5 %})</option>
+                        <option value="5.0" selected>Pledge 5.0 kg (₹{% widthratio pool.bulk_price_per_kg 1 5 %})</option>
+                        <option value="10.0">Pledge 10.0 kg (₹{% widthratio pool.bulk_price_per_kg 1 10 %})</option>
+                      </select>
+                    </div>
+                    <div class="col-5">
+                      <button type="submit" class="btn btn-agri-primary btn-sm w-100 rounded-pill py-2 shadow-sm">
+                        <i class="fa-solid fa-plus me-1"></i> Join Pool
+                      </button>
+                    </div>
+                  </form>
+                {% else %}
+                  <button class="btn btn-secondary btn-sm w-100 rounded-pill py-2" disabled>
+                    <i class="fa-solid fa-lock me-1"></i> Batch Locked & Loaded
+                  </button>
+                {% endif %}
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <div class="col-12 text-center py-5 bg-white rounded-4 border shadow-sm">
+        <div class="fs-1 text-muted mb-3">🤝</div>
+        <h4 class="fw-bold">No active neighborhood pools right now</h4>
+        <p class="text-muted">Run seed_phase7 command to populate demo group buy batches.</p>
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- Launch Your Own Society Pool CTA -->
+  <div class="p-4 bg-white rounded-4 border shadow-sm text-center">
+    <h5 class="fw-bold text-dark mb-1">Want to Launch a Group Buying Pool in Your Society?</h5>
+    <p class="text-muted small mb-3">
+      Resident Welfare Associations (RWAs) can connect with their assigned Village Digital Facilitator to schedule weekly bulk drops.
+    </p>
+    <a href="{% url 'marketplace_catalog' %}" class="btn btn-outline-success rounded-pill px-4 btn-sm">
+      <i class="fa-solid fa-store me-1"></i> Browse Regular Marketplace
+    </a>
+  </div>
+
+</div>
+{% endblock %}

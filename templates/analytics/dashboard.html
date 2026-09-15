@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Ecosystem Impact & Disintermediation Analytics | AgriConnect{% endblock %}
+
+{% block extra_css %}
+<style>
+  .kpi-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
+  }
+  .kpi-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-accent-emerald);
+  }
+  .chart-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    box-shadow: var(--shadow-sm);
+    height: 100%;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Analytics Hero Banner -->
+  <div class="p-4 p-md-5 rounded-4 mb-4 border" style="background: linear-gradient(135deg, #143628, #1E4D38); color: white;">
+    <div class="row align-items-center g-3">
+      <div class="col-lg-8">
+        <span class="badge bg-white rounded-pill shadow-sm" style="color: #143628 !important; background-color: #ffffff !important; font-weight: 700; rounded-pill px-3 py-1 mb-2">
+          <i class="fa-solid fa-trophy me-1 text-warning"></i> SIH 2026 Innovation Metrics & Impact
+        </span>
+        <h2 class="fw-bold mb-1 text-white" style="color: #ffffff !important;">Ecosystem Disintermediation Analytics</h2>
+        <p class="mb-0 text-white" style="color: rgba(255, 255, 255, 0.9) !important;">
+          Verifiable supply chain accounting proving the elimination of multi-tier commission agents and distress sales.
+        </p>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        <span class="badge bg-success rounded-pill px-3 py-2 fs-6 shadow">
+          <i class="fa-solid fa-circle-check me-1"></i> 75.0% Direct Realization
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Primary Impact KPI Row -->
+  <div class="row g-3 mb-4">
+    
+    <div class="col-6 col-lg-3">
+      <div class="kpi-card">
+        <div class="d-flex justify-content-between align-items-center text-muted small mb-1">
+          <span>Farmer Realization</span>
+          <i class="fa-solid fa-percent text-success fs-5"></i>
+        </div>
+        <h2 class="fw-bold text-success my-1">{{ farmer_realization_rate }}%</h2>
+        <small class="text-muted">vs. 28% in Traditional Mandi</small>
+      </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+      <div class="kpi-card">
+        <div class="d-flex justify-content-between align-items-center text-muted small mb-1">
+          <span>Farmer Direct Payout</span>
+          <i class="fa-solid fa-hand-holding-dollar text-primary fs-5"></i>
+        </div>
+        <h2 class="fw-bold text-dark my-1">₹{{ total_farmer }}</h2>
+        <small class="text-success"><i class="fa-solid fa-arrow-up me-1"></i> Direct to Bank/UPI</small>
+      </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+      <div class="kpi-card">
+        <div class="d-flex justify-content-between align-items-center text-muted small mb-1">
+          <span>Middleman Cuts Saved</span>
+          <i class="fa-solid fa-scissors text-danger fs-5"></i>
+        </div>
+        <h2 class="fw-bold text-danger my-1">₹{{ middleman_savings }}</h2>
+        <small class="text-muted">Zero broker commissions</small>
+      </div>
+    </div>
+
+    <div class="col-6 col-lg-3">
+      <div class="kpi-card">
+        <div class="d-flex justify-content-between align-items-center text-muted small mb-1">
+          <span>Produce Volume</span>
+          <i class="fa-solid fa-weight-scale text-warning fs-5"></i>
+        </div>
+        <h2 class="fw-bold text-dark my-1">{{ total_volume_kg }} kg</h2>
+        <small class="text-muted">Direct from rural hubs</small>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Charts Section -->
+  <div class="row g-4 mb-4">
+    
+    <!-- Chart 1: Supply Chain Margin Breakdown (Horizontal Bar / Grouped Bar) -->
+    <div class="col-lg-7">
+      <div class="chart-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h5 class="fw-bold m-0" style="color: var(--color-primary-dark);">Where Does the Consumer Rupee Go?</h5>
+            <small class="text-muted">Traditional Multi-Tier APMC Chain vs. AgriConnect Direct Model</small>
+          </div>
+          <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1">Core Metric</span>
+        </div>
+        <div style="height: 300px;">
+          <canvas id="marginChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart 2: Crop Volume Share (Doughnut) -->
+    <div class="col-lg-5">
+      <div class="chart-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <h5 class="fw-bold m-0" style="color: var(--color-primary-dark);">Crop Volume Distribution</h5>
+            <small class="text-muted">Percentage of produce transacted by weight (kg)</small>
+          </div>
+          <span class="badge bg-light text-secondary border">Hub Aggregation</span>
+        </div>
+        <div style="height: 300px; display: flex; align-items: center; justify-content: center;">
+          <canvas id="cropChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Chart 3: Monthly Realization Growth Trajectory -->
+  <div class="chart-card mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <h5 class="fw-bold m-0" style="color: var(--color-primary-dark);">Platform Realization Growth Trajectory</h5>
+        <small class="text-muted">Cumulative farmer earnings and middleman commissions diverted (Oct 2025 – Mar 2026)</small>
+      </div>
+      <span class="badge bg-success rounded-pill px-3 py-1">Scaling Velocity</span>
+    </div>
+    <div style="height: 280px;">
+      <canvas id="growthChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Village Hub Performance & Qualitative Disintermediation Table -->
+  <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+      <div>
+        <h5 class="fw-bold m-0" style="color: var(--color-primary-dark);">Village Aggregation Hubs Breakdown</h5>
+        <small class="text-muted">Performance metrics of assisted-digital physical centers</small>
+      </div>
+      <span class="badge bg-light text-secondary border">Active Hubs: {{ village_hubs }}</span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light small">
+          <tr>
+            <th>Hub Center Name</th>
+            <th>Facilitator (VDF)</th>
+            <th>Registered Farmers</th>
+            <th>Hub Commission (5%)</th>
+            <th>Total Volume Dispatched</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <strong>Angara Digital CSC Aggregation Hub</strong>
+              <br><small class="text-muted">Block Angara, Ranchi</small>
+            </td>
+            <td>
+              <span class="fw-semibold">Sunil Mahto</span>
+              <br><small class="text-muted">CSC Certified VDF</small>
+            </td>
+            <td><strong>{{ active_farmers }} Village Growers</strong></td>
+            <td><strong class="text-success">₹{{ total_gmv|floatformat:0 }}</strong> (5% Quality Cut)</td>
+            <td><strong>{{ total_volume_kg }} kg</strong></td>
+            <td><span class="badge bg-success rounded-pill px-3 py-1">Active Hub</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chart.js Library -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    
+    // 1. Margin Comparison Bar Chart
+    const marginData = {{ margin_comparison_json|safe }};
+    const ctxMargin = document.getElementById('marginChart').getContext('2d');
+    new Chart(ctxMargin, {
+      type: 'bar',
+      data: {
+        labels: ['Farmer Payout', 'Brokers/Intermediaries', 'VDF Hub Quality', 'Cold Transit', 'Platform Ops'],
+        datasets: [
+          {
+            label: 'Traditional APMC Mandi (%)',
+            data: marginData.traditional,
+            backgroundColor: '#E76F51',
+            borderRadius: 6
+          },
+          {
+            label: 'AgriConnect Direct Platform (%)',
+            data: marginData.agriconnect,
+            backgroundColor: '#2D6A4F',
+            borderRadius: 6
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top' },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.dataset.label}: ${ctx.raw}% of Consumer Rupee`
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            max: 100,
+            ticks: { callback: (v) => v + '%' }
+          }
+        }
+      }
+    });
+
+    // 2. Crop Share Doughnut Chart
+    const cropLabels = {{ crop_labels_json|safe }};
+    const cropData = {{ crop_data_json|safe }};
+    const ctxCrop = document.getElementById('cropChart').getContext('2d');
+    new Chart(ctxCrop, {
+      type: 'doughnut',
+      data: {
+        labels: cropLabels,
+        datasets: [{
+          data: cropData,
+          backgroundColor: ['#2D6A4F', '#52B788', '#E9C46A', '#F4A261', '#E76F51'],
+          borderWidth: 2,
+          hoverOffset: 6
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom' },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.label}: ${ctx.raw} kg`
+            }
+          }
+        }
+      }
+    });
+
+    // 3. Monthly Trajectory Line Chart
+    const trendData = {{ monthly_trend_json|safe }};
+    const ctxGrowth = document.getElementById('growthChart').getContext('2d');
+    new Chart(ctxGrowth, {
+      type: 'line',
+      data: {
+        labels: trendData.months,
+        datasets: [
+          {
+            label: 'Farmer Realization Payout (₹)',
+            data: trendData.farmer_payout,
+            borderColor: '#2D6A4F',
+            backgroundColor: 'rgba(45, 106, 79, 0.1)',
+            fill: true,
+            tension: 0.35,
+            pointRadius: 5
+          },
+          {
+            label: 'Middleman Broker Cuts Eliminated (₹)',
+            data: trendData.middleman_eliminated,
+            borderColor: '#E76F51',
+            backgroundColor: 'rgba(231, 111, 81, 0.08)',
+            fill: true,
+            tension: 0.35,
+            borderDash: [5, 5],
+            pointRadius: 4
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'top' },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${ctx.dataset.label}: ₹${ctx.raw.toLocaleString()}`
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: { callback: (v) => '₹' + (v / 1000) + 'k' }
+          }
+        }
+      }
+    });
+
+  });
+</script>
+{% endblock %}

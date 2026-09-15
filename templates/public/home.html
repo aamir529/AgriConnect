@@ -1,0 +1,884 @@
+﻿{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}AgriConnect (कृषि सेतु) | Direct Farm-to-Fork Agricultural Marketplace India{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <!-- ================= 1. Live Regional Broadcast Ticker ================= -->
+  <div class="broadcast-ticker-wrap mb-4 mt-2">
+    <span class="ticker-pulse-badge">
+      <span class="pulse-dot"></span> लाइव अपडेट
+    </span>
+    <div class="text-truncate">
+      <span>🌾 आज की ताज़ा तुड़ाई: <strong>अंगड़ा, जोन्हा, ओरमांझी एवं नामकुम ग्रामीण हब</strong> से सीधी आपूर्ति &bull; बिचौलिया कमीशन: <strong>0%</strong> &bull; किसान को सीधा भुगतान: <strong>75%</strong> &bull; डिलीवरी समय: <strong>आज सायं 5 बजे से पहले</strong></span>
+    </div>
+  </div>
+
+  <!-- ================= 2. Conversion Hero Section ================= -->
+  <section class="hero-wrapper pt-2">
+    <div class="row align-items-center g-5">
+      
+      <!-- Left Column: Copy & Value Proposition -->
+      <div class="col-lg-7">
+        <div class="hero-pill-badge">
+          <i class="fa-solid fa-leaf text-success"></i> 100% Direct from Village Farmer Hubs &bull; भारत का सच्चा कृषि मंच
+        </div>
+
+        <h1 class="hero-title">
+          Fresh Harvest, <br>
+          <span class="hero-accent-text">Straight</span> from Kisans to Your Kitchen.
+        </h1>
+
+        <p class="hero-subtitle">
+          Eliminating 5-tier APMC Mandi markups. Farmers in Jharkhand earn up to <strong>+40% more</strong> while Indian families save <strong>20%–33%</strong> with complete rupee price transparency and <strong>Assisted-Digital access</strong> for zero smartphone barrier.
+        </p>
+
+        <div class="d-flex flex-wrap gap-3 mb-4">
+          <a href="{% url 'marketplace_catalog' %}" class="btn-agri-primary">
+            <i class="fa-solid fa-basket-shopping"></i> Explore Direct Marketplace
+          </a>
+          <a href="{% url 'group_buying_list' %}" class="btn-agri-outline">
+            <i class="fa-solid fa-users text-success"></i> Society Bulk Buying (15% Off)
+          </a>
+          <a href="#how-it-works-section" class="btn btn-link text-decoration-none text-muted p-2">
+            <i class="fa-solid fa-circle-play text-success me-1"></i> How KisanSetu Works
+          </a>
+        </div>
+
+        <!-- Trust Metric Summary -->
+        <div class="d-flex align-items-center gap-4 pt-3 border-top" style="border-color: var(--border-subtle) !important;">
+          <div>
+            <h4 class="mb-0 fw-bold text-success">75%</h4>
+            <small class="text-muted">Direct Farmer Share</small>
+          </div>
+          <div class="vr"></div>
+          <div>
+            <h4 class="mb-0 fw-bold text-success">&lt; 18h</h4>
+            <small class="text-muted">Harvest-to-Kitchen</small>
+          </div>
+          <div class="vr"></div>
+          <div>
+            <h4 class="mb-0 fw-bold text-success">Zero</h4>
+            <small class="text-muted">Smartphone Barrier</small>
+          </div>
+          <div class="vr d-none d-sm-block"></div>
+          <div class="d-none d-sm-block">
+            <h4 class="mb-0 fw-bold text-primary">₹0</h4>
+            <small class="text-muted">Broker Commission</small>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Live Farm Harvest Board & Purity Hub -->
+      <div class="col-lg-5">
+        <div class="harvest-live-board rounded-4 overflow-hidden">
+          
+          <!-- Board Header -->
+          <div class="p-3 text-white d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, #143628, #2D6A4F);">
+            <div>
+              <span class="badge bg-white bg-opacity-20 rounded-pill px-2 py-1 small mb-1">
+                <span class="pulse-dot me-1"></span> LIVE HARVEST BOARD
+              </span>
+              <h6 class="m-0 fw-bold">Ranchi Rural Hubs &bull; आज की ताज़ा फसल</h6>
+            </div>
+            <span class="badge bg-warning text-dark rounded-pill px-3 py-2 fw-bold shadow-sm">
+              <i class="fa-solid fa-bolt me-1"></i> &lt; 18h Fresh
+            </span>
+          </div>
+
+          <!-- Live Crop Rows (Featuring Real Photos!) -->
+          <div class="p-3 bg-white">
+            <div class="d-flex flex-column gap-2 mb-3">
+              
+              <!-- 1. Tomatoes -->
+              <div class="d-flex align-items-center justify-content-between p-2 rounded-3 border bg-light">
+                <div class="d-flex align-items-center gap-2">
+                  <img src="{% static 'images/fresh_tomatoes.jpg' %}" alt="Tomatoes" class="rounded-3 object-fit-cover shadow-sm" style="width: 44px; height: 44px;">
+                  <div>
+                    <strong class="d-block text-dark small">Hybrid Tomatoes (टमाटर)</strong>
+                    <small class="text-muted" style="font-size: 0.72rem;"><i class="fa-solid fa-tractor text-success"></i> Ramesh Kumar &bull; Jonha</small>
+                  </div>
+                </div>
+                <div class="text-end">
+                  <strong class="text-success fs-6">₹28 / kg</strong>
+                  <span class="badge bg-success-subtle text-success border border-success d-block" style="font-size: 0.65rem;">Save 33%</span>
+                </div>
+              </div>
+
+              <!-- 2. Potatoes -->
+              <div class="d-flex align-items-center justify-content-between p-2 rounded-3 border bg-light">
+                <div class="d-flex align-items-center gap-2">
+                  <img src="{% static 'images/kufri_potatoes.jpg' %}" alt="Potatoes" class="rounded-3 object-fit-cover shadow-sm" style="width: 44px; height: 44px;">
+                  <div>
+                    <strong class="d-block text-dark small">Kufri Potatoes (आलू)</strong>
+                    <small class="text-muted" style="font-size: 0.72rem;"><i class="fa-solid fa-tractor text-success"></i> Birsa Munda &bull; Getalsud</small>
+                  </div>
+                </div>
+                <div class="text-end">
+                  <strong class="text-success fs-6">₹22.5 / kg</strong>
+                  <span class="badge bg-success-subtle text-success border border-success d-block" style="font-size: 0.65rem;">Save 25%</span>
+                </div>
+              </div>
+
+              <!-- 3. Onions -->
+              <div class="d-flex align-items-center justify-content-between p-2 rounded-3 border bg-light">
+                <div class="d-flex align-items-center gap-2">
+                  <img src="{% static 'images/nashik_onions.jpg' %}" alt="Onions" class="rounded-3 object-fit-cover shadow-sm" style="width: 44px; height: 44px;">
+                  <div>
+                    <strong class="d-block text-dark small">Nashik Onions (प्याज)</strong>
+                    <small class="text-muted" style="font-size: 0.72rem;"><i class="fa-solid fa-tractor text-success"></i> Garwa Village Hub</small>
+                  </div>
+                </div>
+                <div class="text-end">
+                  <strong class="text-success fs-6">₹35 / kg</strong>
+                  <span class="badge bg-success-subtle text-success border border-success d-block" style="font-size: 0.65rem;">Save 22%</span>
+                </div>
+              </div>
+
+              <!-- 4. Chillies -->
+              <div class="d-flex align-items-center justify-content-between p-2 rounded-3 border bg-light">
+                <div class="d-flex align-items-center gap-2">
+                  <img src="{% static 'images/green_chillies.jpg' %}" alt="Chillies" class="rounded-3 object-fit-cover shadow-sm" style="width: 44px; height: 44px;">
+                  <div>
+                    <strong class="d-block text-dark small">Green Chillies (हरी मिर्च)</strong>
+                    <small class="text-muted" style="font-size: 0.72rem;"><i class="fa-solid fa-tractor text-success"></i> Sita Devi &bull; Jonha</small>
+                  </div>
+                </div>
+                <div class="text-end">
+                  <strong class="text-success fs-6">₹75 / kg</strong>
+                  <span class="badge bg-success-subtle text-success border border-success d-block" style="font-size: 0.65rem;">Save 21%</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Transparency Progress Strip -->
+            <div class="p-2 bg-success bg-opacity-10 rounded-3 border border-success-subtle mb-3">
+              <div class="d-flex justify-content-between small text-muted mb-1" style="font-size: 0.75rem;">
+                <span class="text-success fw-bold"><i class="fa-solid fa-shield-check me-1"></i> Direct Kisan Share: 75%</span>
+                <span class="text-dark fw-bold">Middlemen Cut: ₹0</span>
+              </div>
+              <div class="progress" style="height: 6px; border-radius: 3px;">
+                <div class="progress-bar bg-success" style="width: 75%;" title="Farmer Share: 75%"></div>
+                <div class="progress-bar bg-warning" style="width: 5%;" title="VDF: 5%"></div>
+                <div class="progress-bar bg-info" style="width: 10%;" title="Logistics: 10%"></div>
+                <div class="progress-bar bg-secondary" style="width: 10%;" title="Platform: 10%"></div>
+              </div>
+            </div>
+
+            <!-- Direct CTA -->
+            <a href="{% url 'marketplace_catalog' %}" class="btn btn-sm btn-agri-primary w-100 text-center py-2">
+              <i class="fa-solid fa-basket-shopping me-1"></i> Order Today's Farm Produce &rarr;
+            </a>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================= 3 Pillars: 3 Ways AgriConnect Serves You ================= -->
+  <section class="py-4">
+    <div class="row g-3">
+      <div class="col-md-4">
+        <div class="p-4 bg-white rounded-4 border shadow-sm h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <div class="role-avatar" style="background: #E8F5E9; color: #2E7D32;">
+                <i class="fa-solid fa-house-chimney"></i>
+              </div>
+              <div>
+                <h6 class="fw-bold m-0" style="color: var(--color-primary-dark);">घर के लिए (Daily Kitchen)</h6>
+                <small class="text-muted">Fresh Table Vegetables</small>
+              </div>
+            </div>
+            <p class="small text-muted mb-3">
+              खेत से सुबह 6 बजे तोड़ी हुई बिना केमिकल वैक्सिंग वाली ताज़ा सब्जियां, बाज़ार से 25% कम भाव पर सीधे आपके दरवाज़े तक।
+            </p>
+          </div>
+          <a href="{% url 'marketplace_catalog' %}" class="btn btn-sm btn-outline-success rounded-pill fw-semibold">
+            Order Daily Produce &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="p-4 bg-white rounded-4 border shadow-sm h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <div class="role-avatar" style="background: #E0F2F1; color: #00695C;">
+                <i class="fa-solid fa-users"></i>
+              </div>
+              <div>
+                <h6 class="fw-bold m-0" style="color: var(--color-primary-dark);">सोसाइटी ग्रुप खरीद (15% Off)</h6>
+                <small class="text-muted">Apartment Bulk Pooling</small>
+              </div>
+            </div>
+            <p class="small text-muted mb-3">
+              अपने अपार्टमेंट या मोहल्ले के पड़ोसियों के साथ मिलकर 50 किलो बल्क बैच ऑर्डर करें और 15% अतिरिक्त छूट व मुफ़्त डिलीवरी पाएं।
+            </p>
+          </div>
+          <a href="{% url 'group_buying_list' %}" class="btn btn-sm btn-outline-success rounded-pill fw-semibold">
+            Join Group Buy &rarr;
+          </a>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="p-4 bg-white rounded-4 border shadow-sm h-100 d-flex flex-column justify-content-between">
+          <div>
+            <div class="d-flex align-items-center gap-3 mb-3">
+              <div class="role-avatar" style="background: #FFF3E0; color: #E65100;">
+                <i class="fa-solid fa-phone-volume"></i>
+              </div>
+              <div>
+                <h6 class="fw-bold m-0" style="color: var(--color-primary-dark);">किसान भाईयों के लिए (For Kisans)</h6>
+                <small class="text-muted">No Smartphone Required</small>
+              </div>
+            </div>
+            <p class="small text-muted mb-3">
+              बिना स्मार्टफोन के साधारण फोन से 1800-889-SETU डायल करें या ग्रामीण सुविधा केंद्र पर आएं। 75% भुगतान सीधे बैंक में।
+            </p>
+          </div>
+          <a href="tel:18008897388" class="btn btn-sm btn-outline-warning text-dark rounded-pill fw-semibold">
+            <i class="fa-solid fa-phone me-1"></i> Call 1800-889-SETU
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 3. Produce Category Explorer ================= -->
+  <section class="py-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <div>
+        <h4 class="fw-bold m-0" style="color: var(--color-primary-dark);">Explore Harvest by Category (फसल श्रेणियां)</h4>
+        <small class="text-muted">Direct from certified sustainable growers and FPOs</small>
+      </div>
+      <a href="{% url 'marketplace_catalog' %}" class="small text-success fw-bold text-decoration-none">
+        View All Crops (सभी देखें) &rarr;
+      </a>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-6 col-md-3">
+        <a href="{% url 'marketplace_catalog' %}" class="category-pill-card">
+          <div class="category-icon-box">🥦</div>
+          <div>
+            <div class="fw-bold">ताज़ी सब्जियां</div>
+            <small class="text-muted">Fresh Vegetables</small>
+          </div>
+        </a>
+      </div>
+      <div class="col-6 col-md-3">
+        <a href="{% url 'marketplace_catalog' %}" class="category-pill-card">
+          <div class="category-icon-box">🍎</div>
+          <div>
+            <div class="fw-bold">मौसमी फल</div>
+            <small class="text-muted">Orchard Fruits</small>
+          </div>
+        </a>
+      </div>
+      <div class="col-6 col-md-3">
+        <a href="{% url 'marketplace_catalog' %}" class="category-pill-card">
+          <div class="category-icon-box">🌾</div>
+          <div>
+            <div class="fw-bold">देसी अनाज व दालें</div>
+            <small class="text-muted">Pulses & Grains</small>
+          </div>
+        </a>
+      </div>
+      <div class="col-6 col-md-3">
+        <a href="{% url 'marketplace_catalog' %}?organic=1" class="category-pill-card">
+          <div class="category-icon-box">🌿</div>
+          <div>
+            <div class="fw-bold">100% जैविक</div>
+            <small class="text-muted">Certified Organic</small>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 4. Live "Direct Farm Harvest" Showcase ================= -->
+  <section class="py-4">
+    <div class="d-flex justify-content-between align-items-end mb-4 flex-wrap gap-2">
+      <div>
+        <span class="badge bg-success bg-opacity-10 text-success fw-bold px-3 py-1 rounded-pill">DIRECT HARVEST TODAY</span>
+        <h3 class="fw-bold mt-2 mb-1" style="color: var(--color-primary-dark);">Today's Farm-Fresh Produce (आज की ताज़ा तुड़ाई)</h3>
+        <p class="text-muted small mb-0">Harvested at dawn across Ranchi rural aggregation hubs &bull; Zero cold-storage chemical waxing</p>
+      </div>
+      <a href="{% url 'marketplace_catalog' %}" class="btn btn-sm btn-outline-success rounded-pill px-3 py-2 fw-semibold">
+        <i class="fa-solid fa-store me-1"></i> Open Full Marketplace
+      </a>
+    </div>
+
+    <div class="row g-4">
+      {% for product in featured_products %}
+        <div class="col-md-6 col-lg-3">
+          <div class="card h-100 border rounded-4 shadow-sm overflow-hidden" style="transition: transform var(--transition-fast);">
+            
+            <!-- Real Produce Photo Container -->
+            <div class="position-relative overflow-hidden" style="height: 190px; background: #FAF8F5; border-bottom: 1px solid var(--border-subtle);">
+              <div class="position-absolute top-0 start-0 m-2 d-flex flex-column gap-1" style="z-index: 2;">
+                {% if product.is_organic %}
+                  <span class="badge bg-success rounded-pill px-2 py-1 small shadow-sm"><i class="fa-solid fa-leaf me-1"></i> Organic</span>
+                {% endif %}
+                <span class="badge {% if product.grade == 'A' %}bg-primary{% else %}bg-secondary{% endif %} rounded-pill px-2 py-1 small shadow-sm">
+                  Grade {{ product.grade }}
+                </span>
+              </div>
+              <div class="position-absolute top-0 end-0 m-2" style="z-index: 2;">
+                <span class="badge bg-white text-dark border rounded-pill px-2 py-1 small shadow-sm">
+                  <i class="fa-solid fa-bolt text-warning me-1"></i> Fresh Pick
+                </span>
+              </div>
+
+              <a href="{% url 'marketplace_product_detail' product.id %}" class="d-block w-100 h-100 text-decoration-none">
+                {% if product.image %}
+                  <img src="{{ product.image.url }}" alt="{{ product.name }}" class="w-100 h-100 object-fit-cover" style="transition: transform 0.4s ease;">
+                {% else %}
+                  <div class="w-100 h-100 d-flex align-items-center justify-content-center" style="background: #EBF5EE;">
+                    <span style="font-size: 4rem;">{{ product.emoji_icon }}</span>
+                  </div>
+                {% endif %}
+              </a>
+            </div>
+
+            <!-- Produce Card Body -->
+            <div class="card-body p-3 d-flex flex-column justify-content-between">
+              <div>
+                <div class="d-flex justify-content-between align-items-start mb-1">
+                  <div>
+                    <h6 class="fw-bold m-0" style="color: var(--color-primary-dark);">{{ product.name }}</h6>
+                    <small class="text-muted">{{ product.variety|default:'Farm Selection' }}</small>
+                  </div>
+                  <div class="text-end">
+                    <strong class="text-success fs-5">₹{{ product.consumer_price_per_kg }}</strong>
+                    <small class="text-muted d-block" style="font-size: 0.72rem;">per kg</small>
+                  </div>
+                </div>
+
+                <div class="p-2 bg-light rounded-3 my-2 border small">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <span class="text-truncate">
+                      <i class="fa-solid fa-tractor text-success me-1"></i> {{ product.farmer.user.get_full_name }}
+                    </span>
+                    <span class="text-muted" style="font-size: 0.75rem;">
+                      <i class="fa-solid fa-location-dot text-danger me-1"></i> {{ product.farmer.user.village_or_city }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center small text-muted mb-2" style="font-size: 0.75rem;">
+                  <span>Mandi: <del>₹{{ product.traditional_market_price_per_kg }}</del></span>
+                  <span class="text-success fw-bold">You Save 25%+</span>
+                </div>
+              </div>
+
+              <div class="d-grid gap-2 pt-1">
+                <a href="{% url 'marketplace_product_detail' product.id %}" class="btn btn-sm btn-agri-primary w-100 text-center">
+                  <i class="fa-solid fa-basket-shopping me-1"></i> Buy Fresh / Details
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- ================= 5. Daily Mandi Price Comparison Ticker ================= -->
+  <section class="py-4">
+    <div class="p-4 rounded-4 border shadow-sm" style="background: #FFFFFF;">
+      <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+        <div>
+          <span class="badge bg-warning text-dark fw-bold px-3 py-1 rounded-pill">100% RUPEE TRANSPARENCY</span>
+          <h4 class="fw-bold mt-2 mb-1" style="color: var(--color-primary-dark);">Today's Mandi vs. AgriConnect Price Comparison (मंडी भाव तुलना)</h4>
+          <small class="text-muted">Live benchmark comparison with Ranchi Daily APMC Mandi & Urban Supermarkets</small>
+        </div>
+        <a href="{% url 'marketplace_catalog' %}" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1">
+          Explore All Crops &rarr;
+        </a>
+      </div>
+
+      <div class="row g-3">
+        {% for item in mandi_comparisons %}
+          <div class="col-md-6 col-lg-3">
+            <div class="mandi-card">
+              <div class="d-flex justify-content-between align-items-center mb-2">
+                <span class="fs-4">{{ item.emoji }}</span>
+                <span class="badge bg-success rounded-pill px-2 py-1 small">बचत: {{ item.savings_pct }}%</span>
+              </div>
+              <h6 class="fw-bold mb-1" style="color: var(--color-primary-dark);">{{ item.name_en }}</h6>
+              <small class="text-muted d-block mb-3">{{ item.name_hi }} &bull; {{ item.village }}</small>
+
+              <div class="p-2 bg-light rounded-3 border mb-3">
+                <div class="d-flex justify-content-between small text-muted mb-1">
+                  <span>Mandi Retail Price:</span>
+                  <del class="text-danger fw-bold">₹{{ item.mandi_price }}/kg</del>
+                </div>
+                <div class="d-flex justify-content-between fw-bold">
+                  <span class="text-success">AgriConnect Rate:</span>
+                  <span class="text-success fs-6">₹{{ item.agri_price }}/kg</span>
+                </div>
+              </div>
+
+              <div class="small">
+                <div class="d-flex justify-content-between text-muted mb-1" style="font-size: 0.75rem;">
+                  <span>Farmer Payout:</span>
+                  <strong class="text-success">₹{{ item.farmer_gets }}/kg (75%)</strong>
+                </div>
+                <div class="progress" style="height: 6px; border-radius: 3px;">
+                  <div class="progress-bar bg-success" style="width: 75%;"></div>
+                  <div class="progress-bar bg-warning" style="width: 25%;"></div>
+                </div>
+                <div class="text-muted mt-1" style="font-size: 0.7rem;">
+                  <i class="fa-solid fa-check text-success me-1"></i> Middlemen Cut: <strong>₹0.00</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 6. Farm-to-Kitchen in < 18 Hours Journey ================= -->
+  <section id="how-it-works-section" class="py-4">
+    <div class="text-center mb-5">
+      <span class="badge bg-success bg-opacity-10 text-success fw-bold px-3 py-2 rounded-pill">HYPERLOCAL SUPPLY CHAIN</span>
+      <h2 class="mt-2 fw-bold" style="color: var(--color-primary-dark);">How Freshness Travels: Farm to Kitchen in &lt; 18 Hours</h2>
+      <p class="text-muted" style="max-width: 650px; margin: 0 auto;">
+        Eliminating the 3-day multi-tier broker transit. No cold warehouse chemical chilling, no carbide ripening—just direct farm-fresh harvest.
+      </p>
+    </div>
+
+    <div class="row g-4">
+      <!-- Step 1 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="journey-step-card">
+          <div class="step-num-badge">1</div>
+          <h6 class="fw-bold" style="color: var(--color-primary-dark);">06:00 AM &bull; प्रभात तुड़ाई</h6>
+          <p class="small text-muted mb-3">
+            Kisans hand-pick ripe crops at dawn when sugar (brix) levels and hydration are highest, avoiding afternoon heat wilting.
+          </p>
+          <span class="badge bg-light text-success border">
+            <i class="fa-solid fa-sun me-1"></i> Morning Harvest
+          </span>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="journey-step-card">
+          <div class="step-num-badge">2</div>
+          <h6 class="fw-bold" style="color: var(--color-primary-dark);">08:30 AM &bull; VDF डिजिटल केंद्र</h6>
+          <p class="small text-muted mb-3">
+            Village Digital Facilitator aggregates crates at the local CSC hub, conducts quality grading (Grade A/B), and generates digital QR passports.
+          </p>
+          <span class="badge bg-light text-primary border">
+            <i class="fa-solid fa-scale-balanced me-1"></i> Digital Weighing
+          </span>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="journey-step-card">
+          <div class="step-num-badge">3</div>
+          <h6 class="fw-bold" style="color: var(--color-primary-dark);">12:00 PM &bull; सीधी आपूर्ति वाहन</h6>
+          <p class="small text-muted mb-3">
+            Insulated transit vehicles transport batches directly to city clusters without entering crowded intermediate wholesale mandis.
+          </p>
+          <span class="badge bg-light text-warning text-dark border">
+            <i class="fa-solid fa-truck-fast me-1"></i> Direct Route Transit
+          </span>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="col-md-6 col-lg-3">
+        <div class="journey-step-card">
+          <div class="step-num-badge">4</div>
+          <h6 class="fw-bold" style="color: var(--color-primary-dark);">05:00 PM &bull; रसोईघर तक डिलीवरी</h6>
+          <p class="small text-muted mb-3">
+            Direct doorstep or apartment society delivery within 18 hours of harvest. Consumer scans the QR passport to verify the exact harvest moment.
+          </p>
+          <span class="badge bg-light text-success border">
+            <i class="fa-solid fa-circle-check me-1"></i> &lt; 18h Table Fresh
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 7. Assisted-Digital: Zero Smartphone Barrier ================= -->
+  <section class="py-4">
+    <div class="assisted-digital-banner shadow-sm">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-7">
+          <span class="badge bg-success rounded-pill px-3 py-1 mb-2 fw-semibold">RURAL INCLUSION INNOVATION</span>
+          <h3 class="fw-bold text-dark mb-3">Designed for Bharat: Zero Smartphone Literacy Barrier</h3>
+          <p class="text-secondary mb-4">
+            India's marginal farmers don't need expensive smartphones or complicated apps. AgriConnect's <strong>Assisted-Digital architecture</strong> bridges the digital divide through local village youth facilitators (VDFs) and toll-free IVR voice dialing.
+          </p>
+
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <div class="d-flex align-items-start gap-2">
+                <i class="fa-solid fa-headset text-success fs-5 mt-1"></i>
+                <div>
+                  <h6 class="fw-bold mb-1 text-dark">Toll-Free IVR Hotline</h6>
+                  <p class="small text-muted mb-0">Farmers dial <strong>1800-889-SETU</strong> from any basic feature phone to record produce listings in Hindi.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="d-flex align-items-start gap-2">
+                <i class="fa-solid fa-comment-sms text-success fs-5 mt-1"></i>
+                <div>
+                  <h6 class="fw-bold mb-1 text-dark">Direct SMS Bank Slips</h6>
+                  <p class="small text-muted mb-0">Instant SMS confirmation sent to farmer's mobile upon listing, grading, and direct DBT bank settlement.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-5">
+          <div class="p-4 bg-white rounded-4 border shadow-sm">
+            <h6 class="fw-bold text-dark mb-3">
+              <i class="fa-solid fa-handshake-angle text-success me-2"></i> Role of Village Digital Facilitator (VDF)
+            </h6>
+            <ul class="list-unstyled small d-flex flex-column gap-2 mb-3 text-secondary">
+              <li class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-check text-success"></i> Aggregates produce from 30–50 surrounding farmers
+              </li>
+              <li class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-check text-success"></i> Digital weighing & quality grading at Village CSC Hub
+              </li>
+              <li class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-check text-success"></i> Earns transparent 5% facilitation income per batch
+              </li>
+              <li class="d-flex align-items-center gap-2">
+                <i class="fa-solid fa-check text-success"></i> Verifies automated direct payments into farmer bank accounts
+              </li>
+            </ul>
+            <div class="text-center pt-2">
+              <a href="{% url 'quick_switch_user' 'vdf_sunil' %}" class="btn btn-sm btn-outline-success rounded-pill px-3 py-2 fw-semibold w-100">
+                <i class="fa-solid fa-arrow-right me-1"></i> Experience VDF Assisted Listing
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 8. Interactive Household Monthly Savings Calculator ================= -->
+  <section class="py-4">
+    <div class="savings-calc-box">
+      <div class="row align-items-center g-4">
+        <div class="col-lg-5">
+          <span class="badge bg-primary bg-opacity-10 text-primary fw-bold px-3 py-1 rounded-pill">SMART SAVINGS ESTIMATOR</span>
+          <h3 class="fw-bold mt-2 mb-2" style="color: var(--color-primary-dark);">How Much Does Your Family Save?</h3>
+          <p class="text-muted small mb-4">
+            Compare your monthly family produce budget against traditional supermarket rates and see how much direct rupee income reaches the kisan.
+          </p>
+
+          <label class="form-label fw-bold small text-dark d-flex justify-content-between">
+            <span>Monthly Family Produce Intake:</span>
+            <span class="text-success fw-bold fs-6" id="kgDisplay">35 kg / month</span>
+          </label>
+          <input type="range" class="form-range" min="15" max="80" step="5" value="35" id="intakeSlider" style="accent-color: var(--color-primary);">
+          <div class="d-flex justify-content-between text-muted" style="font-size: 0.72rem;">
+            <span>15 kg (Small Family)</span>
+            <span>45 kg (Medium)</span>
+            <span>80 kg (Joint Family)</span>
+          </div>
+        </div>
+
+        <div class="col-lg-7">
+          <div class="row g-3 text-center">
+            <div class="col-sm-4">
+              <div class="p-3 bg-light rounded-4 border">
+                <small class="text-muted d-block fw-semibold mb-1">Traditional Supermarket</small>
+                <h4 class="fw-bold text-danger m-0" id="supermarketCost">₹1,470</h4>
+                <small class="text-muted" style="font-size: 0.72rem;">~₹42/kg average</small>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="p-3 rounded-4 border" style="background: #E8F5E9; border-color: #B7E4C7 !important;">
+                <small class="text-success d-block fw-bold mb-1">Your Monthly Savings</small>
+                <h4 class="fw-bold text-success m-0" id="savingsAmount">₹490</h4>
+                <small class="text-success fw-semibold" style="font-size: 0.72rem;">Save ~33% every month</small>
+              </div>
+            </div>
+            <div class="col-sm-4">
+              <div class="p-3 bg-light rounded-4 border">
+                <small class="text-muted d-block fw-semibold mb-1">Kisan's Extra Income</small>
+                <h4 class="fw-bold text-primary m-0" id="kisanBenefit">₹735</h4>
+                <small class="text-muted" style="font-size: 0.72rem;">75% Direct DBT payout</small>
+              </div>
+            </div>
+          </div>
+          <div class="text-center mt-3">
+            <small class="text-muted">
+              <i class="fa-solid fa-shield-check text-success me-1"></i> Based on verified APMC Mandi daily retail benchmarks across Jharkhand & Bihar clusters.
+            </small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 9. Real Kisan & Consumer Testimonials ================= -->
+  <section class="py-4">
+    <div class="text-center mb-4">
+      <span class="badge bg-success bg-opacity-10 text-success fw-bold px-3 py-1 rounded-pill">AUTHENTIC VOICES</span>
+      <h3 class="fw-bold mt-2" style="color: var(--color-primary-dark);">Trusted by Kisans &amp; Families Across Bharat</h3>
+      <p class="text-muted small">Real experiences shared by farmers, consumers and society members.</p>
+    </div>
+
+    {% if live_reviews %}
+    <!-- Live approved customer reviews from database -->
+    <div class="row g-4 mb-4">
+      {% for review in live_reviews %}
+      <div class="col-md-4">
+        <div class="kisan-voice-card h-100">
+          <div>
+            <div class="text-warning mb-2">
+              {% for i in "12345" %}
+                {% if forloop.counter <= review.rating %}
+                  <i class="fa-solid fa-star"></i>
+                {% else %}
+                  <i class="fa-regular fa-star"></i>
+                {% endif %}
+              {% endfor %}
+            </div>
+            <p class="small text-secondary mb-3">"{{ review.review_text }}"</p>
+          </div>
+          <div class="d-flex align-items-center gap-2 pt-2 border-top">
+            <div class="role-avatar" style="width:38px;height:38px;font-size:0.9rem;
+              {% if review.reviewer_role == 'FARMER' %}background:#E8F5E9;color:#2E7D32;
+              {% elif review.reviewer_role == 'FACILITATOR' %}background:#E3F2FD;color:#1565C0;
+              {% elif review.reviewer_role == 'SOCIETY' %}background:#E0F2F1;color:#00695C;
+              {% else %}background:#FFF3E0;color:#E65100;{% endif %}">
+              {% if review.reviewer_role == 'FARMER' %}<i class="fa-solid fa-tractor"></i>
+              {% elif review.reviewer_role == 'FACILITATOR' %}<i class="fa-solid fa-people-roof"></i>
+              {% elif review.reviewer_role == 'SOCIETY' %}<i class="fa-solid fa-building"></i>
+              {% else %}<i class="fa-solid fa-basket-shopping"></i>{% endif %}
+            </div>
+            <div>
+              <strong class="d-block small text-dark">{{ review.reviewer_name }} <span class="text-muted fw-normal">({{ review.get_reviewer_role_display }})</span></strong>
+              <small class="text-muted" style="font-size:0.75rem;">{{ review.reviewer_location }}</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <!-- Static fallback when no approved reviews yet -->
+    <div class="row g-4 mb-4">
+      <div class="col-md-4">
+        <div class="kisan-voice-card">
+          <div>
+            <div class="text-warning mb-2">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <p class="small text-secondary mb-3">"Mandi ke aadhti 15-20% dalali kaatte the aur 15 din baad cheque dete the. AgriConnect par gaon ke Sunil bhaiya ne digital wajan kiya aur ₹10,000 usi din seedhe mere khaate mein aa gaye!"</p>
+          </div>
+          <div class="d-flex align-items-center gap-2 pt-2 border-top">
+            <div class="role-avatar" style="width:38px;height:38px;background:#E8F5E9;color:#2E7D32;font-size:0.95rem;"><i class="fa-solid fa-tractor"></i></div>
+            <div>
+              <strong class="d-block small text-dark">Rameshwar Kumar (Kisan)</strong>
+              <small class="text-muted" style="font-size:0.75rem;">Jonha Gaon, Andhra Bokr, Ranchi</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="kisan-voice-card">
+          <div>
+            <div class="text-warning mb-2">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <p class="small text-secondary mb-3">"Sabzi bazaar se 25% sasti hai aur subah 6 baje ki todi hui tamatar ki mehak alag hi hoti hai. QR code scan karke pata chal jaata hai ki kiska kisan ke khet se aayi hai!"</p>
+          </div>
+          <div class="d-flex align-items-center gap-2 pt-2 border-top">
+            <div class="role-avatar" style="width:38px;height:38px;background:#FFF3E0;color:#E65100;font-size:0.95rem;"><i class="fa-solid fa-basket-shopping"></i></div>
+            <div>
+              <strong class="d-block small text-dark">Priya Sharma (Upbhokta)</strong>
+              <small class="text-muted" style="font-size:0.75rem;">Peen Acres, Loknayakpuri, Morabadi, Ranchi</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="kisan-voice-card">
+          <div>
+            <div class="text-warning mb-2">
+              <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+            </div>
+            <p class="small text-secondary mb-3">"Hamare apartment mein 40 parivaron ne milkar 50 kilo tamatar ka bulk pool banaaya. Sabko ₹23/kilo mein mila aur free delivery mili! Society group buying bahut hi suvidhaajanak hai."</p>
+          </div>
+          <div class="d-flex align-items-center gap-2 pt-2 border-top">
+            <div class="role-avatar" style="width:38px;height:38px;background:#E0F2F1;color:#00695C;font-size:0.95rem;"><i class="fa-solid fa-building"></i></div>
+            <div>
+              <strong class="d-block small text-dark">Rajesh Verma (Society Secretary)</strong>
+              <small class="text-muted" style="font-size:0.75rem;">Royal Residency, Bariatu, Ranchi</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+
+    <!-- CTA: Give Your Review Button -->
+    <div class="text-center mt-3">
+      <a href="{% url 'submit_review' %}" class="btn btn-success rounded-pill px-5 py-3 fw-bold shadow-sm">
+        <i class="fa-solid fa-star me-2"></i> Apna Review Dijiye
+      </a>
+      <p class="text-muted small mt-2">
+        <i class="fa-solid fa-shield-check me-1 text-success"></i>
+        All reviews are verified by our team before publishing.
+      </p>
+    </div>
+  </section>
+
+  <!-- ================= 10. SIH Evaluator 5 Multi-Role Quick-Test Panel ================= -->
+  <section id="personas-section" class="py-4">
+    <div class="text-center mb-4">
+      <span class="badge bg-success bg-opacity-10 text-success fw-bold px-3 py-2 rounded-pill">SIH EVALUATOR QUICK DEMO</span>
+      <h3 class="mt-2 fw-bold" style="color: var(--color-primary-dark);">Explore the 5 Multi-Role Portals</h3>
+      <p class="text-muted" style="max-width: 600px; margin: 0 auto;">
+        Experience how different stakeholders interact with AgriConnect. Click any persona below for <strong>instant 1-click login</strong> into pre-seeded demo accounts.
+      </p>
+    </div>
+
+    <div class="row g-3">
+      <!-- 1. Farmer -->
+      <div class="col-md-6 col-lg">
+        <a href="{% url 'quick_switch_user' 'farmer_ramesh' %}" class="role-card">
+          <div class="role-avatar" style="background-color: #E8F5E9; color: #2E7D32;">
+            <i class="fa-solid fa-tractor"></i>
+          </div>
+          <span class="role-pill-indicator badge-farmer mb-2">Farmer</span>
+          <h6 class="fw-bold mb-1">Ramesh Kumar</h6>
+          <p class="text-muted small mb-2"><i class="fa-solid fa-location-dot me-1"></i> Jonha Village (2 acres)</p>
+          <small class="text-success fw-semibold"><i class="fa-solid fa-bolt me-1"></i> 1-Click Login &rarr;</small>
+        </a>
+      </div>
+
+      <!-- 2. Facilitator (VDF) -->
+      <div class="col-md-6 col-lg">
+        <a href="{% url 'quick_switch_user' 'vdf_sunil' %}" class="role-card">
+          <div class="role-avatar" style="background-color: #E0F2F1; color: #00695C;">
+            <i class="fa-solid fa-handshake-angle"></i>
+          </div>
+          <span class="role-pill-indicator badge-facilitator mb-2">Facilitator (VDF)</span>
+          <h6 class="fw-bold mb-1">Sunil Mahto</h6>
+          <p class="text-muted small mb-2"><i class="fa-solid fa-building me-1"></i> Angara Village CSC</p>
+          <small class="text-success fw-semibold"><i class="fa-solid fa-bolt me-1"></i> 1-Click Login &rarr;</small>
+        </a>
+      </div>
+
+      <!-- 3. Consumer -->
+      <div class="col-md-6 col-lg">
+        <a href="{% url 'quick_switch_user' 'consumer_priya' %}" class="role-card">
+          <div class="role-avatar" style="background-color: #FFF3E0; color: #E65100;">
+            <i class="fa-solid fa-cart-shopping"></i>
+          </div>
+          <span class="role-pill-indicator badge-consumer mb-2">Consumer</span>
+          <h6 class="fw-bold mb-1">Priya Sharma</h6>
+          <p class="text-muted small mb-2"><i class="fa-solid fa-city me-1"></i> Morabadi, Ranchi</p>
+          <small class="text-success fw-semibold"><i class="fa-solid fa-bolt me-1"></i> 1-Click Login &rarr;</small>
+        </a>
+      </div>
+
+      <!-- 4. Delivery -->
+      <div class="col-md-6 col-lg">
+        <a href="{% url 'quick_switch_user' 'delivery_rajesh' %}" class="role-card">
+          <div class="role-avatar" style="background-color: #E3F2FD; color: #1565C0;">
+            <i class="fa-solid fa-truck"></i>
+          </div>
+          <span class="role-pill-indicator badge-delivery mb-2">Delivery Partner</span>
+          <h6 class="fw-bold mb-1">Rajesh Verma</h6>
+          <p class="text-muted small mb-2"><i class="fa-solid fa-route me-1"></i> Ranchi Hub Fleet</p>
+          <small class="text-success fw-semibold"><i class="fa-solid fa-bolt me-1"></i> 1-Click Login &rarr;</small>
+        </a>
+      </div>
+
+      <!-- 5. Admin -->
+      <div class="col-md-6 col-lg">
+        <a href="{% url 'quick_switch_user' 'admin' %}" class="role-card">
+          <div class="role-avatar" style="background-color: #EDE7F6; color: #512DA8;">
+            <i class="fa-solid fa-crown"></i>
+          </div>
+          <span class="role-pill-indicator badge-admin mb-2">Administrator</span>
+          <h6 class="fw-bold mb-1">Aamir (Admin)</h6>
+          <p class="text-muted small mb-2"><i class="fa-solid fa-shield me-1"></i> Full Platform Control</p>
+          <small class="text-success fw-semibold"><i class="fa-solid fa-bolt me-1"></i> 1-Click Login &rarr;</small>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= 11. Toll-Free Kisan Helpline & PWA Banner ================= -->
+  <section class="py-4 mb-3">
+    <div class="helpline-action-bar">
+      <div class="row align-items-center g-4">
+        <div class="col-md-8">
+          <span class="badge bg-warning text-dark fw-bold px-3 py-1 rounded-pill mb-2">24x7 TOLL-FREE KISAN HELPLINE</span>
+          <h3 class="fw-bold mb-2">स्मार्टफोन नहीं है? चिंता न करें!</h3>
+          <p class="mb-0 text-white" style="color: rgba(255, 255, 255, 0.9) !important;">
+            अपने साधारण कीपैड मोबाइल से डायल करें <strong>1800-889-SETU (7388)</strong> और अपनी फसल का विवरण हिंदी में दर्ज कराएं। हमारे ग्रामीण सुविधा केंद्र प्रतिनिधि आपके खेत पर आकर डिजिटल वजन व पिकअप करेंगे।
+          </p>
+        </div>
+        <div class="col-md-4 text-md-end">
+          <a href="tel:18008897388" class="btn btn-warning btn-lg rounded-pill px-4 py-2 fw-bold text-dark shadow me-2 mb-2">
+            <i class="fa-solid fa-phone me-1"></i> 1800-889-SETU
+          </a>
+          <a href="{% url 'marketplace_catalog' %}" class="btn btn-outline-light rounded-pill px-4 py-2 fw-bold mb-2">
+            Order Produce
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Interactive Calculator Script -->
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    const slider = document.getElementById('intakeSlider');
+    const kgDisplay = document.getElementById('kgDisplay');
+    const supermarketCost = document.getElementById('supermarketCost');
+    const savingsAmount = document.getElementById('savingsAmount');
+    const kisanBenefit = document.getElementById('kisanBenefit');
+
+    if (slider) {
+      slider.addEventListener('input', function() {
+        const kg = parseInt(this.value);
+        kgDisplay.textContent = kg + ' kg / month';
+        
+        // Benchmarks: Retail ~42/kg, AgriConnect ~28/kg (Savings: ~14/kg), Farmer direct ~21/kg
+        const superCost = Math.round(kg * 42);
+        const savings = Math.round(kg * 14);
+        const farmerAdvantage = Math.round(kg * 21);
+
+        supermarketCost.textContent = '₹' + superCost.toLocaleString('en-IN');
+        savingsAmount.textContent = '₹' + savings.toLocaleString('en-IN');
+        kisanBenefit.textContent = '₹' + farmerAdvantage.toLocaleString('en-IN');
+      });
+    }
+  });
+</script>
+{% endblock %}

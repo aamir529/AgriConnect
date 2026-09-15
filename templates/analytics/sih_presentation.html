@@ -1,0 +1,323 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}SIH 2026 Pitch Deck & Evaluation Command Center | AgriConnect{% endblock %}
+
+{% block extra_css %}
+<style>
+  .eval-card {
+    background: #FFFFFF;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-fast);
+  }
+  .eval-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-md);
+    border-color: var(--color-accent-emerald);
+  }
+  .flow-step {
+    position: relative;
+    padding: 1.25rem;
+    background: #FAF8F5;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    text-align: center;
+  }
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: var(--color-accent-emerald);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- Hero Pitch Banner -->
+  <div class="p-4 p-md-5 rounded-4 mb-4 border" style="background: linear-gradient(135deg, #143628, #1E4D38); color: white;">
+    <div class="row align-items-center g-3">
+      <div class="col-lg-8">
+        <span class="badge bg-white rounded-pill shadow-sm" style="color: #143628 !important; background-color: #ffffff !important; font-weight: 700; rounded-pill px-3 py-1 mb-2">
+          <i class="fa-solid fa-trophy text-warning me-1"></i> Smart India Hackathon (SIH 2026) Pitch Deck
+        </span>
+        <h2 class="fw-bold mb-1 text-white" style="color: #ffffff !important;">AgriConnect (कृषि सेतु)</h2>
+        <h5 class="fw-normal text-white-50 mb-2">Transparent Digital Agricultural Supply Chain Platform</h5>
+        <p class="text-white-50 small mb-0">
+          Overcoming the rural digital literacy barrier through <strong>Assisted Phygital Facilitation (VDF)</strong>, <strong>Radical Price Decomposition (75% to Farmer)</strong>, and <strong>Anti-Dry-Run Cold Logistics</strong>.
+        </p>
+      </div>
+      <div class="col-lg-4 text-lg-end">
+        <div class="p-3 bg-white bg-opacity-10 rounded-3 border border-white border-opacity-25 text-start d-inline-block">
+          <small class="text-white-50 d-block" style="font-size: 0.72rem;">CORE HYPOTHESIS:</small>
+          <strong class="text-warning d-block">Farmer Realization: 28% &rarr; 75%</strong>
+          <small class="text-white-50 d-block" style="font-size: 0.72rem;">Consumer Saving: 20% – 25%</small>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Section 1: Problem vs AgriConnect Solution Matrix -->
+  <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm mb-4">
+    <h4 class="fw-bold mb-4" style="color: var(--color-primary-dark);">
+      <i class="fa-solid fa-code-compare text-success me-2"></i> Structural Comparison: Traditional vs. AgriConnect
+    </h4>
+
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle small text-center m-0">
+        <thead class="table-light">
+          <tr>
+            <th class="text-start">Supply Chain Dimension</th>
+            <th class="text-danger">Traditional Multi-Tier APMC Mandi</th>
+            <th class="text-success table-success">AgriConnect Direct Platform</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="text-start fw-bold">Intermediary Layers</td>
+            <td class="text-danger">4 to 5 layers (Village Trader &rarr; Arhatiya &rarr; Wholesaler &rarr; Distributor &rarr; Retailer)</td>
+            <td class="text-success fw-bold">1 Direct Touchpoint (Village Facilitator Hub)</td>
+          </tr>
+          <tr>
+            <td class="text-start fw-bold">Farmer Realization Share</td>
+            <td class="text-danger fw-bold">25% – 30% of consumer expenditure</td>
+            <td class="text-success fw-bold fs-6">75.0% Guaranteed Direct Payout</td>
+          </tr>
+          <tr>
+            <td class="text-start fw-bold">Farmer Digital Accessibility</td>
+            <td class="text-danger">Excluded by smartphone illiteracy & English apps</td>
+            <td class="text-success fw-bold">Phygital VDF Hub, Hindi Voice Dictation & DTMF IVR Phone</td>
+          </tr>
+          <tr>
+            <td class="text-start fw-bold">Transit Time & Spoilage</td>
+            <td class="text-danger">72 to 96 hours (20%+ post-harvest shrinkage)</td>
+            <td class="text-success fw-bold">&lt; 24 Hours Farm-to-Fork (&lt; 3% Spoilage)</td>
+          </tr>
+          <tr>
+            <td class="text-start fw-bold">Logistics Efficiency</td>
+            <td class="text-danger">Uncoordinated individual tractor trips (Dry Runs)</td>
+            <td class="text-success fw-bold">Aggregated Village Batch Manifests (Consolidated Drops)</td>
+          </tr>
+          <tr>
+            <td class="text-start fw-bold">Financial Inclusion</td>
+            <td class="text-danger">Informal sahukar credit (36%+ usurious interest)</td>
+            <td class="text-success fw-bold">Verifiable Digital Kisan Credit Passbook for KCC bank loans</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Section 2: Interactive National Disintermediation ROI Simulator -->
+  <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm mb-4">
+    <div class="row align-items-center g-4">
+      
+      <div class="col-lg-5">
+        <span class="badge bg-success bg-opacity-10 text-success rounded-pill px-3 py-1 mb-2">
+          <i class="fa-solid fa-calculator me-1"></i> Macro-Economic Simulator
+        </span>
+        <h4 class="fw-bold mb-2" style="color: var(--color-primary-dark);">National Disintermediation Calculator</h4>
+        <p class="text-muted small mb-4">
+          Adjust state vegetable production and pricing variables to simulate the macro impact of disintermediating regional agricultural supply chains.
+        </p>
+
+        <!-- Slider 1: Annual Volume (Metric Tons) -->
+        <div class="mb-3">
+          <div class="d-flex justify-content-between small fw-bold mb-1">
+            <span>State Annual Harvest:</span>
+            <span id="volumeLabel" class="text-success">5,00,000 MT</span>
+          </div>
+          <input type="range" class="form-range" id="volumeSlider" min="50000" max="2000000" step="50000" value="500000">
+        </div>
+
+        <!-- Slider 2: Average Mandi Wholesale Rate -->
+        <div class="mb-3">
+          <div class="d-flex justify-content-between small fw-bold mb-1">
+            <span>Average Mandi Wholesale:</span>
+            <span id="mandiLabel" class="text-primary">₹22 / kg</span>
+          </div>
+          <input type="range" class="form-range" id="mandiSlider" min="10" max="40" step="1" value="22">
+        </div>
+
+        <!-- Slider 3: Traditional Supermarket Retail Rate -->
+        <div class="mb-3">
+          <div class="d-flex justify-content-between small fw-bold mb-1">
+            <span>Urban Supermarket Retail:</span>
+            <span id="retailLabel" class="text-danger">₹42 / kg</span>
+          </div>
+          <input type="range" class="form-range" id="retailSlider" min="25" max="70" step="1" value="42">
+        </div>
+
+      </div>
+
+      <!-- Live Calculation Projection Results -->
+      <div class="col-lg-7">
+        <div class="p-4 bg-light rounded-4 border">
+          <h5 class="fw-bold text-dark mb-3">Projected State-Level Annual Impact:</h5>
+
+          <div class="row g-3 text-center mb-3">
+            <div class="col-sm-4">
+              <div class="p-3 bg-white rounded-3 border shadow-sm">
+                <small class="text-muted d-block">Farmer Extra Earnings</small>
+                <h3 id="calcFarmerIncome" class="fw-bold text-success my-1">₹475 Cr</h3>
+                <small class="text-success">+43% Net Realization</small>
+              </div>
+            </div>
+
+            <div class="col-sm-4">
+              <div class="p-3 bg-white rounded-3 border shadow-sm">
+                <small class="text-muted d-block">Consumer Savings</small>
+                <h3 id="calcConsumerSavings" class="fw-bold text-primary my-1">₹375 Cr</h3>
+                <small class="text-primary">23% Cheaper Food</small>
+              </div>
+            </div>
+
+            <div class="col-sm-4">
+              <div class="p-3 bg-white rounded-3 border shadow-sm">
+                <small class="text-muted d-block">Middleman Leakage Saved</small>
+                <h3 id="calcMiddlemanSaved" class="fw-bold text-danger my-1">₹850 Cr</h3>
+                <small class="text-danger">Brokers Eliminated</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-3 bg-white rounded-3 border small text-muted">
+            <i class="fa-solid fa-circle-info text-primary me-1"></i>
+            <strong>Economic Formula:</strong> Based on redirecting the 42% broker margin split between rural farming households (+75% realization) and urban consumers (-22% grocery bill).
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Section 3: Technical Phygital Data Flow Architecture -->
+  <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm mb-4">
+    <h4 class="fw-bold mb-4" style="color: var(--color-primary-dark);">
+      <i class="fa-solid fa-diagram-project text-success me-2"></i> End-to-End "Phygital" Supply Chain Flow
+    </h4>
+
+    <div class="row g-3 align-items-center text-center">
+      
+      <div class="col-md-2">
+        <div class="flow-step">
+          <i class="fa-solid fa-tractor text-success fs-3 mb-2"></i>
+          <h6 class="fw-bold m-0 small">1. Village Farmer</h6>
+          <small class="text-muted" style="font-size: 0.7rem;">Harvests produce; interacts via feature phone IVR / SMS</small>
+        </div>
+      </div>
+
+      <div class="col-md-1 flow-arrow"><i class="fa-solid fa-arrow-right d-none d-md-block"></i><i class="fa-solid fa-arrow-down d-md-none"></i></div>
+
+      <div class="col-md-2">
+        <div class="flow-step">
+          <i class="fa-solid fa-laptop text-primary fs-3 mb-2"></i>
+          <h6 class="fw-bold m-0 small">2. VDF Quality Hub</h6>
+          <small class="text-muted" style="font-size: 0.7rem;">Weighs crates, grades quality, logs voice listing (5% cut)</small>
+        </div>
+      </div>
+
+      <div class="col-md-1 flow-arrow"><i class="fa-solid fa-arrow-right d-none d-md-block"></i><i class="fa-solid fa-arrow-down d-md-none"></i></div>
+
+      <div class="col-md-2">
+        <div class="flow-step">
+          <i class="fa-solid fa-store text-success fs-3 mb-2"></i>
+          <h6 class="fw-bold m-0 small">3. Digital Marketplace</h6>
+          <small class="text-muted" style="font-size: 0.7rem;">Transparency decomposition, radius map, group buying</small>
+        </div>
+      </div>
+
+      <div class="col-md-1 flow-arrow"><i class="fa-solid fa-arrow-right d-none d-md-block"></i><i class="fa-solid fa-arrow-down d-md-none"></i></div>
+
+      <div class="col-md-2">
+        <div class="flow-step">
+          <i class="fa-solid fa-truck-fast text-warning fs-3 mb-2"></i>
+          <h6 class="fw-bold m-0 small">4. Batch Logistics</h6>
+          <small class="text-muted" style="font-size: 0.7rem;">Consolidated village van pickup (Zero dry runs)</small>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Section 4: 1-Click Interactive Persona Testing Matrix -->
+  <div class="bg-white p-4 p-md-5 rounded-4 border shadow-sm">
+    <h4 class="fw-bold mb-3" style="color: var(--color-primary-dark);">
+      <i class="fa-solid fa-users text-success me-2"></i> Live Judge Evaluation Matrix (1-Click Personas)
+    </h4>
+    <p class="text-muted small mb-4">
+      Click any persona below to immediately evaluate their role-specific dashboard and capabilities without password authentication:
+    </p>
+
+    <div class="row g-3">
+      {% for p in eval_personas %}
+        <div class="col-md">
+          <div class="eval-card h-100 d-flex flex-column text-center">
+            <h6 class="fw-bold text-dark mb-1">{{ p.role }}</h6>
+            <small class="text-muted mb-2">{{ p.focus }}</small>
+            <div class="mt-auto">
+              <a href="{% url 'quick_switch_user' p.user %}" class="btn btn-agri-primary btn-sm rounded-pill w-100 py-2">
+                Evaluate {{ p.user }} &rarr;
+              </a>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const volSlider = document.getElementById('volumeSlider');
+    const mandiSlider = document.getElementById('mandiSlider');
+    const retailSlider = document.getElementById('retailSlider');
+
+    const volLabel = document.getElementById('volumeLabel');
+    const mandiLabel = document.getElementById('mandiLabel');
+    const retailLabel = document.getElementById('retailLabel');
+
+    const farmerOut = document.getElementById('calcFarmerIncome');
+    const consumerOut = document.getElementById('calcConsumerSavings');
+    const middlemanOut = document.getElementById('calcMiddlemanSaved');
+
+    function recalculate() {
+      const volKg = parseInt(volSlider.value) * 1000; // MT to kg
+      const mandi = parseFloat(mandiSlider.value);
+      const retail = parseFloat(retailSlider.value);
+
+      volLabel.innerText = `${(parseInt(volSlider.value)).toLocaleString()} MT`;
+      mandiLabel.innerText = `₹${mandi} / kg`;
+      retailLabel.innerText = `₹${retail} / kg`;
+
+      // Traditional Farmer gets Mandi price
+      // AgriConnect gives Mandi * 1.25 (+25% over Mandi)
+      const farmerExtraPerKg = (mandi * 0.25);
+      const consumerSavingsPerKg = (retail * 0.22);
+      const middlemanSavedPerKg = (retail - (mandi * 1.25) * 1.25);
+
+      const totalFarmerExtraCrores = (volKg * farmerExtraPerKg) / 10000000;
+      const totalConsumerSavingsCrores = (volKg * consumerSavingsPerKg) / 10000000;
+      const totalMiddlemanCrores = (volKg * (retail - mandi)) / 10000000;
+
+      farmerOut.innerText = `₹${Math.round(totalFarmerExtraCrores).toLocaleString()} Cr`;
+      consumerOut.innerText = `₹${Math.round(totalConsumerSavingsCrores).toLocaleString()} Cr`;
+      middlemanOut.innerText = `₹${Math.round(totalMiddlemanCrores).toLocaleString()} Cr`;
+    }
+
+    volSlider.addEventListener('input', recalculate);
+    mandiSlider.addEventListener('input', recalculate);
+    retailSlider.addEventListener('input', recalculate);
+
+    recalculate();
+  });
+</script>
+{% endblock %}

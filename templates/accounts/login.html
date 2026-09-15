@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign In | AgriConnect{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-5">
+      <div class="auth-card">
+        
+        <div class="text-center mb-4">
+          <span class="logo-sprout mx-auto mb-2" style="width: 48px; height: 48px; font-size: 1.4rem;">
+            <i class="fa-solid fa-wheat-awn"></i>
+          </span>
+          <h3 class="fw-bold" style="color: var(--color-primary-dark);">Welcome to AgriConnect</h3>
+          <p class="text-muted small">Sign in to access your role-based dashboard</p>
+        </div>
+
+        <form method="post">
+          {% csrf_token %}
+          
+          <div class="mb-3">
+            <label class="form-label fw-semibold small text-secondary">Username or Phone</label>
+            {{ form.username }}
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label fw-semibold small text-secondary">Password</label>
+            {{ form.password }}
+          </div>
+
+          <button type="submit" class="btn btn-agri-primary w-100 justify-content-center py-2 mb-3">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to Account
+          </button>
+        </form>
+
+        <div class="text-center small text-muted mb-4">
+          Don't have an account? <a href="{% url 'register' %}" class="fw-bold text-success text-decoration-none">Register here</a>
+        </div>
+
+        <!-- Demo Accounts Quick Fill Box -->
+        <div class="p-3 bg-light rounded-3 border" style="border-radius: var(--radius-md) !important;">
+          <div class="d-flex align-items-center gap-2 mb-2">
+            <i class="fa-solid fa-bolt text-warning"></i>
+            <span class="fw-bold small text-dark">Demo Test Logins (1-Click Switch):</span>
+          </div>
+          <div class="d-flex flex-wrap gap-2">
+            <a href="{% url 'quick_switch_user' 'admin' %}" class="btn btn-sm btn-outline-secondary">Admin</a>
+            <a href="{% url 'quick_switch_user' 'vdf_sunil' %}" class="btn btn-sm btn-outline-secondary">VDF Facilitator</a>
+            <a href="{% url 'quick_switch_user' 'farmer_ramesh' %}" class="btn btn-sm btn-outline-secondary">Farmer</a>
+            <a href="{% url 'quick_switch_user' 'consumer_priya' %}" class="btn btn-sm btn-outline-secondary">Consumer</a>
+            <a href="{% url 'quick_switch_user' 'delivery_rajesh' %}" class="btn btn-sm btn-outline-secondary">Delivery</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
