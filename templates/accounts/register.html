@@ -1,110 +1,183 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}Register | AgriConnect{% endblock %}
+{% block title %}Join AgriConnect | Register{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth_pages.css' %}">
+{% endblock %}
 
 {% block content %}
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-8 col-lg-7">
-      <div class="auth-card">
+<div class="auth-page-wrapper">
 
-        <div class="text-center mb-4">
-          <span class="logo-sprout mx-auto mb-2" style="width: 48px; height: 48px; font-size: 1.4rem;">
-            <i class="fa-solid fa-wheat-awn"></i>
-          </span>
-          <h3 class="fw-bold" style="color: var(--color-primary-dark);">Join the AgriConnect Network</h3>
-          <p class="text-muted small">Select your operational role and connect to the transparent supply chain</p>
+  <!-- ===== Left: Visual Hero Panel ===== -->
+  <div class="auth-visual-panel">
+    <div class="hero-bg">
+      <img src="{% static 'images/auth_farm_hero.jpg' %}" alt="Indian farmland at sunrise">
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="auth-visual-content">
+      <div class="brand-logo">
+        <div class="logo-icon"><i class="fa-solid fa-leaf"></i></div>
+        <div>
+          <span class="logo-text">AgriConnect</span>
+          <span class="logo-sub">कृषि सेतु • Direct Farm</span>
         </div>
-
-        <form method="post">
-          {% csrf_token %}
-
-          {% if form.errors %}
-            <div class="alert alert-danger py-2 small mb-3">
-              Please fix the errors below to complete registration.
-            </div>
-          {% endif %}
-
-          <!-- Role Selection Dropdown -->
-          <div class="mb-3 p-3 bg-light rounded-3 border">
-            <label class="form-label fw-bold text-dark mb-1">Select Your Platform Role *</label>
-            <p class="text-muted small mb-2">Each role unlocks specialized tools (e.g. VDF Assisted Hub, Farmer Payouts, Consumer Marketplace).</p>
-            {{ form.role }}
-            {% if form.role.errors %}<div class="text-danger small mt-1">{{ form.role.errors }}</div>{% endif %}
-          </div>
-
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <label class="form-label fw-semibold small text-secondary">Username *</label>
-              {{ form.username }}
-              {% if form.username.errors %}<div class="text-danger small">{{ form.username.errors }}</div>{% endif %}
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-semibold small text-secondary">Phone Number *</label>
-              {{ form.phone }}
-              {% if form.phone.errors %}<div class="text-danger small">{{ form.phone.errors }}</div>{% endif %}
-            </div>
-          </div>
-
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <label class="form-label fw-semibold small text-secondary">First Name</label>
-              {{ form.first_name }}
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-semibold small text-secondary">Last Name</label>
-              {{ form.last_name }}
-            </div>
-          </div>
-
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <label class="form-label fw-semibold small text-secondary">Email Address</label>
-              {{ form.email }}
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-semibold small text-secondary">Preferred Language</label>
-              {{ form.preferred_language }}
-            </div>
-          </div>
-
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <label class="form-label fw-semibold small text-secondary">Village or City *</label>
-              {{ form.village_or_city }}
-              {% if form.village_or_city.errors %}<div class="text-danger small">{{ form.village_or_city.errors }}</div>{% endif %}
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-semibold small text-secondary">District *</label>
-              {{ form.district }}
-              {% if form.district.errors %}<div class="text-danger small">{{ form.district.errors }}</div>{% endif %}
-            </div>
-          </div>
-
-          <div class="row g-3 mb-4">
-            <div class="col-md-6">
-              <label class="form-label fw-semibold small text-secondary">Password *</label>
-              {{ form.password1 }}
-              {% if form.password1.errors %}<div class="text-danger small">{{ form.password1.errors }}</div>{% endif %}
-            </div>
-            <div class="col-md-6">
-              <label class="form-label fw-semibold small text-secondary">Confirm Password *</label>
-              {{ form.password2 }}
-              {% if form.password2.errors %}<div class="text-danger small">{{ form.password2.errors }}</div>{% endif %}
-            </div>
-          </div>
-
-          <button type="submit" class="btn btn-agri-primary w-100 justify-content-center py-2 mb-3">
-            <i class="fa-solid fa-user-check"></i> Complete Registration
-          </button>
-        </form>
-
-        <div class="text-center small text-muted">
-          Already registered? <a href="{% url 'login' %}" class="fw-bold text-success text-decoration-none">Log in here</a>
-        </div>
-
+      </div>
+      <h1>Join the <span class="accent">Network</span></h1>
+      <p class="hero-desc">
+        Whether you're a farmer, facilitator, consumer, or delivery partner — choose your role 
+        and become part of Jharkhand's transparent agricultural supply chain.
+      </p>
+      <div class="auth-stat-chips">
+        <span class="auth-stat-chip">
+          <i class="fa-solid fa-shield-halved"></i> Zero Middlemen
+        </span>
+        <span class="auth-stat-chip">
+          <i class="fa-solid fa-indian-rupee-sign"></i> Fair Prices
+        </span>
+        <span class="auth-stat-chip">
+          <i class="fa-solid fa-leaf"></i> 100% Fresh
+        </span>
       </div>
     </div>
   </div>
+
+  <!-- ===== Right: Registration Form Panel ===== -->
+  <div class="auth-form-panel">
+    <div class="auth-glass-card auth-glass-card--wide">
+
+      <div class="auth-card-header">
+        <div class="header-icon">
+          <i class="fa-solid fa-user-plus"></i>
+        </div>
+        <h2>Create Your Account</h2>
+        <p>Select your role and join the transparent supply chain</p>
+      </div>
+
+      <form method="post">
+        {% csrf_token %}
+
+        {% if form.errors %}
+        <div class="auth-error-alert">
+          <i class="fa-solid fa-circle-exclamation"></i>
+          Please fix the errors below to complete registration.
+        </div>
+        {% endif %}
+
+        <!-- Role Selection -->
+        <div class="role-select-box">
+          <div class="role-label">
+            <i class="fa-solid fa-id-badge" style="color: var(--color-accent-emerald); margin-right: 0.35rem;"></i>
+            Select Your Platform Role *
+          </div>
+          <p class="role-hint">Each role unlocks specialized tools (e.g. VDF Hub, Farmer Payouts, Consumer Marketplace).</p>
+          {{ form.role }}
+          {% if form.role.errors %}<div class="text-danger small mt-1">{{ form.role.errors }}</div>{% endif %}
+        </div>
+
+        <!-- Username & Phone -->
+        <div class="auth-fields-row">
+          <div class="auth-field-group">
+            <label>Username *</label>
+            {{ form.username }}
+            {% if form.username.errors %}<div class="text-danger small mt-1">{{ form.username.errors }}</div>{% endif %}
+          </div>
+          <div class="auth-field-group">
+            <label>Phone Number *</label>
+            {{ form.phone }}
+            {% if form.phone.errors %}<div class="text-danger small mt-1">{{ form.phone.errors }}</div>{% endif %}
+          </div>
+        </div>
+
+        <!-- First & Last Name -->
+        <div class="auth-fields-row">
+          <div class="auth-field-group">
+            <label>First Name</label>
+            {{ form.first_name }}
+          </div>
+          <div class="auth-field-group">
+            <label>Last Name</label>
+            {{ form.last_name }}
+          </div>
+        </div>
+
+        <!-- Email & Language -->
+        <div class="auth-fields-row">
+          <div class="auth-field-group">
+            <label>Email Address</label>
+            {{ form.email }}
+          </div>
+          <div class="auth-field-group">
+            <label>Preferred Language</label>
+            {{ form.preferred_language }}
+          </div>
+        </div>
+
+        <!-- Location -->
+        <div class="auth-fields-row">
+          <div class="auth-field-group">
+            <label>Village or City *</label>
+            {{ form.village_or_city }}
+            {% if form.village_or_city.errors %}<div class="text-danger small mt-1">{{ form.village_or_city.errors }}</div>{% endif %}
+          </div>
+          <div class="auth-field-group">
+            <label>District *</label>
+            {{ form.district }}
+            {% if form.district.errors %}<div class="text-danger small mt-1">{{ form.district.errors }}</div>{% endif %}
+          </div>
+        </div>
+
+        <!-- Passwords -->
+        <div class="auth-fields-row" style="margin-bottom: 0.5rem;">
+          <div class="auth-field-group">
+            <label>Password *</label>
+            <div class="password-field-wrap">
+              {{ form.password1 }}
+              <button type="button" class="toggle-pass" onclick="togglePasswordVisibility(this)" aria-label="Toggle password visibility">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+            {% if form.password1.errors %}<div class="text-danger small mt-1">{{ form.password1.errors }}</div>{% endif %}
+          </div>
+          <div class="auth-field-group">
+            <label>Confirm Password *</label>
+            <div class="password-field-wrap">
+              {{ form.password2 }}
+              <button type="button" class="toggle-pass" onclick="togglePasswordVisibility(this)" aria-label="Toggle password visibility">
+                <i class="fa-solid fa-eye"></i>
+              </button>
+            </div>
+            {% if form.password2.errors %}<div class="text-danger small mt-1">{{ form.password2.errors }}</div>{% endif %}
+          </div>
+        </div>
+
+        <button type="submit" class="auth-submit-btn">
+          <i class="fa-solid fa-user-check"></i>
+          Complete Registration
+        </button>
+      </form>
+
+      <div class="auth-alt-link">
+        Already registered? <a href="{% url 'login' %}">Sign in here</a>
+      </div>
+
+    </div>
+  </div>
+
 </div>
+
+<script>
+function togglePasswordVisibility(btn) {
+  const input = btn.previousElementSibling;
+  const icon = btn.querySelector('i');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.classList.replace('fa-eye', 'fa-eye-slash');
+  } else {
+    input.type = 'password';
+    icon.classList.replace('fa-eye-slash', 'fa-eye');
+  }
+}
+</script>
 {% endblock %}

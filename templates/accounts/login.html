@@ -1,60 +1,129 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Sign In | AgriConnect{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth_pages.css' %}">
+{% endblock %}
+
 {% block content %}
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6 col-lg-5">
-      <div class="auth-card">
-        
-        <div class="text-center mb-4">
-          <span class="logo-sprout mx-auto mb-2" style="width: 48px; height: 48px; font-size: 1.4rem;">
-            <i class="fa-solid fa-wheat-awn"></i>
-          </span>
-          <h3 class="fw-bold" style="color: var(--color-primary-dark);">Welcome to AgriConnect</h3>
-          <p class="text-muted small">Sign in to access your role-based dashboard</p>
+<div class="auth-page-wrapper">
+
+  <!-- ===== Left: Visual Hero Panel ===== -->
+  <div class="auth-visual-panel">
+    <div class="hero-bg">
+      <img src="{% static 'images/auth_farm_hero.jpg' %}" alt="Indian farmland at sunrise">
+    </div>
+    <div class="hero-overlay"></div>
+    <div class="auth-visual-content">
+      <div class="brand-logo">
+        <div class="logo-icon"><i class="fa-solid fa-leaf"></i></div>
+        <div>
+          <span class="logo-text">AgriConnect</span>
+          <span class="logo-sub">कृषि सेतु • Direct Farm</span>
         </div>
-
-        <form method="post">
-          {% csrf_token %}
-          
-          <div class="mb-3">
-            <label class="form-label fw-semibold small text-secondary">Username or Phone</label>
-            {{ form.username }}
-          </div>
-
-          <div class="mb-4">
-            <label class="form-label fw-semibold small text-secondary">Password</label>
-            {{ form.password }}
-          </div>
-
-          <button type="submit" class="btn btn-agri-primary w-100 justify-content-center py-2 mb-3">
-            <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In to Account
-          </button>
-        </form>
-
-        <div class="text-center small text-muted mb-4">
-          Don't have an account? <a href="{% url 'register' %}" class="fw-bold text-success text-decoration-none">Register here</a>
-        </div>
-
-        <!-- Demo Accounts Quick Fill Box -->
-        <div class="p-3 bg-light rounded-3 border" style="border-radius: var(--radius-md) !important;">
-          <div class="d-flex align-items-center gap-2 mb-2">
-            <i class="fa-solid fa-bolt text-warning"></i>
-            <span class="fw-bold small text-dark">Demo Test Logins (1-Click Switch):</span>
-          </div>
-          <div class="d-flex flex-wrap gap-2">
-            <a href="{% url 'quick_switch_user' 'admin' %}" class="btn btn-sm btn-outline-secondary">Admin</a>
-            <a href="{% url 'quick_switch_user' 'vdf_sunil' %}" class="btn btn-sm btn-outline-secondary">VDF Facilitator</a>
-            <a href="{% url 'quick_switch_user' 'farmer_ramesh' %}" class="btn btn-sm btn-outline-secondary">Farmer</a>
-            <a href="{% url 'quick_switch_user' 'consumer_priya' %}" class="btn btn-sm btn-outline-secondary">Consumer</a>
-            <a href="{% url 'quick_switch_user' 'delivery_rajesh' %}" class="btn btn-sm btn-outline-secondary">Delivery</a>
-          </div>
-        </div>
-
+      </div>
+      <h1>Bridging <span class="accent">Farms</span> to Families</h1>
+      <p class="hero-desc">
+        A transparent supply chain connecting Jharkhand's tribal farmers directly to your kitchen — 
+        zero middlemen, fair prices, fresh produce.
+      </p>
+      <div class="auth-stat-chips">
+        <span class="auth-stat-chip">
+          <i class="fa-solid fa-users"></i> 2,400+ Farmers
+        </span>
+        <span class="auth-stat-chip">
+          <i class="fa-solid fa-truck-fast"></i> 18-Hour Delivery
+        </span>
+        <span class="auth-stat-chip">
+          <i class="fa-solid fa-hand-holding-heart"></i> 40% More Income
+        </span>
       </div>
     </div>
   </div>
+
+  <!-- ===== Right: Login Form Panel ===== -->
+  <div class="auth-form-panel">
+    <div class="auth-glass-card">
+
+      <div class="auth-card-header">
+        <div class="header-icon">
+          <i class="fa-solid fa-right-to-bracket"></i>
+        </div>
+        <h2>Welcome Back</h2>
+        <p>Sign in to your role-based dashboard</p>
+      </div>
+
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="auth-field-group">
+          <label for="id_username">Username or Phone</label>
+          {{ form.username }}
+        </div>
+
+        <div class="auth-field-group">
+          <label for="id_password">Password</label>
+          <div class="password-field-wrap">
+            {{ form.password }}
+            <button type="button" class="toggle-pass" onclick="togglePasswordVisibility(this)" aria-label="Toggle password visibility">
+              <i class="fa-solid fa-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="auth-submit-btn">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i>
+          Sign In to Account
+        </button>
+      </form>
+
+      <div class="auth-alt-link">
+        Don't have an account? <a href="{% url 'register' %}">Create one now</a>
+      </div>
+
+      <!-- Demo Quick-Switch Panel -->
+      <div class="demo-switch-panel">
+        <div class="demo-title">
+          <i class="fa-solid fa-bolt"></i>
+          <span>Quick Demo Access</span>
+        </div>
+        <div class="demo-role-chips">
+          <a href="{% url 'quick_switch_user' 'admin' %}" class="demo-role-chip">
+            <i class="fa-solid fa-crown"></i> Admin
+          </a>
+          <a href="{% url 'quick_switch_user' 'vdf_sunil' %}" class="demo-role-chip">
+            <i class="fa-solid fa-hands-helping"></i> VDF Facilitator
+          </a>
+          <a href="{% url 'quick_switch_user' 'farmer_ramesh' %}" class="demo-role-chip">
+            <i class="fa-solid fa-seedling"></i> Farmer
+          </a>
+          <a href="{% url 'quick_switch_user' 'consumer_priya' %}" class="demo-role-chip">
+            <i class="fa-solid fa-basket-shopping"></i> Consumer
+          </a>
+          <a href="{% url 'quick_switch_user' 'delivery_rajesh' %}" class="demo-role-chip">
+            <i class="fa-solid fa-motorcycle"></i> Delivery
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
 </div>
+
+<script>
+function togglePasswordVisibility(btn) {
+  const input = btn.previousElementSibling;
+  const icon = btn.querySelector('i');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.classList.replace('fa-eye', 'fa-eye-slash');
+  } else {
+    input.type = 'password';
+    icon.classList.replace('fa-eye-slash', 'fa-eye');
+  }
+}
+</script>
 {% endblock %}

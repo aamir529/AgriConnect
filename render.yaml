@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: agriconnect
+    runtime: python
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn agriconnect.wsgi:application"
+    envVars:
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ALLOWED_HOSTS
+        value: ".onrender.com"
+      - key: PYTHON_VERSION
+        value: "3.12.3"
