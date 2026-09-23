@@ -11,3 +11,7 @@ python manage.py collectstatic --no-input
 
 # Run migrations
 python manage.py migrate
+
+# Seed database
+python manage.py seed_phase3
+python manage.py seed_phase6
