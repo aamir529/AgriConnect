@@ -12,5 +12,8 @@ python manage.py collectstatic --no-input
 # Run migrations
 python manage.py migrate
 
-# Seed database
+# Seed initial users
+python manage.py seed_phase1
+
+# Seed categories and products
 python manage.py seed_phase2
