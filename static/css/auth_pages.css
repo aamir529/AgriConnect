@@ -453,67 +453,6 @@
 .auth-alt-link a:hover::after {
   width: 100%;
 }
-
-/* ---- Demo Quick-Switch Panel ---- */
-.demo-switch-panel {
-  margin-top: 1.5rem;
-  background: linear-gradient(135deg, rgba(250, 248, 245, 0.8), rgba(243, 239, 234, 0.6));
-  border: 1px solid var(--border-subtle);
-  border-radius: 16px;
-  padding: 1.25rem;
-}
-
-.demo-switch-panel .demo-title {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-display);
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: var(--text-primary);
-  margin-bottom: 0.85rem;
-}
-
-.demo-switch-panel .demo-title i {
-  color: var(--color-accent-orange);
-}
-
-.demo-role-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.demo-role-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.4rem 0.85rem;
-  border-radius: var(--radius-pill);
-  font-family: var(--font-display);
-  font-size: 0.78rem;
-  font-weight: 600;
-  text-decoration: none;
-  border: 1.5px solid var(--border-subtle);
-  background: rgba(255, 255, 255, 0.7);
-  color: var(--text-secondary);
-  transition: all var(--transition-fast);
-  cursor: pointer;
-}
-
-.demo-role-chip:hover {
-  border-color: var(--color-accent-emerald);
-  background: rgba(82, 183, 136, 0.08);
-  color: var(--color-primary);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(82, 183, 136, 0.12);
-}
-
-.demo-role-chip i {
-  font-size: 0.72rem;
-  opacity: 0.7;
-}
-
 /* ---- Error alert ---- */
 .auth-error-alert {
   background: rgba(220, 38, 38, 0.06);

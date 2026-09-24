@@ -1,4 +1,4 @@
-﻿{% extends 'base.html' %}
+{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}AgriConnect (कृषि सेतु) | Direct Farm-to-Fork Agricultural Marketplace India{% endblock %}
@@ -317,7 +317,7 @@
     </div>
 
     <div class="row g-4">
-      {% for product in featured_products %}
+      {% for product in featured_products|slice:":4" %}
         <div class="col-md-6 col-lg-3">
           <div class="card h-100 border rounded-4 shadow-sm overflow-hidden" style="transition: transform var(--transition-fast);">
             
@@ -749,84 +749,6 @@
         <i class="fa-solid fa-shield-check me-1 text-success"></i>
         All reviews are verified by our team before publishing.
       </p>
-    </div>
-  </section>
-
-  <!-- ================= 10. SIH Evaluator 5 Multi-Role Quick-Test Panel ================= -->
-  <section id="personas-section" class="py-4">
-    <div class="text-center mb-4">
-      <span class="badge bg-success bg-opacity-10 text-success fw-bold px-3 py-2 rounded-pill">SIH EVALUATOR QUICK DEMO</span>
-      <h3 class="mt-2 fw-bold" style="color: var(--color-primary-dark);">Explore the 5 Multi-Role Portals</h3>
-      <p class="text-muted" style="max-width: 600px; margin: 0 auto;">
-        Experience how different stakeholders interact with AgriConnect. Click any persona below for <strong>instant 1-click login</strong> into pre-seeded demo accounts.
-      </p>
-    </div>
-
-    <div class="row g-3">
-      <!-- 1. Farmer -->
-      <div class="col-md-6 col-lg">
-        <a href="{% url 'quick_switch_user' 'farmer_ramesh' %}" class="role-card">
-          <div class="role-avatar" style="background-color: #E8F5E9; color: #2E7D32;">
-            <i class="fa-solid fa-tractor"></i>
-          </div>
-          <span class="role-pill-indicator badge-farmer mb-2">Farmer</span>
-          <h6 class="fw-bold mb-1">Ramesh Kumar</h6>
-          <p class="text-muted small mb-2"><i class="fa-solid fa-location-dot me-1"></i> Jonha Village (2 acres)</p>
-          <small class="text-success fw-semibold"><i class="fa-solid fa-bolt me-1"></i> 1-Click Login &rarr;</small>
-        </a>
-      </div>
-
-      <!-- 2. Facilitator (VDF) -->
-      <div class="col-md-6 col-lg">
-        <a href="{% url 'quick_switch_user' 'vdf_sunil' %}" class="role-card">
-          <div class="role-avatar" style="background-color: #E0F2F1; color: #00695C;">
-            <i class="fa-solid fa-handshake-angle"></i>
-          </div>
-          <span class="role-pill-indicator badge-facilitator mb-2">Facilitator (VDF)</span>
-          <h6 class="fw-bold mb-1">Sunil Mahto</h6>
-          <p class="text-muted small mb-2"><i class="fa-solid fa-building me-1"></i> Angara Village CSC</p>
-          <small class="text-success fw-semibold"><i class="fa-solid fa-bolt me-1"></i> 1-Click Login &rarr;</small>
-        </a>
-      </div>
-
-      <!-- 3. Consumer -->
-      <div class="col-md-6 col-lg">
-        <a href="{% url 'quick_switch_user' 'consumer_priya' %}" class="role-card">
-          <div class="role-avatar" style="background-color: #FFF3E0; color: #E65100;">
-            <i class="fa-solid fa-cart-shopping"></i>
-          </div>
-          <span class="role-pill-indicator badge-consumer mb-2">Consumer</span>
-          <h6 class="fw-bold mb-1">Priya Sharma</h6>
-          <p class="text-muted small mb-2"><i class="fa-solid fa-city me-1"></i> Morabadi, Ranchi</p>
-          <small class="text-success fw-semibold"><i class="fa-solid fa-bolt me-1"></i> 1-Click Login &rarr;</small>
-        </a>
-      </div>
-
-      <!-- 4. Delivery -->
-      <div class="col-md-6 col-lg">
-        <a href="{% url 'quick_switch_user' 'delivery_rajesh' %}" class="role-card">
-          <div class="role-avatar" style="background-color: #E3F2FD; color: #1565C0;">
-            <i class="fa-solid fa-truck"></i>
-          </div>
-          <span class="role-pill-indicator badge-delivery mb-2">Delivery Partner</span>
-          <h6 class="fw-bold mb-1">Rajesh Verma</h6>
-          <p class="text-muted small mb-2"><i class="fa-solid fa-route me-1"></i> Ranchi Hub Fleet</p>
-          <small class="text-success fw-semibold"><i class="fa-solid fa-bolt me-1"></i> 1-Click Login &rarr;</small>
-        </a>
-      </div>
-
-      <!-- 5. Admin -->
-      <div class="col-md-6 col-lg">
-        <a href="{% url 'quick_switch_user' 'admin' %}" class="role-card">
-          <div class="role-avatar" style="background-color: #EDE7F6; color: #512DA8;">
-            <i class="fa-solid fa-crown"></i>
-          </div>
-          <span class="role-pill-indicator badge-admin mb-2">Administrator</span>
-          <h6 class="fw-bold mb-1">Aamir (Admin)</h6>
-          <p class="text-muted small mb-2"><i class="fa-solid fa-shield me-1"></i> Full Platform Control</p>
-          <small class="text-success fw-semibold"><i class="fa-solid fa-bolt me-1"></i> 1-Click Login &rarr;</small>
-        </a>
-      </div>
     </div>
   </section>
 

@@ -8,7 +8,6 @@
     en: {
       navHome: "Home",
       navMarketplace: "Marketplace",
-      navFarmMap: "Farm Map",
       navMandiRates: "Mandi Rates",
       navAnalytics: "Impact Analytics",
       navIVR: "IVR Demo",
@@ -26,7 +25,6 @@
     hi: {
       navHome: "होम (Home)",
       navMarketplace: "फसल बाजार (Market)",
-      navFarmMap: "खेत नक्शा (Map)",
       navMandiRates: "मंडी भाव (Mandi)",
       navAnalytics: "प्रभाव आंकड़े (Analytics)",
       navIVR: "आईवीआर फोन (IVR)",

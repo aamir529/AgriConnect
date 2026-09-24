@@ -1,4 +1,4 @@
-﻿from django.shortcuts import render
+from django.shortcuts import render
 from apps.marketplace.models import CustomerReview
 from apps.products.models import Product, Category
 
@@ -8,7 +8,7 @@ def home_view(request):
     Passes live featured produce, categories, Mandi vs. AgriConnect price benchmarks,
     and rural impact indicators.
     """
-    featured_products = Product.objects.filter(is_active=True).select_related('farmer__user', 'category')[:12]
+    featured_products = Product.objects.filter(is_active=True).select_related('farmer__user', 'category')[:4]
     categories = Category.objects.all()
 
     mandi_comparisons = [

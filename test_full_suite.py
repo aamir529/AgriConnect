@@ -77,7 +77,6 @@ product = Product.objects.filter(is_active=True).first()
 if product:
     test_endpoint("Product Transparency Detail", "GET", f"/marketplace/product/{product.id}/", contains_str="Where Does Your Rupee Go?")
 
-test_endpoint("Leaflet Farm Map", "GET", "/marketplace/farm-map/", contains_str="Nearby Village Farm Clusters")
 test_endpoint("APMC Mandi Rates", "GET", "/mandi/", contains_str="Daily Mandi Benchmark Rates")
 test_endpoint("Price Recommendation API", "GET", "/mandi/api/recommend-price/?mandi_modal=22&retail_price=42", contains_str="recommended_farmer_min")
 

@@ -1,4 +1,4 @@
-﻿from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib import messages
 from .models import CustomerReview, GroupBuyingPool
@@ -26,9 +26,6 @@ def join_group_pool_view(request, pool_id):
         'pool': pool, 'pools': pools, 'pledge_message': pledge_message
     })
 
-
-def map_search_view(request):
-    return render(request, 'marketplace/map_search.html', {})
 
 
 def product_detail_view(request, pk):

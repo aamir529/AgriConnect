@@ -39,10 +39,6 @@
         <a href="tel:18008897388" class="text-decoration-none text-nowrap">
           <i class="fa-solid fa-phone text-warning me-1"></i> Kisan Helpline: <strong>1800-889-SETU</strong>
         </a>
-        <span class="opacity-50">&bull;</span>
-        <a href="{% url 'sih_presentation' %}" class="badge bg-warning text-dark text-decoration-none px-2 py-0.5 text-nowrap fw-bold" style="font-size: 0.68rem;">
-          <i class="fa-solid fa-award me-1"></i> SIH Pitch
-        </a>
       </div>
     </div>
   </div>
@@ -70,7 +66,7 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link-custom text-nowrap {% if 'marketplace' in request.path and 'farm-map' not in request.path and 'group-buying' not in request.path %}active{% endif %}" href="{% url 'marketplace_catalog' %}">
+            <a class="nav-link-custom text-nowrap {% if 'marketplace' in request.path and 'group-buying' not in request.path %}active{% endif %}" href="{% url 'marketplace_catalog' %}">
               <i class="fa-solid fa-store me-1"></i> <span data-i18n="navMarketplace">Marketplace</span>
             </a>
           </li>
@@ -85,26 +81,16 @@
               <i class="fa-solid fa-scale-balanced me-1"></i> <span data-i18n="navMandiRates">Mandi Rates</span>
             </a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link-custom text-nowrap {% if 'farm-map' in request.path %}active{% endif %}" href="{% url 'marketplace_farm_map' %}">
-              <i class="fa-solid fa-map-location-dot me-1"></i> <span data-i18n="navFarmMap">Farm Map</span>
-            </a>
-          </li>
           
           <!-- Consolidated Tools Dropdown -->
           <li class="nav-item dropdown">
-            <a class="nav-link-custom text-nowrap dropdown-toggle {% if 'analytics' in request.path or 'sih' in request.path or 'ivr' in request.path %}active{% endif %}" href="#" data-bs-toggle="dropdown">
+            <a class="nav-link-custom text-nowrap dropdown-toggle {% if 'analytics' in request.path or 'ivr' in request.path %}active{% endif %}" href="#" data-bs-toggle="dropdown">
               <i class="fa-solid fa-sliders me-1"></i> Tools & Demo
             </a>
             <ul class="dropdown-menu shadow-sm border-0 mt-2" style="border-radius: var(--radius-md);">
               <li>
                 <a class="dropdown-item py-2 text-nowrap" href="{% url 'analytics_dashboard' %}">
                   <i class="fa-solid fa-chart-line text-success me-2"></i> <span data-i18n="navAnalytics">Impact Analytics</span>
-                </a>
-              </li>
-              <li>
-                <a class="dropdown-item py-2 text-nowrap" href="{% url 'sih_presentation' %}">
-                  <i class="fa-solid fa-award text-warning me-2"></i> SIH Evaluator Pitch
                 </a>
               </li>
               <li>
