@@ -30,8 +30,8 @@
   <!-- Role Status & Capabilities Overview -->
   <div class="row g-4">
     
-    <!-- Left Column: Role Overview & Current Capabilities -->
-    <div class="col-lg-8">
+    <!-- Role Overview & Current Capabilities -->
+    <div class="col-12">
       <div class="bg-white p-4 rounded-4 border shadow-sm mb-4">
         <h5 class="fw-bold mb-3" style="color: var(--color-primary-dark);">
           <i class="fa-solid fa-id-badge me-2 text-success"></i> Your Role Access: {{ user.get_role_display }}
@@ -190,36 +190,6 @@
             </div>
             <span class="badge bg-light text-secondary rounded-pill px-3 py-2">UPCOMING</span>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Right Column: Quick Persona Switcher for Evaluation -->
-    <div class="col-lg-4">
-      <div class="bg-white p-4 rounded-4 border shadow-sm">
-        <h6 class="fw-bold mb-2 text-dark">
-          <i class="fa-solid fa-bolt text-warning me-2"></i> SIH Persona Quick-Switcher
-        </h6>
-        <p class="text-muted small mb-3">
-          Instantly jump between test roles to evaluate how the system tailors access:
-        </p>
-
-        <div class="d-grid gap-2">
-          <a href="{% url 'quick_switch_user' 'admin' %}" class="btn btn-sm {% if user.username == 'admin' %}btn-dark{% else %}btn-outline-dark{% endif %} text-start py-2">
-            <i class="fa-solid fa-crown me-2 text-warning"></i> <strong>Admin</strong> (admin)
-          </a>
-          <a href="{% url 'quick_switch_user' 'vdf_sunil' %}" class="btn btn-sm {% if user.username == 'vdf_sunil' %}btn-success{% else %}btn-outline-success{% endif %} text-start py-2">
-            <i class="fa-solid fa-handshake-angle me-2"></i> <strong>Facilitator (VDF)</strong> (vdf_sunil)
-          </a>
-          <a href="{% url 'quick_switch_user' 'farmer_ramesh' %}" class="btn btn-sm {% if user.username == 'farmer_ramesh' %}btn-success{% else %}btn-outline-success{% endif %} text-start py-2">
-            <i class="fa-solid fa-tractor me-2"></i> <strong>Farmer</strong> (farmer_ramesh)
-          </a>
-          <a href="{% url 'quick_switch_user' 'consumer_priya' %}" class="btn btn-sm {% if user.username == 'consumer_priya' %}btn-warning{% else %}btn-outline-warning{% endif %} text-start py-2 text-dark">
-            <i class="fa-solid fa-basket-shopping me-2"></i> <strong>Consumer</strong> (consumer_priya)
-          </a>
-          <a href="{% url 'quick_switch_user' 'delivery_rajesh' %}" class="btn btn-sm {% if user.username == 'delivery_rajesh' %}btn-primary{% else %}btn-outline-primary{% endif %} text-start py-2">
-            <i class="fa-solid fa-truck me-2"></i> <strong>Delivery</strong> (delivery_rajesh)
-          </a>
         </div>
       </div>
     </div>

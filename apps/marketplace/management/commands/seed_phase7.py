@@ -49,19 +49,24 @@ class Command(BaseCommand):
                         'product': onion,
                         'apartment_cluster': "Tech Enclave Towers, Namkum, Ranchi",
                         'target_kg': Decimal('80.00'),
-                        'current_kg': Decimal('60.00'),
+                        'current_kg': Decimal('70.00'),
                         'bulk_price_per_kg': Decimal('26.00'),
                         'status': GroupBuyingPool.Status.OPEN,
+                        'dispatch_time': 'Today 6 PM',
                         'expires_at': timezone.now() + timedelta(days=3),
                     }
                 )
+                if not created:
+                    pool2.current_kg = Decimal('70.00')
+                    pool2.dispatch_time = 'Today 6 PM'
+                    pool2.save(update_fields=['current_kg', 'dispatch_time'])
                 if created and consumer_priya:
                     GroupBuyingParticipant.objects.create(
                         pool=pool2,
                         consumer=consumer_priya,
                         pledged_kg=Decimal('15.00')
                     )
-                self.stdout.write(self.style.SUCCESS("  + Seeded 80kg Onion Wholesale Crate for Namkum Tech Enclave (75% Pledged)"))
+                self.stdout.write(self.style.SUCCESS("  + Seeded 80kg Onion Wholesale Crate for Namkum Tech Enclave (87.5% Pledged)"))
 
         except Exception as e:
             self.stdout.write(self.style.WARNING(f"  ~ Notice in seeding Phase 7: {e}"))

@@ -1,7 +1,8 @@
+from decimal import Decimal, InvalidOperation
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib import messages
-from .models import CustomerReview, GroupBuyingPool
+from .models import CustomerReview, GroupBuyingPool, GroupBuyingParticipant
 from apps.products.models import Product
 
 
@@ -11,20 +12,70 @@ def marketplace_catalog_view(request):
 
 
 def group_buying_view(request):
-    pools = GroupBuyingPool.objects.all().select_related('product')
+    pools = GroupBuyingPool.objects.all().select_related(
+        'product__farmer__user',
+        'product__category'
+    ).order_by('-created_at')
     return render(request, 'marketplace/group_buying.html', {'pools': pools})
 
 
 def join_group_pool_view(request, pool_id):
     pool = get_object_or_404(GroupBuyingPool, pk=pool_id)
-    pools = GroupBuyingPool.objects.all().select_related('product')
-    pledge_message = None
+    
     if request.method == 'POST':
-        pledged_kg = request.POST.get('pledged_kg', '0')
-        pledge_message = f"Community Group Buying: Aapka {pledged_kg} kg pledge record ho gaya!"
-    return render(request, 'marketplace/group_buying.html', {
-        'pool': pool, 'pools': pools, 'pledge_message': pledge_message
-    })
+        # 1. Check user authentication
+        if not request.user.is_authenticated:
+            messages.warning(request, "Please log in to pledge and join this neighborhood bulk buying pool.")
+            return redirect(f"/accounts/login/?next=/marketplace/group-buying/")
+        
+        # 2. Check pool status
+        if pool.status != GroupBuyingPool.Status.OPEN:
+            messages.error(request, f"Pledging is closed for '{pool.title}' ({pool.get_status_display()}).")
+            return redirect('group_buying_list')
+        
+        # 3. Validate pledge quantity
+        raw_qty = request.POST.get('pledged_kg', '5.0')
+        try:
+            pledged_kg = Decimal(str(raw_qty)).quantize(Decimal('0.01'))
+            if pledged_kg <= Decimal('0.00'):
+                raise ValueError
+        except (ValueError, TypeError, InvalidOperation):
+            messages.error(request, "Invalid pledge quantity selected. Please choose a valid weight.")
+            return redirect('group_buying_list')
+        
+        # 4. Check remaining capacity
+        remaining = Decimal(str(pool.remaining_kg))
+        if pledged_kg > remaining:
+            messages.warning(
+                request,
+                f"Requested {pledged_kg} kg exceeds the remaining pool quota. "
+                f"Only {remaining} kg is needed to complete this pool."
+            )
+            return redirect('group_buying_list')
+        
+        # 5. Record participant pledge
+        GroupBuyingParticipant.objects.create(
+            pool=pool,
+            consumer=request.user,
+            pledged_kg=pledged_kg,
+            status=GroupBuyingParticipant.Status.PLEDGED
+        )
+        
+        # 6. Update current pledged kg and lock if target fulfilled
+        pool.current_kg = (pool.current_kg + pledged_kg).quantize(Decimal('0.01'))
+        if pool.current_kg >= pool.target_kg:
+            pool.current_kg = pool.target_kg
+            pool.status = GroupBuyingPool.Status.LOCKED_FULL
+        pool.save()
+        
+        total_pledge_cost = (pledged_kg * pool.bulk_price_per_kg).quantize(Decimal('0.01'))
+        messages.success(
+            request,
+            f"🎉 Success! Pledged {pledged_kg} kg (₹{total_pledge_cost}) for '{pool.title}'. "
+            f"Your order is locked for consolidated delivery to {pool.apartment_cluster}."
+        )
+    
+    return redirect('group_buying_list')
 
 
 

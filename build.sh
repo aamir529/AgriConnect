@@ -17,3 +17,6 @@ python manage.py seed_phase1
 
 # Seed categories and products
 python manage.py seed_phase2
+
+# Seed group buying pools
+python manage.py seed_group_buying

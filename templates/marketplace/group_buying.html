@@ -66,7 +66,7 @@
                 </span>
               </div>
               <small class="text-muted">
-                <i class="fa-solid fa-clock me-1"></i> Dispatches: Today 6 PM
+                <i class="fa-solid fa-clock me-1"></i> Dispatches: {{ pool.dispatch_time|default:"Today 6 PM" }}
               </small>
             </div>
 
@@ -84,7 +84,7 @@
                     <i class="fa-solid fa-building me-1 text-danger"></i> {{ pool.apartment_cluster }}
                   </small>
                   <small class="text-muted">
-                    <i class="fa-solid fa-tractor me-1 text-success"></i> Grower: {{ pool.product.farmer.user.get_full_name }}
+                    <i class="fa-solid fa-tractor me-1 text-success"></i> Grower: {{ pool.grower_name }}
                   </small>
                 </div>
               </div>
@@ -97,7 +97,7 @@
                 </div>
                 <div class="text-end">
                   <span class="text-muted small d-block">Single Retail Price:</span>
-                  <del class="text-muted">₹{{ pool.product.consumer_price_per_kg }} / kg</del>
+                  <del class="text-muted">₹{{ pool.single_retail_price }} / kg</del>
                 </div>
               </div>
 
@@ -126,9 +126,9 @@
                     {% csrf_token %}
                     <div class="col-7">
                       <select name="pledged_kg" class="form-select form-select-sm">
-                        <option value="2.5">Pledge 2.5 kg (₹{% widthratio pool.bulk_price_per_kg 1 2.5 %})</option>
-                        <option value="5.0" selected>Pledge 5.0 kg (₹{% widthratio pool.bulk_price_per_kg 1 5 %})</option>
-                        <option value="10.0">Pledge 10.0 kg (₹{% widthratio pool.bulk_price_per_kg 1 10 %})</option>
+                        <option value="2.5">Pledge 2.5 kg (₹{{ pool.price_for_2_5 }})</option>
+                        <option value="5.0" selected>Pledge 5.0 kg (₹{{ pool.price_for_5 }})</option>
+                        <option value="10.0">Pledge 10.0 kg (₹{{ pool.price_for_10 }})</option>
                       </select>
                     </div>
                     <div class="col-5">
@@ -153,7 +153,7 @@
       <div class="col-12 text-center py-5 bg-white rounded-4 border shadow-sm">
         <div class="fs-1 text-muted mb-3">🤝</div>
         <h4 class="fw-bold">No active neighborhood pools right now</h4>
-        <p class="text-muted">Run seed_phase7 command to populate demo group buy batches.</p>
+        <p class="text-muted">Run seed_group_buying command to populate demo group buy batches.</p>
       </div>
     {% endif %}
   </div>
